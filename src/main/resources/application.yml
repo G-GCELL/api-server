@@ -1,0 +1,17 @@
+server:
+  port: ${API_SERVER_PORT}
+
+spring:
+  datasource:
+    url: jdbc:${DB}://${HOST}:${PORT}/${DB_NAME}
+    username: ${USER}
+    password: ${PASSWORD}
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: ${DDL_AUTO}
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: ${FETCH_SIZE}
