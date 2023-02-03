@@ -33,7 +33,7 @@ build-job:       # This job runs in the build stage, which runs first.
     - ./gradlew clean boorJar
   artifacts:
       paths:
-          - build/libs/*.jar
+        - build/libs/*.jar
       expire_in: 60 min
 
 test:
@@ -44,7 +44,7 @@ test:
   script:
     - ./gradlew test
   artifacts:
-    path:
+    paths:
       - build/reports/jacoco/test/jacoco*.xml
     reports:
       junit: build/test-results/test/TEST-*.xml
