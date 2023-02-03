@@ -41,13 +41,16 @@ test:
   image: openjdk:17-oracle
   tags:
     - weat
+  before_script:
+    - microdnf install findutils
   script:
     - ./gradlew test
   artifacts:
     paths:
       - build/reports/jacoco/test/jacoco*.xml
     reports:
-      junit: build/test-results/test/TEST-*.xml
+      junit: build/test-results/test/**/TEST-*.xml
+
 
 
 coverage:
