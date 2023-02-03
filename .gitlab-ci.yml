@@ -25,6 +25,8 @@ build-job:       # This job runs in the build stage, which runs first.
   image: openjdk:17-oracle
   tags:
     - weat
+  before_script:
+    - microdnf install findutils
   script:
     - ./gradlew clean build
   artifacts:
