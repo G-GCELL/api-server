@@ -29,7 +29,7 @@ build-job:       # This job runs in the build stage, which runs first.
   before_script:
     - microdnf install findutils
   script:
-    - ./gradlew clean build
+    - ./gradlew clean bootJar
   artifacts:
       paths:
           - build/libs/*.jar
@@ -44,5 +44,5 @@ test:
     - ./gradlew test
   artifacts:
     reports:
-      junit: build/test-results/test/TEST-*.xml
+      junit: build/test-results/test/**/TEST-*.xml
 
