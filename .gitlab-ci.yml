@@ -19,6 +19,7 @@
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
+  - visualize
 
 
 build-job:       # This job runs in the build stage, which runs first.
@@ -29,7 +30,7 @@ build-job:       # This job runs in the build stage, which runs first.
   before_script:
     - microdnf install findutils
   script:
-    - ./gradlew clean bootJar
+    - ./gradlew clean boorJar
   artifacts:
       paths:
           - build/libs/*.jar
@@ -40,11 +41,23 @@ test:
   image: openjdk:17-oracle
   tags:
     - weat
-  before_script:
-    - microdnf install findutils
   script:
     - ./gradlew test
   artifacts:
+    path:
+      - build/reports/jacoco/test/jacoco*.xml
     reports:
-      junit: build/test-results/test/**/TEST-*.xml
+      junit: build/test-results/test/TEST-*.xml
 
+
+coverage:
+  stage: visualize
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
+  script:
+    - python /opt/cover2cover.py build/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > build/cobertura.xml
+  needs: ["test"]
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: build/cobertura.xml
