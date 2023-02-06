@@ -76,7 +76,8 @@ jacocoTestReport {
             fileTree(dir: it, exclude: [
                     "**/GcellApiServerApplication.class",
                     "**/domain/**",
-                    "**/dto/**"
+                    "**/dto/**",
+                    "**/util/**"
             ])
         }))
     }
@@ -98,7 +99,8 @@ jacocoTestCoverageVerification {
             excludes = [
                     "*.GcellApiServerApplication",
                     "*.domain.*",
-                    "*.dto.*"
+                    "*.dto.*",
+                    "*.util.*"
             ]
         }
     }
