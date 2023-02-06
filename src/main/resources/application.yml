@@ -15,3 +15,9 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: ${FETCH_SIZE}
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
