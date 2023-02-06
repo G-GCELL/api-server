@@ -1,6 +1,6 @@
 package com.gabia.weat.gcellapiserver.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class FileDTO {
 
@@ -10,10 +10,10 @@ public class FileDTO {
 		String[] notAccountId,
 		String[] inProductCode,
 		String[] notProductCode,
-		LocalDate startDateMin,
-		LocalDate startDateMax,
-		LocalDate endDateMin,
-		LocalDate endDateMax,
+		LocalDateTime startDateMin,
+		LocalDateTime startDateMax,
+		LocalDateTime endDateMin,
+		LocalDateTime endDateMax,
 		String costMin,
 		String costMax
 	) {
