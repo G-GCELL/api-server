@@ -45,6 +45,7 @@ test:
     - microdnf install findutils
   script:
     - ./gradlew test
+  coverage: '/    - Instruction Coverage: ([0-9.]+)%/'
   artifacts:
     paths:
       - build/reports/jacoco/test/jacoco*.xml
