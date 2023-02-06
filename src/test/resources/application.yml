@@ -7,3 +7,11 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+
+minio:
+  bucket:
+    name: ${MINIO_BUCKET}
+  access:
+    key: ${MINIO_KEY}
+    secret: ${MINIO_SECRET}
+  url: ${MINIO_URL}

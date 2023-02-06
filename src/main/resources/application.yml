@@ -19,3 +19,11 @@ spring:
 excel-info:
   file-base-url: ${FILE_BASE_URL}
   excel-extension: ${EXCEL_EXTENSION}
+
+minio:
+  bucket:
+    name: ${MINIO_BUCKET}
+  access:
+    key: ${MINIO_KEY}
+    secret: ${MINIO_SECRET}
+  url: ${MINIO_URL}
