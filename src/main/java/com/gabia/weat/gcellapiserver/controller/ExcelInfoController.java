@@ -23,13 +23,13 @@ public class ExcelInfoController {
 
 	@PostMapping(value = "")
 	@ResponseStatus(HttpStatus.CREATED)
-	public APIResponseDTO createExcel(@RequestBody FileCreateRequestDTO fileCreateRequestDTO){
+	public APIResponseDTO createExcel(@RequestBody FileCreateRequestDTO fileCreateRequestDTO) {
 		Long createExcelInfoId = excelInfoService.createExcel(this.getConnectMemberEmail(), fileCreateRequestDTO);
 		String downloadUrl = "/excels/" + createExcelInfoId;
 		return APIResponseDTO.success(downloadUrl);
 	}
 
-	private String getConnectMemberEmail(){
+	private String getConnectMemberEmail() {
 		return "mock_email";
 	}
 

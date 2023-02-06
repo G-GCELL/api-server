@@ -16,8 +16,7 @@ public class FileDTO {
 		LocalDate endDateMax,
 		String costMin,
 		String costMax
-	){
-
+	) {
 
 	}
 

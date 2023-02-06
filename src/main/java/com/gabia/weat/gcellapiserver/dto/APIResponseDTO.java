@@ -11,15 +11,15 @@ public class APIResponseDTO<T> {
 	private T response;
 	private ErrorDTO error;
 
-	public static APIResponseDTO success(){
+	public static APIResponseDTO success() {
 		return new APIResponseDTO(true, null, null);
 	}
 
-	public static <T> APIResponseDTO success(T response){
+	public static <T> APIResponseDTO success(T response) {
 		return new APIResponseDTO(true, response, null);
 	}
 
-	public static APIResponseDTO fail(ErrorDTO error){
+	public static APIResponseDTO fail(ErrorDTO error) {
 		return new APIResponseDTO(false, null, error);
 	}
 

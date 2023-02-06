@@ -24,7 +24,9 @@ public class ExcelInfoService {
 	public Long createExcel(String email, FileCreateRequestDTO fileCreateRequestDTO) {
 		Member member = this.getMemberByEmail(email);
 		String path = excelInfoUtil.getRandomRealFileName();
-		ExcelInfo excelInfo = excelInfoRepository.save(this.getExcelInfo(member, fileCreateRequestDTO.fileName(), path));
+		ExcelInfo excelInfo = excelInfoRepository.save(
+			this.getExcelInfo(member, fileCreateRequestDTO.fileName(), path)
+		);
 		// 메시지 전송
 
 		return excelInfo.getExcelInfoId();
