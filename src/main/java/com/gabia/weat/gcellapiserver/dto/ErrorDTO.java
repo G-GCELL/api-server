@@ -1,13 +1,9 @@
 package com.gabia.weat.gcellapiserver.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public record ErrorDTO(
+	Integer status,
+	String message
+) {
 
-@Getter
-@AllArgsConstructor
-public class ErrorDTO {
-
-	private Integer status;
-	private String message;
 
 }
