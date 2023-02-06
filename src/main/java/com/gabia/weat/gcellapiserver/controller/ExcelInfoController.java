@@ -25,7 +25,8 @@ public class ExcelInfoController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public APIResponseDTO createExcel(@RequestBody FileCreateRequestDTO fileCreateRequestDTO){
 		Long createExcelInfoId = excelInfoService.createExcel(this.getConnectMemberEmail(), fileCreateRequestDTO);
-		return APIResponseDTO.success("/excels/" + createExcelInfoId);
+		String downloadUrl = "/excels/" + createExcelInfoId;
+		return APIResponseDTO.success(downloadUrl);
 	}
 
 	private String getConnectMemberEmail(){
