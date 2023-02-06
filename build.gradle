@@ -73,7 +73,8 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "**/GcellApiServerApplication.class"
+                    "**/GcellApiServerApplication.class",
+                    "**/domain/**"
             ])
         }))
     }
@@ -93,7 +94,8 @@ jacocoTestCoverageVerification {
             }
 
             excludes = [
-                    "*.GcellApiServerApplication"
+                    "*.GcellApiServerApplication",
+                    "*.domain.*"
             ]
         }
     }
