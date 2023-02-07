@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 import com.gabia.weat.gcellapiserver.error.exception.SseNotConnectException;
@@ -30,11 +32,11 @@ public class SseService {
 		return memberId;
 	}
 
-	public void sendMessage(Long memberId, MessageType messageType, Object messageObject) {
-		
+	public void sendMessage(Long memberId, MessageType messageType, Object message) {
+		sseRepository.findById(memberId).ifPresent(sse -> messaging(message, messageType, sse));
 	}
 
-	private void messaging(String message, MessageType messageType, SseEmitter sseEmitter) {
+	private void messaging(Object message, MessageType messageType, SseEmitter sseEmitter) {
 		try {
 			sseEmitter.send(SseEmitter.event()
 				.name(messageType.name())
