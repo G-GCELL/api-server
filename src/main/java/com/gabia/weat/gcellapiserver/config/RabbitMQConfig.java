@@ -2,7 +2,6 @@ package com.gabia.weat.gcellapiserver.config;
 
 import java.util.Objects;
 
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory.ConfirmType;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -24,7 +23,10 @@ public class RabbitMQConfig {
 	private String username;
 	@Value("${spring.rabbitmq.password}")
 	private String password;
-	private static final String EXCHANGE_NAME = "gcell";
+	@Value("${spring.rabbitmq.template.exchange}")
+	private String exchange;
+	@Value("${spring.rabbitmq.template.routing-key}")
+	private String routingKey;
 
 	@Bean
 	ConnectionFactory connectionFactory() {
@@ -39,10 +41,11 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
-	RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+	RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setExchange(EXCHANGE_NAME);
-		rabbitTemplate.setMessageConverter(messageConverter());
+		rabbitTemplate.setExchange(exchange);
+		rabbitTemplate.setRoutingKey(routingKey);
+		rabbitTemplate.setMessageConverter(messageConverter);
 		rabbitTemplate.setMandatory(true);
 
 		rabbitTemplate.setReturnsCallback(returned -> {

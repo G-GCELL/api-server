@@ -21,3 +21,6 @@ spring:
     port: ${RABBITMQ_PORT}
     username: ${RABBITMQ_USER}
     password: ${RABBITMQ_PASSWORD}
+    template:
+      exchange: ${EXCHANGE_NAME}
+      routing-key: ${ROUTING_KEY}
