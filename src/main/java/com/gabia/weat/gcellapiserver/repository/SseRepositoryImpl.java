@@ -30,7 +30,7 @@ public class SseRepositoryImpl implements SseRepository {
 
 	@Override
 	public Optional<SseEmitter> findById(Long id) {
-		return Optional.empty();
+		return Optional.ofNullable(sseMap.get(id));
 	}
 
 }
