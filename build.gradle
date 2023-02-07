@@ -78,7 +78,7 @@ jacocoTestReport {
                     "**/domain/**",
                     "**/dto/**",
                     "**/util/**",
-                    "**/error/exception/**"
+                    "**/error/**"
             ])
         }))
     }
@@ -102,7 +102,7 @@ jacocoTestCoverageVerification {
                     "*.domain.*",
                     "*.dto.*",
                     "*.util.*",
-                    "*.error.exception.*"
+                    "*.error.*"
             ]
         }
     }
