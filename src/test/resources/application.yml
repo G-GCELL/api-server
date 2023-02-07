@@ -7,3 +7,24 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+
+  rabbitmq:
+    host: host
+    port: 0000
+    username: username
+    password: password
+    template:
+      exchange: exchange
+      routing-key: routing-key
+
+excel-info:
+  file-base-url: url
+  excel-extension: extension
+
+minio:
+  bucket:
+   name: name
+  access:
+   key: key
+   secret: secret
+  url: url
