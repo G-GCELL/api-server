@@ -10,8 +10,8 @@ spring:
 
 minio:
   bucket:
-    name: ${MINIO_BUCKET}
+    name: name
   access:
-    key: ${MINIO_KEY}
-    secret: ${MINIO_SECRET}
-  url: ${MINIO_URL}
+    key: key
+    secret: secret
+  url: url
