@@ -10,6 +10,7 @@ import io.minio.MinioClient;
 import io.minio.errors.*;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +43,19 @@ public class MinioServiceTest {
 	@Mock
 	private MinioClient minioClient;
 
+	private Member member;
+
+	private ExcelInfo excelInfo;
+
+	@BeforeEach
+	public void setUp() {
+		member = Member.builder().memberId(1L).name("안태욱").email("test@test.com")
+			.password("asdasd").build();
+		excelInfo = ExcelInfo.builder().excelInfoId(1L).path("미니오에 저장될 파일 이름")
+			.name("데이터베이스에 저장될 파일 이름").isDeleted(false).member(member)
+			.build();
+	}
+
 	@Test()
 	@DisplayName("액셀 다운로드 테스트")
 	public void excelDownloadTest() throws
@@ -56,13 +70,8 @@ public class MinioServiceTest {
 		InternalException {
 
 		// given
-		Member member = Member.builder().memberId(1L).name("안태욱").email("twan@gabia.com")
-			.password("asdasd").build();
-		ExcelInfo excelInfo = ExcelInfo.builder().excelInfoId(1L).path("미니오에 저장될 파일 이름")
-			.name("데이터베이스에 저장될 파일 이름").isDeleted(false).member(member)
-			.build();
-
 		byte[] bytes = {0, 1, 2};
+		String testEmail = "test@test.com";
 		InputStream inputStream = new ByteArrayInputStream(bytes);
 		inputStream.close();
 		GetObjectResponse getObjectResponse = new GetObjectResponse(null, null, null, null, inputStream);
@@ -73,7 +82,7 @@ public class MinioServiceTest {
 		given(minioClient.getObject(any())).willReturn(getObjectResponse);
 
 		// when
-		byte[] resultBytes = minioService.downloadExcel(excelInfo.getExcelInfoId());
+		byte[] resultBytes = minioService.downloadExcel(excelInfo.getExcelInfoId(), testEmail);
 
 		// then
 		Assertions.assertThat(resultBytes).isEqualTo(bytes);

@@ -8,8 +8,8 @@ import org.springframework.test.context.TestConstructor;
 @SpringBootTest
 class GcellApiServerApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }
