@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 public class RabbitmqConfig {
 
@@ -49,15 +52,14 @@ public class RabbitmqConfig {
 		rabbitTemplate.setMandatory(true);
 
 		rabbitTemplate.setReturnsCallback(returned -> {
-			System.out.println("반환된 메시지 : " + returned);
+			log.info("[반환된 메시지] " + returned);
 		});
 
 		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
 			if (ack && Objects.requireNonNull(correlationData).getReturned() == null) {
-				System.out.println("메시지 발행 성공");
+				log.info("[메시지 발행 성공]");
 			} else {
-				System.out.println("메시지 발행 실패");
-				System.out.println("원인 : " + cause);
+				log.info("[메시지 발행 실패] " + cause);
 			}
 		});
 
