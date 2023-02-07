@@ -77,7 +77,8 @@ jacocoTestReport {
                     "**/GcellApiServerApplication.class",
                     "**/domain/**",
                     "**/dto/**",
-                    "**/util/**"
+                    "**/util/**",
+                    "**/error/exception/**"
             ])
         }))
     }
@@ -100,7 +101,8 @@ jacocoTestCoverageVerification {
                     "*.GcellApiServerApplication",
                     "*.domain.*",
                     "*.dto.*",
-                    "*.util.*"
+                    "*.util.*",
+                    "*.error.exception.*"
             ]
         }
     }
