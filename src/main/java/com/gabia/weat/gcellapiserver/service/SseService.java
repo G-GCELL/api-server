@@ -1,13 +1,10 @@
 package com.gabia.weat.gcellapiserver.service;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 import com.gabia.weat.gcellapiserver.error.exception.SseNotConnectException;
