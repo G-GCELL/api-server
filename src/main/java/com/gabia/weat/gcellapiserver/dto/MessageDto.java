@@ -3,9 +3,9 @@ package com.gabia.weat.gcellapiserver.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class MessageDTO {
+public class MessageDto {
 
-	public record FileCreateRequestMsgDTO(
+	public record FileCreateRequestMsgDto(
 		Long memberId,
 		String fileName,
 		String[] inAccountId,
@@ -21,4 +21,5 @@ public class MessageDTO {
 	) {
 
 	}
+
 }
