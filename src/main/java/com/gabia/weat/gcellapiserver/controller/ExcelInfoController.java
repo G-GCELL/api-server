@@ -16,6 +16,7 @@ import com.gabia.weat.gcellapiserver.service.MinioService;
 import static com.gabia.weat.gcellapiserver.dto.FileDTO.FileCreateRequestDTO;
 
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -24,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class ExcelInfoController {
 
 	private final ExcelInfoService excelInfoService;
-
 	private final MinioService minioService;
 
 	@PostMapping(value = "")
@@ -36,10 +36,11 @@ public class ExcelInfoController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public APIResponseDTO<Byte[]> downloadExcel(@PathVariable("id") Long excelInfoId) throws
+	@ResponseStatus(HttpStatus.OK)
+	public byte[] downloadExcel(@PathVariable("id") Long excelInfoId) throws
 		CustomException {
 		byte[] excel = minioService.downloadExcel(excelInfoId, this.getConnectMemberEmail());
-		return APIResponseDTO.success(excel);
+		return excel;
 	}
 
 	private String getConnectMemberEmail() {
