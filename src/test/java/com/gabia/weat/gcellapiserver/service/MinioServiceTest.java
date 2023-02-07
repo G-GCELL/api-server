@@ -36,15 +36,11 @@ import static org.mockito.BDDMockito.given;
 public class MinioServiceTest {
 	@InjectMocks
 	private MinioService minioService;
-
 	@Mock
 	private ExcelInfoRepository excelInfoRepository;
-
 	@Mock
 	private MinioClient minioClient;
-
 	private Member member;
-
 	private ExcelInfo excelInfo;
 
 	@BeforeEach

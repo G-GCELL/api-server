@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class ExcelInfoController {
 
 	private final ExcelInfoService excelInfoService;
-
 	private final MinioService minioService;
 
 	@PostMapping(value = "")

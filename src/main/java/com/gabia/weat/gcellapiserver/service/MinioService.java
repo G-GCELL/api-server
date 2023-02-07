@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 public class MinioService {
 
 	private final MinioClient minioClient;
-
 	private final ExcelInfoRepository excelInfoRepository;
 
 	@Value("${minio.bucket.name}")
