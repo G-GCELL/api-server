@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-public interface SSERepository {
+public interface SseRepository {
 
 	SseEmitter save(Long id, SseEmitter sseEmitter);
 
