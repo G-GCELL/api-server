@@ -1,5 +1,6 @@
 package com.gabia.weat.gcellapiserver.dto;
 
+import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +10,7 @@ public class APIResponseDTO<T> {
 
 	private boolean success;
 	private T response;
-	private ErrorDTO error;
+	private ErrorCode error;
 
 	public static APIResponseDTO success() {
 		return new APIResponseDTO(true, null, null);
@@ -19,8 +20,8 @@ public class APIResponseDTO<T> {
 		return new APIResponseDTO(true, response, null);
 	}
 
-	public static APIResponseDTO fail(ErrorDTO error) {
-		return new APIResponseDTO(false, null, error);
+	public static APIResponseDTO fail(ErrorCode errorCode) {
+		return new APIResponseDTO(false, null, errorCode);
 	}
 
 }
