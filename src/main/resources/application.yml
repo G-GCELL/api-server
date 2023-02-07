@@ -24,3 +24,7 @@ spring:
     template:
       exchange: ${EXCHANGE_NAME}
       routing-key: ${ROUTING_KEY}
+
+excel-info:
+  file-base-url: ${FILE_BASE_URL}
+  excel-extension: ${EXCEL_EXTENSION}
