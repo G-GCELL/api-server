@@ -7,3 +7,15 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+
+excel-info:
+  file-base-url: url
+  excel-extension: extension
+
+minio:
+  bucket:
+    name: name
+  access:
+    key: key
+    secret: secret
+  url: url
