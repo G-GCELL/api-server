@@ -28,3 +28,4 @@ minio:
    key: key
    secret: secret
   url: url
+  

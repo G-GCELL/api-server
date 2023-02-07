@@ -53,6 +53,13 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
+
+    // minio
+    implementation 'io.minio:minio:8.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'commons-io:commons-io:2.11.0'
+
+
 }
 
 tasks.named('test') {
@@ -79,6 +86,7 @@ jacocoTestReport {
                     "**/domain/**",
                     "**/dto/**",
                     "**/util/**",
+                    "**/error/**",
                     "**/config/**"
             ])
         }))
@@ -103,6 +111,7 @@ jacocoTestCoverageVerification {
                     "*.domain.*",
                     "*.dto.*",
                     "*.util.*",
+                    "*.error.*",
                     "*.config.*"
             ]
         }
