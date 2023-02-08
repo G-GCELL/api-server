@@ -27,11 +27,11 @@ public class ExcelInfoService {
 
 	public Long createExcel(String email, FileCreateRequestDto fileCreateRequestDto) {
 		Member member = this.getMemberByEmail(email);
-		String path = excelInfoUtil.getRandomRealFileName();
+		String randomFileName = excelInfoUtil.getRandomRealFileName();
 		ExcelInfo excelInfo = excelInfoRepository.save(
-			this.getExcelInfo(member, fileCreateRequestDto.fileName(), path)
+			this.getExcelInfo(member, fileCreateRequestDto.fileName(), randomFileName)
 		);
-		this.sendExcelCreateRequestMessage(member.getMemberId(), fileCreateRequestDto);
+		this.sendExcelCreateRequestMessage(member.getMemberId(), randomFileName, fileCreateRequestDto);
 		return excelInfo.getExcelInfoId();
 	}
 
@@ -41,10 +41,15 @@ public class ExcelInfoService {
 		});
 	}
 
-	private ExcelInfo getExcelInfo(Member member, String fileName, String path) {
+	private ExcelInfo getExcelInfo(Member member, String fileName, String realFileName) {
 		excelInfoRepository.findByMemberAndName(member, fileName).ifPresent(e -> {
 			throw new CustomException(ErrorCode.DUPLICATE_FILE_NAME);
 		});
+
+		String path = new StringBuffer(excelInfoUtil.getFileBaseUrl())
+			.append("/")
+			.append(realFileName)
+			.toString();
 
 		return ExcelInfo.builder()
 			.member(member)
@@ -54,8 +59,10 @@ public class ExcelInfoService {
 			.build();
 	}
 
-	private void sendExcelCreateRequestMessage(Long memberId, FileCreateRequestDto fileCreateRequestDto) {
-		createRequestProducer.sendMessage(FileDtoConverter.createDtoToCreateMsgDto(memberId, fileCreateRequestDto));
+	private void sendExcelCreateRequestMessage(Long memberId, String newFileName,
+		FileCreateRequestDto fileCreateRequestDto) {
+		createRequestProducer.sendMessage(
+			FileDtoConverter.createDtoToCreateMsgDto(memberId, newFileName, fileCreateRequestDto));
 	}
 
 }
