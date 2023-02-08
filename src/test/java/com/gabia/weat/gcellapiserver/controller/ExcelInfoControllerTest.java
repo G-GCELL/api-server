@@ -11,7 +11,7 @@ import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
 
-import com.gabia.weat.gcellapiserver.dto.APIResponseDto;
+import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;
 import com.gabia.weat.gcellapiserver.service.ExcelInfoService;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +32,7 @@ public class ExcelInfoControllerTest {
 		given(excelInfoService.createExcel(any(), any())).willReturn(testExcelInfoId);
 
 		// when
-		APIResponseDto response = excelInfoController.createExcel(fileCreateRequestDTO).getBody();
+		ApiResponseDto response = excelInfoController.createExcel(fileCreateRequestDTO).getBody();
 
 		// then
 		assertThat(response.getResponse()).isEqualTo("/excels/" + testExcelInfoId);
