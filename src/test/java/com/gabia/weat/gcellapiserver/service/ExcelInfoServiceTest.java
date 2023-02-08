@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 import com.gabia.weat.gcellapiserver.service.producer.CreateRequestProducer;
@@ -89,7 +90,7 @@ public class ExcelInfoServiceTest {
 		given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
 
 		// when & then
-		assertThrows(EntityNotFoundException.class,
+		assertThrows(CustomException.class,
 			() -> excelInfoService.createExcel(testEmail, fileCreateRequestDTO));
 	}
 
@@ -105,7 +106,7 @@ public class ExcelInfoServiceTest {
 		given(excelInfoRepository.findByMemberAndName(any(), any())).willReturn(Optional.of(excelInfo));
 
 		// when & then
-		assertThrows(IllegalStateException.class, () -> excelInfoService.createExcel(testEmail, fileCreateRequestDTO));
+		assertThrows(CustomException.class, () -> excelInfoService.createExcel(testEmail, fileCreateRequestDTO));
 	}
 
 	private FileCreateRequestDto getFileCreateRequestDTO() {
