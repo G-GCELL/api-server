@@ -16,7 +16,7 @@ public class ExcelInfoUtil {
 	private String excelExtension;
 
 	public String getRandomRealFileName() {
-		return new StringBuffer(fileBaseUrl).append(UUID.randomUUID()).append(excelExtension).toString();
+		return UUID.randomUUID() + excelExtension;
 	}
 
 }

@@ -7,17 +7,18 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
-import com.gabia.weat.gcellapiserver.error.exception.SseNotConnectException;
+import com.gabia.weat.gcellapiserver.error.ErrorCode;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 import com.gabia.weat.gcellapiserver.repository.SseRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class MessageService {
 
+	private static final String CONNECT_MESSAGE = "connect_success";
 	private final SseRepository sseRepository;
 	private final MemberRepository memberRepository;
 
@@ -25,7 +26,7 @@ public class MessageService {
 		Member member = this.getMemberByEmail(email);
 		Long memberId = member.getMemberId();
 		sseRepository.save(memberId, sseEmitter);
-		sendMessage("connect", MessageType.CONNECT, sseEmitter);
+		sendMessage(CONNECT_MESSAGE, MessageType.CONNECT, sseEmitter);
 		return memberId;
 	}
 
@@ -39,13 +40,13 @@ public class MessageService {
 				.name(messageType.name())
 				.data(message));
 		} catch (IOException e) {
-			throw new SseNotConnectException(e);
+			throw new CustomException(ErrorCode.CONNECTION_ERROR);
 		}
 	}
 
 	private Member getMemberByEmail(String email) {
 		return memberRepository.findByEmail(email).orElseThrow(() -> {
-			throw new EntityNotFoundException("");
+			throw new CustomException(ErrorCode.CONNECTION_NOT_FOUND);
 		});
 	}
 
