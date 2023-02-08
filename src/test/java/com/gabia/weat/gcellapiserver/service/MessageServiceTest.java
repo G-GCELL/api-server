@@ -34,7 +34,6 @@ public class MessageServiceTest {
 	private MemberRepository memberRepository;
 	@InjectMocks
 	private MessageService messageService;
-
 	private Member member;
 
 	@BeforeEach
@@ -67,6 +66,7 @@ public class MessageServiceTest {
 	@Test
 	@DisplayName("SSE_연결_실패_사용자_미조회_테스트")
 	public void connect_member_not_found_test() {
+		// given
 		String testEmail = member.getEmail();
 		SseEmitter testSseEmitter = mock(SseEmitter.class);
 
@@ -79,6 +79,7 @@ public class MessageServiceTest {
 	@Test
 	@DisplayName("SSE_연결_실패_IOException_테스트")
 	public void connect_exception_test() throws IOException {
+		// given
 		String testEmail = member.getEmail();
 		SseEmitter testSseEmitter = mock(SseEmitter.class);
 

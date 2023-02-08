@@ -6,6 +6,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 public class SseRepositoryImplTest {
 
 	private SseRepository sseRepository = new SseRepositoryImpl();
@@ -19,10 +21,10 @@ public class SseRepositoryImplTest {
 		sseRepository.save(id, testSse);
 
 		// when
-		boolean isPresent = sseRepository.findById(id).isPresent();
+		Optional<SseEmitter> emitterOptional = sseRepository.findById(id);
 
 		// then
-		assertThat(isPresent).isTrue();
+		assertThat(emitterOptional.isPresent()).isTrue();
 	}
 
 	@Test
@@ -36,7 +38,8 @@ public class SseRepositoryImplTest {
 		sseRepository.save(id, testSse);
 
 		// then
-		assertThat(sseRepository.findById(id).isPresent()).isTrue();
+		Optional<SseEmitter> emitterOptional = sseRepository.findById(id);
+		assertThat(emitterOptional.isPresent()).isTrue();
 	}
 
 }
