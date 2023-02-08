@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 public class MessageController {
+
 	private final MessageService messageService;
 
 	@CrossOrigin("*")
