@@ -1,7 +1,9 @@
 package com.gabia.weat.gcellapiserver.service;
 
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
 
+import com.gabia.weat.gcellapiserver.dto.FileDto;
 import org.springframework.stereotype.Service;
 
 import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
@@ -33,6 +35,17 @@ public class ExcelInfoService {
 		);
 		this.sendExcelCreateRequestMessage(member.getMemberId(), randomFileName, fileCreateRequestDto);
 		return excelInfo.getExcelInfoId();
+	}
+
+	public ExcelInfo updateExcelInfoName(String memberEmail, Long excelInfoId, FileUpdateNameRequestDto fileUpdateNameRequestDto){
+		ExcelInfo excelInfo = excelInfoRepository.findByIdFetchJoin(excelInfoId).orElseThrow(
+				() -> new CustomException(ErrorCode.EXCEL_NOT_EXISTS)
+		);
+		if (!excelInfo.getMember().getEmail().equals(memberEmail)) {
+			throw new CustomException(ErrorCode.EXCEL_NOT_MATCHES);
+		}
+		excelInfo.updateName(fileUpdateNameRequestDto.fileName());
+		return excelInfo;
 	}
 
 	private Member getMemberByEmail(String email) {

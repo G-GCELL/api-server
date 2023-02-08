@@ -24,7 +24,7 @@ public class MinioService {
 
 	public byte[] downloadExcel(Long excelInfoId, String memberEmail) {
 
-		ExcelInfo excelInfo = excelInfoRepository.findById(excelInfoId).orElseThrow(
+		ExcelInfo excelInfo = excelInfoRepository.findByIdFetchJoin(excelInfoId).orElseThrow(
 			() -> new CustomException(ErrorCode.EXCEL_NOT_EXISTS)
 		);
 		if (!excelInfo.getMember().getEmail().equals(memberEmail)) {

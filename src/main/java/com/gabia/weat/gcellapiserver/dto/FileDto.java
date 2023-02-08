@@ -20,4 +20,10 @@ public class FileDto {
 
 	}
 
+	public record FileUpdateNameRequestDto(
+		String fileName
+	){
+
+	}
+
 }
