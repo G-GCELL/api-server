@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class SseService {
+public class MessageService {
 
 	private final SseRepository sseRepository;
 	private final MemberRepository memberRepository;

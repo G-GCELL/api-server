@@ -26,14 +26,14 @@ import com.gabia.weat.gcellapiserver.repository.SseRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
-public class SseServiceTest {
+public class MessageServiceTest {
 
 	@Mock
 	private SseRepository sseRepository;
 	@Mock
 	private MemberRepository memberRepository;
 	@InjectMocks
-	private SseService sseService;
+	private MessageService messageService;
 
 	private Member member;
 
@@ -56,7 +56,7 @@ public class SseServiceTest {
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 
 		// when
-		Long memberId = sseService.connect(testEmail, testSseEmitter);
+		Long memberId = messageService.connect(testEmail, testSseEmitter);
 
 		// then
 		assertThat(memberId).isEqualTo(member.getMemberId());
@@ -73,7 +73,7 @@ public class SseServiceTest {
 		given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
 
 		// when & then
-		assertThrows(EntityNotFoundException.class, () -> sseService.connect(testEmail, testSseEmitter));
+		assertThrows(EntityNotFoundException.class, () -> messageService.connect(testEmail, testSseEmitter));
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class SseServiceTest {
 		doThrow(IOException.class).when(testSseEmitter).send(any());
 
 		// when & then
-		assertThrows(SseNotConnectException.class, () -> sseService.connect(testEmail, testSseEmitter));
+		assertThrows(SseNotConnectException.class, () -> messageService.connect(testEmail, testSseEmitter));
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class SseServiceTest {
 		given(sseRepository.findById(memberId)).willReturn(Optional.of(testSseEmitter));
 
 		// when
-		sseService.sendMessage(memberId, messageType, message);
+		messageService.sendMessage(memberId, messageType, message);
 
 		// then
 		verify(testSseEmitter, times(1)).send(any());
@@ -119,7 +119,7 @@ public class SseServiceTest {
 		given(sseRepository.findById(memberId)).willReturn(Optional.empty());
 
 		// when
-		sseService.sendMessage(memberId, messageType, message);
+		messageService.sendMessage(memberId, messageType, message);
 
 		// then
 		verify(testSseEmitter, times(0)).send(any());
