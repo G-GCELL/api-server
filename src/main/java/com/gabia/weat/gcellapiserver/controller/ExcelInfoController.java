@@ -1,6 +1,7 @@
 package com.gabia.weat.gcellapiserver.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,11 +29,10 @@ public class ExcelInfoController {
 	private final MinioService minioService;
 
 	@PostMapping(value = "")
-	@ResponseStatus(HttpStatus.CREATED)
-	public APIResponseDto createExcel(@RequestBody FileCreateRequestDto fileCreateRequestDto) {
+	public ResponseEntity<APIResponseDto> createExcel(@RequestBody FileCreateRequestDto fileCreateRequestDto) {
 		Long createExcelInfoId = excelInfoService.createExcel(this.getConnectMemberEmail(), fileCreateRequestDto);
 		String downloadUrl = "/excels/" + createExcelInfoId;
-		return APIResponseDto.success(downloadUrl);
+		return ResponseEntity.status(HttpStatus.CREATED).body(APIResponseDto.success(downloadUrl));
 	}
 
 	@GetMapping(value = "/{id}")
