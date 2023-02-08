@@ -32,7 +32,7 @@ public class ExcelInfoControllerTest {
 		given(excelInfoService.createExcel(any(), any())).willReturn(testExcelInfoId);
 
 		// when
-		APIResponseDto response = excelInfoController.createExcel(fileCreateRequestDTO);
+		APIResponseDto response = excelInfoController.createExcel(fileCreateRequestDTO).getBody();
 
 		// then
 		assertThat(response.getResponse()).isEqualTo("/excels/" + testExcelInfoId);
