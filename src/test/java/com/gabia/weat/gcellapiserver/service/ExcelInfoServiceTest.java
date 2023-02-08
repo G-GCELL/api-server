@@ -25,8 +25,6 @@ import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 import com.gabia.weat.gcellapiserver.service.producer.CreateRequestProducer;
 import com.gabia.weat.gcellapiserver.util.ExcelInfoUtil;
 
-import jakarta.persistence.EntityNotFoundException;
-
 @ExtendWith(MockitoExtension.class)
 public class ExcelInfoServiceTest {
 
@@ -69,7 +67,8 @@ public class ExcelInfoServiceTest {
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		given(excelInfoRepository.findByMemberAndName(any(), any())).willReturn(Optional.empty());
-		given(excelInfoUtil.getRandomRealFileName()).willReturn("testPath");
+		given(excelInfoUtil.getFileBaseUrl()).willReturn("testFileBaseUrl");
+		given(excelInfoUtil.getRandomRealFileName()).willReturn("testFileName.xlsx");
 		given(excelInfoRepository.save(any())).willReturn(excelInfo);
 
 		// when
