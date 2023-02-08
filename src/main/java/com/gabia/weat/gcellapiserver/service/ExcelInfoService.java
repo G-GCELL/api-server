@@ -2,7 +2,6 @@ package com.gabia.weat.gcellapiserver.service;
 
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
@@ -10,6 +9,8 @@ import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.error.ErrorCode;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 import com.gabia.weat.gcellapiserver.service.producer.CreateRequestProducer;
@@ -36,13 +37,13 @@ public class ExcelInfoService {
 
 	private Member getMemberByEmail(String email) {
 		return memberRepository.findByEmail(email).orElseThrow(() -> {
-			throw new EntityNotFoundException("");
+			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
 		});
 	}
 
 	private ExcelInfo getExcelInfo(Member member, String fileName, String path) {
 		excelInfoRepository.findByMemberAndName(member, fileName).ifPresent(e -> {
-			throw new IllegalStateException("");
+			throw new CustomException(ErrorCode.DUPLICATE_FILE_NAME);
 		});
 
 		return ExcelInfo.builder()
