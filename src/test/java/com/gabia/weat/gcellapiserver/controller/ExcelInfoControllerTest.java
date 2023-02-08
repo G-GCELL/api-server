@@ -25,7 +25,7 @@ public class ExcelInfoControllerTest {
 
 	@Test
 	@DisplayName("엑셀_생성_API_테스트")
-	public void createExcel_test(){
+	public void createExcel_test() {
 		// given
 		Long testExcelInfoId = 1L;
 		FileCreateRequestDTO fileCreateRequestDTO = this.getFileCreateRequestDTO();
