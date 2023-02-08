@@ -7,10 +7,13 @@ import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
 
 public class FileDtoConverter {
 
-	public static FileCreateRequestMsgDto createDtoToCreateMsgDto(Long memberId, FileCreateRequestDto fileCreateRequestDto){
-		BigDecimal costMin = fileCreateRequestDto.costMin() == null? null : new BigDecimal(fileCreateRequestDto.costMin());
-		BigDecimal costMax = fileCreateRequestDto.costMax() == null? null : new BigDecimal(fileCreateRequestDto.costMax());
-		
+	public static FileCreateRequestMsgDto createDtoToCreateMsgDto(Long memberId,
+		FileCreateRequestDto fileCreateRequestDto) {
+		BigDecimal costMin =
+			fileCreateRequestDto.costMin() == null ? null : new BigDecimal(fileCreateRequestDto.costMin());
+		BigDecimal costMax =
+			fileCreateRequestDto.costMax() == null ? null : new BigDecimal(fileCreateRequestDto.costMax());
+
 		return FileCreateRequestMsgDto.builder()
 			.memberId(memberId)
 			.fileName(fileCreateRequestDto.fileName())
