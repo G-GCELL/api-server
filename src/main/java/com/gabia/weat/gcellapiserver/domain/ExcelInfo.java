@@ -40,4 +40,8 @@ public class ExcelInfo extends BaseTimeEntity {
 	@Column
 	private Boolean isDeleted;
 
+	public void updateName(String name){
+		this.name = name;
+	}
+
 }
