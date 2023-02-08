@@ -101,7 +101,7 @@ public class MessageServiceTest {
 		given(sseRepository.findById(memberId)).willReturn(Optional.of(testSseEmitter));
 
 		// when
-		messageService.sendMessage(memberId, messageType, message);
+		messageService.sendMessageToMemberId(memberId, messageType, message);
 
 		// then
 		verify(testSseEmitter, times(1)).send(any());
@@ -119,7 +119,7 @@ public class MessageServiceTest {
 		given(sseRepository.findById(memberId)).willReturn(Optional.empty());
 
 		// when
-		messageService.sendMessage(memberId, messageType, message);
+		messageService.sendMessageToMemberId(memberId, messageType, message);
 
 		// then
 		verify(testSseEmitter, times(0)).send(any());
