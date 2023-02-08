@@ -25,15 +25,15 @@ public class MessageService {
 		Member member = this.getMemberByEmail(email);
 		Long memberId = member.getMemberId();
 		sseRepository.save(memberId, sseEmitter);
-		messaging("connect", MessageType.CONNECT, sseEmitter);
+		sendMessage("connect", MessageType.CONNECT, sseEmitter);
 		return memberId;
 	}
 
-	public void sendMessage(Long memberId, MessageType messageType, Object message) {
-		sseRepository.findById(memberId).ifPresent(sse -> messaging(message, messageType, sse));
+	public void sendMessageToMemberId(Long memberId, MessageType messageType, Object message) {
+		sseRepository.findById(memberId).ifPresent(sse -> sendMessage(message, messageType, sse));
 	}
 
-	private void messaging(Object message, MessageType messageType, SseEmitter sseEmitter) {
+	private void sendMessage(Object message, MessageType messageType, SseEmitter sseEmitter) {
 		try {
 			sseEmitter.send(SseEmitter.event()
 				.name(messageType.name())
