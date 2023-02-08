@@ -3,7 +3,7 @@ package com.gabia.weat.gcellapiserver.error;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.gabia.weat.gcellapiserver.dto.APIResponseDTO;
+import com.gabia.weat.gcellapiserver.dto.APIResponseDto;
 
 import io.minio.errors.MinioException;
 
@@ -11,7 +11,7 @@ import io.minio.errors.MinioException;
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MinioException.class)
-	private APIResponseDTO minioException(ErrorCode errorCode) {
-		return APIResponseDTO.fail(errorCode);
+	private APIResponseDto minioException(ErrorCode errorCode) {
+		return APIResponseDto.fail(errorCode);
 	}
 }

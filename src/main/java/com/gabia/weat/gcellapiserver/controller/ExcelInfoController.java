@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gabia.weat.gcellapiserver.dto.APIResponseDTO;
+import com.gabia.weat.gcellapiserver.dto.APIResponseDto;
 import com.gabia.weat.gcellapiserver.service.ExcelInfoService;
 import com.gabia.weat.gcellapiserver.service.MinioService;
 
-import static com.gabia.weat.gcellapiserver.dto.FileDTO.FileCreateRequestDTO;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 
@@ -29,10 +29,10 @@ public class ExcelInfoController {
 
 	@PostMapping(value = "")
 	@ResponseStatus(HttpStatus.CREATED)
-	public APIResponseDTO createExcel(@RequestBody FileCreateRequestDTO fileCreateRequestDTO) {
-		Long createExcelInfoId = excelInfoService.createExcel(this.getConnectMemberEmail(), fileCreateRequestDTO);
+	public APIResponseDto createExcel(@RequestBody FileCreateRequestDto fileCreateRequestDto) {
+		Long createExcelInfoId = excelInfoService.createExcel(this.getConnectMemberEmail(), fileCreateRequestDto);
 		String downloadUrl = "/excels/" + createExcelInfoId;
-		return APIResponseDTO.success(downloadUrl);
+		return APIResponseDto.success(downloadUrl);
 	}
 
 	@GetMapping(value = "/{id}")

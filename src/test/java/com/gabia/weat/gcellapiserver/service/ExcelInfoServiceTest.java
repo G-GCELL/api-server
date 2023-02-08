@@ -12,14 +12,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.gabia.weat.gcellapiserver.dto.FileDTO.FileCreateRequestDTO;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.dto.FileDTO;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 import com.gabia.weat.gcellapiserver.util.ExcelInfoUtil;
@@ -62,7 +61,7 @@ public class ExcelInfoServiceTest {
 	public void createExcel_success_test() {
 		// given
 		String testEmail = "test@gabia.com";
-		FileCreateRequestDTO fileCreateRequestDTO = this.getFileCreateRequestDTO();
+		FileCreateRequestDto fileCreateRequestDTO = this.getFileCreateRequestDTO();
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		given(excelInfoRepository.findByMemberAndName(any(), any())).willReturn(Optional.empty());
@@ -81,7 +80,7 @@ public class ExcelInfoServiceTest {
 	public void createExcel_not_found_member_test() {
 		// given
 		String testEmail = "test@gabia.com";
-		FileCreateRequestDTO fileCreateRequestDTO = this.getFileCreateRequestDTO();
+		FileCreateRequestDto fileCreateRequestDTO = this.getFileCreateRequestDTO();
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
 
@@ -95,7 +94,7 @@ public class ExcelInfoServiceTest {
 	public void createExcel_duplicate_filename_test() {
 		// given
 		String testEmail = "test@gabia.com";
-		FileCreateRequestDTO fileCreateRequestDTO = this.getFileCreateRequestDTO();
+		FileCreateRequestDto fileCreateRequestDTO = this.getFileCreateRequestDTO();
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		given(excelInfoUtil.getRandomRealFileName()).willReturn("testPath");
@@ -105,8 +104,8 @@ public class ExcelInfoServiceTest {
 		assertThrows(IllegalStateException.class, () -> excelInfoService.createExcel(testEmail, fileCreateRequestDTO));
 	}
 
-	private FileCreateRequestDTO getFileCreateRequestDTO() {
-		return new FileDTO.FileCreateRequestDTO(
+	private FileCreateRequestDto getFileCreateRequestDTO() {
+		return new FileCreateRequestDto(
 			"testName",
 			null,
 			null,
