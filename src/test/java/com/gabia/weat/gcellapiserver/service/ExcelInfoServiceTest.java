@@ -21,6 +21,7 @@ import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
+import com.gabia.weat.gcellapiserver.service.producer.CreateRequestProducer;
 import com.gabia.weat.gcellapiserver.util.ExcelInfoUtil;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -34,6 +35,8 @@ public class ExcelInfoServiceTest {
 	private MemberRepository memberRepository;
 	@Mock
 	private ExcelInfoRepository excelInfoRepository;
+	@Mock
+	private CreateRequestProducer createRequestProducer;
 	@InjectMocks
 	private ExcelInfoService excelInfoService;
 
@@ -73,6 +76,7 @@ public class ExcelInfoServiceTest {
 
 		// then
 		assertThat(saveExcelInfoId).isEqualTo(excelInfo.getExcelInfoId());
+		verify(createRequestProducer, times(1)).sendMessage(any());
 	}
 
 	@Test

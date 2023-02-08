@@ -5,12 +5,14 @@ import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
-import static com.gabia.weat.gcellapiserver.dto.FileDTO.FileCreateRequestDTO;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 
+import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
+import com.gabia.weat.gcellapiserver.service.producer.CreateRequestProducer;
 import com.gabia.weat.gcellapiserver.util.ExcelInfoUtil;
 
 @Service
@@ -20,15 +22,15 @@ public class ExcelInfoService {
 	private final ExcelInfoUtil excelInfoUtil;
 	private final MemberRepository memberRepository;
 	private final ExcelInfoRepository excelInfoRepository;
+	private final CreateRequestProducer createRequestProducer;
 
-	public Long createExcel(String email, FileCreateRequestDTO fileCreateRequestDTO) {
+	public Long createExcel(String email, FileCreateRequestDto fileCreateRequestDto) {
 		Member member = this.getMemberByEmail(email);
 		String path = excelInfoUtil.getRandomRealFileName();
 		ExcelInfo excelInfo = excelInfoRepository.save(
-			this.getExcelInfo(member, fileCreateRequestDTO.fileName(), path)
+			this.getExcelInfo(member, fileCreateRequestDto.fileName(), path)
 		);
-		// 메시지 전송
-
+		this.sendExcelCreateRequestMessage(member.getMemberId(), fileCreateRequestDto);
 		return excelInfo.getExcelInfoId();
 	}
 
@@ -49,6 +51,10 @@ public class ExcelInfoService {
 			.path(path)
 			.isDeleted(false)
 			.build();
+	}
+
+	private void sendExcelCreateRequestMessage(Long memberId, FileCreateRequestDto fileCreateRequestDto) {
+		createRequestProducer.sendMessage(FileDtoConverter.createDtoToCreateMsgDto(memberId, fileCreateRequestDto));
 	}
 
 }
