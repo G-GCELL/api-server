@@ -38,3 +38,6 @@ minio:
     key: ${MINIO_KEY}
     secret: ${MINIO_SECRET}
   url: ${MINIO_URL}
+
+sse:
+  timeout: ${SSE_TIMEOUT}
