@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+
 import org.springframework.data.jpa.repository.Query;
 
 public interface ExcelInfoRepository extends JpaRepository<ExcelInfo, Long> {

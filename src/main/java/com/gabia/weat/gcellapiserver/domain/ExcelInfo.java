@@ -43,15 +43,15 @@ public class ExcelInfo extends BaseTimeEntity {
 	@Column
 	private Boolean isDeleted;
 
-	public void updateName(String name){
+	public void updateName(String name) {
 		this.name = name;
 	}
 
-	public void validate(String memberEmail){
+	public void validate(String memberEmail) {
 		if (this.member == null || !this.getMember().getEmail().equals(memberEmail)) {
 			throw new CustomException(ErrorCode.EXCEL_NOT_MATCHES);
 		}
-		if (this.isDeleted){
+		if (this.isDeleted) {
 			throw new CustomException(ErrorCode.EXCEL_DELETED);
 		}
 	}
