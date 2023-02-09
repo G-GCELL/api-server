@@ -23,9 +23,11 @@ excel-info:
 
 minio:
   bucket:
-   name: name
+    name: name
   access:
-   key: key
-   secret: secret
+    key: key
+    secret: secret
   url: url
-  
+
+sse:
+  timeout: 60000
