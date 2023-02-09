@@ -7,12 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.gabia.weat.gcellapiserver.dto.FileDTO.FileCreateRequestDTO;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
 
-import com.gabia.weat.gcellapiserver.dto.APIResponseDTO;
-import com.gabia.weat.gcellapiserver.dto.FileDTO;
+import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;
 import com.gabia.weat.gcellapiserver.service.ExcelInfoService;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,19 +27,19 @@ public class ExcelInfoControllerTest {
 	public void createExcel_test() {
 		// given
 		Long testExcelInfoId = 1L;
-		FileCreateRequestDTO fileCreateRequestDTO = this.getFileCreateRequestDTO();
+		FileCreateRequestDto fileCreateRequestDTO = this.getFileCreateRequestDTO();
 
 		given(excelInfoService.createExcel(any(), any())).willReturn(testExcelInfoId);
 
 		// when
-		APIResponseDTO response = excelInfoController.createExcel(fileCreateRequestDTO);
+		ApiResponseDto response = excelInfoController.createExcel(fileCreateRequestDTO).getBody();
 
 		// then
 		assertThat(response.getResponse()).isEqualTo("/excels/" + testExcelInfoId);
 	}
 
-	private FileCreateRequestDTO getFileCreateRequestDTO() {
-		return new FileDTO.FileCreateRequestDTO(
+	private FileCreateRequestDto getFileCreateRequestDTO() {
+		return new FileCreateRequestDto(
 			"testName",
 			null,
 			null,

@@ -12,19 +12,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.gabia.weat.gcellapiserver.dto.FileDTO.FileCreateRequestDTO;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.dto.FileDTO;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
+import com.gabia.weat.gcellapiserver.service.producer.CreateRequestProducer;
 import com.gabia.weat.gcellapiserver.util.ExcelInfoUtil;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 public class ExcelInfoServiceTest {
@@ -35,6 +34,8 @@ public class ExcelInfoServiceTest {
 	private MemberRepository memberRepository;
 	@Mock
 	private ExcelInfoRepository excelInfoRepository;
+	@Mock
+	private CreateRequestProducer createRequestProducer;
 	@InjectMocks
 	private ExcelInfoService excelInfoService;
 
@@ -62,11 +63,12 @@ public class ExcelInfoServiceTest {
 	public void createExcel_success_test() {
 		// given
 		String testEmail = "test@gabia.com";
-		FileCreateRequestDTO fileCreateRequestDTO = this.getFileCreateRequestDTO();
+		FileCreateRequestDto fileCreateRequestDTO = this.getFileCreateRequestDTO();
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		given(excelInfoRepository.findByMemberAndName(any(), any())).willReturn(Optional.empty());
-		given(excelInfoUtil.getRandomRealFileName()).willReturn("testPath");
+		given(excelInfoUtil.getFileBaseUrl()).willReturn("testFileBaseUrl");
+		given(excelInfoUtil.getRandomRealFileName()).willReturn("testFileName.xlsx");
 		given(excelInfoRepository.save(any())).willReturn(excelInfo);
 
 		// when
@@ -74,6 +76,7 @@ public class ExcelInfoServiceTest {
 
 		// then
 		assertThat(saveExcelInfoId).isEqualTo(excelInfo.getExcelInfoId());
+		verify(createRequestProducer, times(1)).sendMessage(any());
 	}
 
 	@Test
@@ -81,12 +84,12 @@ public class ExcelInfoServiceTest {
 	public void createExcel_not_found_member_test() {
 		// given
 		String testEmail = "test@gabia.com";
-		FileCreateRequestDTO fileCreateRequestDTO = this.getFileCreateRequestDTO();
+		FileCreateRequestDto fileCreateRequestDTO = this.getFileCreateRequestDTO();
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
 
 		// when & then
-		assertThrows(EntityNotFoundException.class,
+		assertThrows(CustomException.class,
 			() -> excelInfoService.createExcel(testEmail, fileCreateRequestDTO));
 	}
 
@@ -95,18 +98,18 @@ public class ExcelInfoServiceTest {
 	public void createExcel_duplicate_filename_test() {
 		// given
 		String testEmail = "test@gabia.com";
-		FileCreateRequestDTO fileCreateRequestDTO = this.getFileCreateRequestDTO();
+		FileCreateRequestDto fileCreateRequestDTO = this.getFileCreateRequestDTO();
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		given(excelInfoUtil.getRandomRealFileName()).willReturn("testPath");
 		given(excelInfoRepository.findByMemberAndName(any(), any())).willReturn(Optional.of(excelInfo));
 
 		// when & then
-		assertThrows(IllegalStateException.class, () -> excelInfoService.createExcel(testEmail, fileCreateRequestDTO));
+		assertThrows(CustomException.class, () -> excelInfoService.createExcel(testEmail, fileCreateRequestDTO));
 	}
 
-	private FileCreateRequestDTO getFileCreateRequestDTO() {
-		return new FileDTO.FileCreateRequestDTO(
+	private FileCreateRequestDto getFileCreateRequestDTO() {
+		return new FileCreateRequestDto(
 			"testName",
 			null,
 			null,

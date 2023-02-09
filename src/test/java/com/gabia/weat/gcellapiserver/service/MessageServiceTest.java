@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.error.exception.SseNotConnectException;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 import com.gabia.weat.gcellapiserver.repository.SseRepository;
@@ -73,7 +74,7 @@ public class MessageServiceTest {
 		given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
 
 		// when & then
-		assertThrows(EntityNotFoundException.class, () -> messageService.connect(testEmail, testSseEmitter));
+		assertThrows(CustomException.class, () -> messageService.connect(testEmail, testSseEmitter));
 	}
 
 	@Test
@@ -87,7 +88,7 @@ public class MessageServiceTest {
 		doThrow(IOException.class).when(testSseEmitter).send(any());
 
 		// when & then
-		assertThrows(SseNotConnectException.class, () -> messageService.connect(testEmail, testSseEmitter));
+		assertThrows(CustomException.class, () -> messageService.connect(testEmail, testSseEmitter));
 	}
 
 	@Test

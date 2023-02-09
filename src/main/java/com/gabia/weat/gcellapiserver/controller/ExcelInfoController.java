@@ -1,21 +1,18 @@
 package com.gabia.weat.gcellapiserver.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
 
-import com.gabia.weat.gcellapiserver.dto.APIResponseDTO;
+import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
+import com.gabia.weat.gcellapiserver.dto.FileDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.service.ExcelInfoService;
 import com.gabia.weat.gcellapiserver.service.MinioService;
-
-import static com.gabia.weat.gcellapiserver.dto.FileDTO.FileCreateRequestDTO;
-
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,22 +25,27 @@ public class ExcelInfoController {
 	private final MinioService minioService;
 
 	@PostMapping(value = "")
-	@ResponseStatus(HttpStatus.CREATED)
-	public APIResponseDTO createExcel(@RequestBody FileCreateRequestDTO fileCreateRequestDTO) {
-		Long createExcelInfoId = excelInfoService.createExcel(this.getConnectMemberEmail(), fileCreateRequestDTO);
+	public ResponseEntity<ApiResponseDto> createExcel(@RequestBody FileCreateRequestDto fileCreateRequestDto) {
+		Long createExcelInfoId = excelInfoService.createExcel(this.getConnectMemberEmail(), fileCreateRequestDto);
 		String downloadUrl = "/excels/" + createExcelInfoId;
-		return APIResponseDTO.success(downloadUrl);
+		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDto.success(downloadUrl));
 	}
 
 	@GetMapping(value = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public byte[] downloadExcel(@PathVariable("id") Long excelInfoId) throws
-		CustomException {
+	public byte[] downloadExcel(@PathVariable("id") Long excelInfoId) {
 		byte[] excel = minioService.downloadExcel(excelInfoId, this.getConnectMemberEmail());
 		return excel;
+	}
+
+	@PatchMapping(value = "{id}")
+	public ResponseEntity<ApiResponseDto> updateExcelName(@RequestBody FileUpdateNameRequestDto fileUpdateNameRequestDto, @PathVariable("id") Long excelInfoId){
+		ExcelInfo excelInfo = excelInfoService.updateExcelInfoName(this.getConnectMemberEmail(), excelInfoId, fileUpdateNameRequestDto);
+		return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDto.success(excelInfo));
 	}
 
 	private String getConnectMemberEmail() {
 		return "mock_email";
 	}
+
 }

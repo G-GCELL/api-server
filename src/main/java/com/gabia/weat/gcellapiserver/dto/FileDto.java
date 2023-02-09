@@ -1,15 +1,10 @@
 package com.gabia.weat.gcellapiserver.dto;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import lombok.Builder;
+public class FileDto {
 
-public class MessageDto {
-
-	@Builder
-	public record FileCreateRequestMsgDto(
-		Long memberId,
+	public record FileCreateRequestDto(
 		String fileName,
 		String[] inAccountId,
 		String[] notAccountId,
@@ -19,9 +14,15 @@ public class MessageDto {
 		LocalDateTime startDateMax,
 		LocalDateTime endDateMin,
 		LocalDateTime endDateMax,
-		BigDecimal costMin,
-		BigDecimal costMax
+		String costMin,
+		String costMax
 	) {
+
+	}
+
+	public record FileUpdateNameRequestDto(
+		String fileName
+	){
 
 	}
 

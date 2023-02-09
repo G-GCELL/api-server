@@ -1,17 +1,22 @@
 package com.gabia.weat.gcellapiserver.service;
 
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
+
+import com.gabia.weat.gcellapiserver.dto.FileDto;
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-
-import static com.gabia.weat.gcellapiserver.dto.FileDTO.FileCreateRequestDTO;
-
+import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.error.ErrorCode;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
+import com.gabia.weat.gcellapiserver.service.producer.CreateRequestProducer;
 import com.gabia.weat.gcellapiserver.util.ExcelInfoUtil;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -20,28 +25,44 @@ public class ExcelInfoService {
 	private final ExcelInfoUtil excelInfoUtil;
 	private final MemberRepository memberRepository;
 	private final ExcelInfoRepository excelInfoRepository;
+	private final CreateRequestProducer createRequestProducer;
 
-	public Long createExcel(String email, FileCreateRequestDTO fileCreateRequestDTO) {
+	public Long createExcel(String email, FileCreateRequestDto fileCreateRequestDto) {
 		Member member = this.getMemberByEmail(email);
-		String path = excelInfoUtil.getRandomRealFileName();
+		String randomFileName = excelInfoUtil.getRandomRealFileName();
 		ExcelInfo excelInfo = excelInfoRepository.save(
-			this.getExcelInfo(member, fileCreateRequestDTO.fileName(), path)
+			this.getExcelInfo(member, fileCreateRequestDto.fileName(), randomFileName)
 		);
-		// 메시지 전송
-
+		this.sendExcelCreateRequestMessage(member.getMemberId(), randomFileName, fileCreateRequestDto);
 		return excelInfo.getExcelInfoId();
+	}
+
+	public ExcelInfo updateExcelInfoName(String memberEmail, Long excelInfoId, FileUpdateNameRequestDto fileUpdateNameRequestDto){
+		ExcelInfo excelInfo = excelInfoRepository.findByIdFetchJoin(excelInfoId).orElseThrow(
+				() -> new CustomException(ErrorCode.EXCEL_NOT_EXISTS)
+		);
+		if (!excelInfo.getMember().getEmail().equals(memberEmail)) {
+			throw new CustomException(ErrorCode.EXCEL_NOT_MATCHES);
+		}
+		excelInfo.updateName(fileUpdateNameRequestDto.fileName());
+		return excelInfo;
 	}
 
 	private Member getMemberByEmail(String email) {
 		return memberRepository.findByEmail(email).orElseThrow(() -> {
-			throw new EntityNotFoundException("");
+			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
 		});
 	}
 
-	private ExcelInfo getExcelInfo(Member member, String fileName, String path) {
+	private ExcelInfo getExcelInfo(Member member, String fileName, String realFileName) {
 		excelInfoRepository.findByMemberAndName(member, fileName).ifPresent(e -> {
-			throw new IllegalStateException("");
+			throw new CustomException(ErrorCode.DUPLICATE_FILE_NAME);
 		});
+
+		String path = new StringBuffer(excelInfoUtil.getFileBaseUrl())
+			.append("/")
+			.append(realFileName)
+			.toString();
 
 		return ExcelInfo.builder()
 			.member(member)
@@ -49,6 +70,12 @@ public class ExcelInfoService {
 			.path(path)
 			.isDeleted(false)
 			.build();
+	}
+
+	private void sendExcelCreateRequestMessage(Long memberId, String newFileName,
+		FileCreateRequestDto fileCreateRequestDto) {
+		createRequestProducer.sendMessage(
+			FileDtoConverter.createDtoToCreateMsgDto(memberId, newFileName, fileCreateRequestDto));
 	}
 
 }

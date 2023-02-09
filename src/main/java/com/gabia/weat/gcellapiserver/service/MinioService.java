@@ -1,16 +1,16 @@
 package com.gabia.weat.gcellapiserver.service;
 
-import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
-import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
+import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
+
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class MinioService {
 
 	public byte[] downloadExcel(Long excelInfoId, String memberEmail) {
 
-		ExcelInfo excelInfo = excelInfoRepository.findById(excelInfoId).orElseThrow(
+		ExcelInfo excelInfo = excelInfoRepository.findByIdFetchJoin(excelInfoId).orElseThrow(
 			() -> new CustomException(ErrorCode.EXCEL_NOT_EXISTS)
 		);
 		if (!excelInfo.getMember().getEmail().equals(memberEmail)) {
