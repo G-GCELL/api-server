@@ -22,6 +22,7 @@ public class FileDto {
 
 	}
 
+	@Builder
 	public record FileUpdateNameRequestDto(
 		String fileName
 	) {
