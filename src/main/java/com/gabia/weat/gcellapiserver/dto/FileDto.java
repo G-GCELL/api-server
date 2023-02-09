@@ -24,12 +24,12 @@ public class FileDto {
 
 	public record FileUpdateNameRequestDto(
 		String fileName
-	){
+	) {
 
 	}
 
 	@Builder
-	public record FileUpdateNameResponseDto(Long id, String fileName, boolean isDelete, LocalDateTime createdAt){
+	public record FileUpdateNameResponseDto(Long id, String fileName, boolean isDelete, LocalDateTime createdAt) {
 
 	}
 

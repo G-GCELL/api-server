@@ -7,6 +7,7 @@ import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameResponseDt
 import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.dto.FileDto;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,8 +42,10 @@ public class ExcelInfoController {
 	}
 
 	@PatchMapping(value = "{id}")
-	public ResponseEntity<ApiResponseDto> updateExcelName(@RequestBody FileUpdateNameRequestDto fileUpdateNameRequestDto, @PathVariable("id") Long excelInfoId){
-		FileUpdateNameResponseDto fileUpdateNameResponseDto = excelInfoService.updateExcelInfoName(this.getConnectMemberEmail(), excelInfoId, fileUpdateNameRequestDto);
+	public ResponseEntity<ApiResponseDto> updateExcelName(
+		@RequestBody FileUpdateNameRequestDto fileUpdateNameRequestDto, @PathVariable("id") Long excelInfoId) {
+		FileUpdateNameResponseDto fileUpdateNameResponseDto = excelInfoService.updateExcelInfoName(
+			this.getConnectMemberEmail(), excelInfoId, fileUpdateNameRequestDto);
 		return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDto.success(fileUpdateNameResponseDto));
 	}
 
