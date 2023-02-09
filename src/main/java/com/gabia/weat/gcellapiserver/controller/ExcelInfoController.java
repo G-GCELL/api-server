@@ -41,7 +41,7 @@ public class ExcelInfoController {
 		return excel;
 	}
 
-	@PatchMapping(value = "{id}")
+	@PatchMapping(value = "/{id}")
 	public ResponseEntity<ApiResponseDto> updateExcelName(
 		@RequestBody FileUpdateNameRequestDto fileUpdateNameRequestDto, @PathVariable("id") Long excelInfoId) {
 		FileUpdateNameResponseDto fileUpdateNameResponseDto = excelInfoService.updateExcelInfoName(
