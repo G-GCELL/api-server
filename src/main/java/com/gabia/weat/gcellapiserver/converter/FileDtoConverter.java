@@ -2,6 +2,10 @@ package com.gabia.weat.gcellapiserver.converter;
 
 import java.math.BigDecimal;
 
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameResponseDto;
+
+import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
+import com.gabia.weat.gcellapiserver.dto.FileDto;
 import com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
 
@@ -28,6 +32,15 @@ public class FileDtoConverter {
 			.endDateMax(fileCreateRequestDto.endDateMax())
 			.costMin(costMin)
 			.costMax(costMax)
+			.build();
+	}
+
+	public static FileUpdateNameResponseDto createEntityToUpdateNameResponseDto(ExcelInfo excelInfo){
+		return FileUpdateNameResponseDto.builder()
+			.id(excelInfo.getExcelInfoId())
+			.createdAt(excelInfo.getCreatedAt())
+			.fileName(excelInfo.getName())
+			.isDelete(excelInfo.getIsDeleted())
 			.build();
 	}
 
