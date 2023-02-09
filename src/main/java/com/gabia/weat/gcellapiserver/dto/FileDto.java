@@ -2,6 +2,8 @@ package com.gabia.weat.gcellapiserver.dto;
 
 import java.time.LocalDateTime;
 
+import lombok.Builder;
+
 public class FileDto {
 
 	public record FileCreateRequestDto(
@@ -17,6 +19,18 @@ public class FileDto {
 		String costMin,
 		String costMax
 	) {
+
+	}
+
+	@Builder
+	public record FileUpdateNameRequestDto(
+		String fileName
+	) {
+
+	}
+
+	@Builder
+	public record FileUpdateNameResponseDto(Long id, String fileName, boolean isDelete, LocalDateTime createdAt) {
 
 	}
 

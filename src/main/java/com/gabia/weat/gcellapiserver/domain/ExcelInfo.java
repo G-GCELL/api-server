@@ -1,5 +1,8 @@
 package com.gabia.weat.gcellapiserver.domain;
 
+import com.gabia.weat.gcellapiserver.error.ErrorCode;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -39,5 +42,18 @@ public class ExcelInfo extends BaseTimeEntity {
 	private String path;
 	@Column
 	private Boolean isDeleted;
+
+	public void updateName(String name) {
+		this.name = name;
+	}
+
+	public void validate(String memberEmail) {
+		if (this.member == null || !this.getMember().getEmail().equals(memberEmail)) {
+			throw new CustomException(ErrorCode.EXCEL_NOT_MATCHES);
+		}
+		if (this.isDeleted) {
+			throw new CustomException(ErrorCode.EXCEL_DELETED);
+		}
+	}
 
 }
