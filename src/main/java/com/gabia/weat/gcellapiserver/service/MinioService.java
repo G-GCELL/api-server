@@ -27,9 +27,7 @@ public class MinioService {
 		ExcelInfo excelInfo = excelInfoRepository.findByIdFetchJoin(excelInfoId).orElseThrow(
 			() -> new CustomException(ErrorCode.EXCEL_NOT_EXISTS)
 		);
-		if (!excelInfo.getMember().getEmail().equals(memberEmail)) {
-			throw new CustomException(ErrorCode.EXCEL_NOT_MATCHES);
-		}
+		excelInfo.validate(memberEmail);
 		try {
 			byte[] bytes = minioClient.getObject(
 				GetObjectArgs.builder()
