@@ -42,7 +42,7 @@ public class MessageService {
 				.name(messageType.name())
 				.data(message));
 		} catch (IOException e) {
-			log.info("SEND_MESSAGE_FAIL : " + e.getMessage());
+			log.info("SEND_MESSAGE_FAIL : {}", e.getMessage());
 		}
 	}
 
