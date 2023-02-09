@@ -46,7 +46,7 @@ public class MinioServiceTest {
 	@BeforeEach
 	public void setUp() {
 		member = Member.builder().memberId(1L).name("안태욱").email("test@test.com")
-			.password("asdasd").build();
+			.password("password").build();
 		excelInfo = ExcelInfo.builder().excelInfoId(1L).path("미니오에 저장될 파일 이름")
 			.name("데이터베이스에 저장될 파일 이름").isDeleted(false).member(member)
 			.build();
@@ -74,7 +74,7 @@ public class MinioServiceTest {
 		ReflectionTestUtils.setField(minioService, "bucketName", "test");
 
 		// mocking
-		given(excelInfoRepository.findById(excelInfo.getExcelInfoId())).willReturn(Optional.ofNullable(excelInfo));
+		given(excelInfoRepository.findByIdFetchJoin(any())).willReturn(Optional.ofNullable(excelInfo));
 		given(minioClient.getObject(any())).willReturn(getObjectResponse);
 
 		// when
