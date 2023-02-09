@@ -13,7 +13,9 @@ import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 import com.gabia.weat.gcellapiserver.repository.SseRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MessageService {
@@ -40,7 +42,7 @@ public class MessageService {
 				.name(messageType.name())
 				.data(message));
 		} catch (IOException e) {
-			throw new CustomException(ErrorCode.CONNECTION_ERROR);
+			log.info("SEND_MESSAGE_FAIL : " + e.getMessage());
 		}
 	}
 

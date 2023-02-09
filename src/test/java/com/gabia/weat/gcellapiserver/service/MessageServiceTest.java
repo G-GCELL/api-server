@@ -12,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,13 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
-import com.gabia.weat.gcellapiserver.error.exception.SseNotConnectException;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 import com.gabia.weat.gcellapiserver.repository.SseRepository;
 
-import jakarta.persistence.EntityNotFoundException;
-
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({
+	MockitoExtension.class,
+	OutputCaptureExtension.class
+})
 public class MessageServiceTest {
 
 	@Mock
@@ -79,7 +81,7 @@ public class MessageServiceTest {
 
 	@Test
 	@DisplayName("SSE_연결_실패_IOException_테스트")
-	public void connect_exception_test() throws IOException {
+	public void connect_exception_test(CapturedOutput capturedOutput) throws IOException {
 		// given
 		String testEmail = member.getEmail();
 		SseEmitter testSseEmitter = mock(SseEmitter.class);
@@ -87,8 +89,11 @@ public class MessageServiceTest {
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		doThrow(IOException.class).when(testSseEmitter).send(any());
 
-		// when & then
-		assertThrows(CustomException.class, () -> messageService.connect(testEmail, testSseEmitter));
+		//when
+		messageService.connect(testEmail, testSseEmitter);
+
+		// then
+		assertThat(capturedOutput.getOut().contains("SEND_MESSAGE_FAIL")).isTrue();
 	}
 
 	@Test
