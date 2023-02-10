@@ -4,7 +4,6 @@ import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 
-import io.minio.GetObjectArgs;
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.errors.*;
@@ -17,12 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoExtension.*;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
@@ -74,7 +70,7 @@ public class MinioServiceTest {
 		ReflectionTestUtils.setField(minioService, "bucketName", "test");
 
 		// mocking
-		given(excelInfoRepository.findByIdFetchJoin(any())).willReturn(Optional.ofNullable(excelInfo));
+		given(excelInfoRepository.findByIdAndMemberEmail(any(), any())).willReturn(Optional.ofNullable(excelInfo));
 		given(minioClient.getObject(any())).willReturn(getObjectResponse);
 
 		// when

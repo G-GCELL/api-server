@@ -4,7 +4,6 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.dto.FileDto;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
@@ -120,7 +118,7 @@ public class ExcelInfoServiceTest {
 		String memberEmail =  getTestEmail();
 		FileUpdateNameRequestDto fileUpdateNameRequestDto = this.getFileUpdateNameRequestDto();
 
-		given(excelInfoRepository.findByIdFetchJoin(any())).willReturn(Optional.of(excelInfo));
+		given(excelInfoRepository.findByIdAndMemberEmail(any(), any())).willReturn(Optional.of(excelInfo));
 
 		// when
 		FileUpdateNameResponseDto fileUpdateNameResponseDto = excelInfoService.updateExcelInfoName(memberEmail, excelInfoId, fileUpdateNameRequestDto);
