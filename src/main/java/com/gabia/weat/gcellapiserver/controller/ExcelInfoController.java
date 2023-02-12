@@ -46,7 +46,13 @@ public class ExcelInfoController {
 		@RequestBody FileUpdateNameRequestDto fileUpdateNameRequestDto, @PathVariable("id") Long excelInfoId) {
 		FileUpdateNameResponseDto fileUpdateNameResponseDto = excelInfoService.updateExcelInfoName(
 			this.getConnectMemberEmail(), excelInfoId, fileUpdateNameRequestDto);
-		return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDto.success(fileUpdateNameResponseDto));
+		return ResponseEntity.ok(ApiResponseDto.success(fileUpdateNameResponseDto));
+	}
+
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<ApiResponseDto> deleteExcelInfo(@PathVariable("id") Long excelInfoId){
+		excelInfoService.deleteExcelInfo(this.getConnectMemberEmail(), excelInfoId);
+		return ResponseEntity.ok(ApiResponseDto.success());
 	}
 
 	private String getConnectMemberEmail() {

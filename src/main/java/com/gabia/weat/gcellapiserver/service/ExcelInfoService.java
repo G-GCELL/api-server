@@ -28,6 +28,8 @@ public class ExcelInfoService {
 	private final ExcelInfoRepository excelInfoRepository;
 	private final CreateRequestProducer createRequestProducer;
 
+	private final MinioService minioService;
+
 	public Long createExcel(String email, FileCreateRequestDto fileCreateRequestDto) {
 		Member member = this.getMemberByEmail(email);
 		String randomFileName = excelInfoUtil.getRandomRealFileName();
@@ -46,6 +48,17 @@ public class ExcelInfoService {
 		);
 		excelInfo.updateName(fileUpdateNameRequestDto.fileName());
 		return FileDtoConverter.createEntityToUpdateNameResponseDto(excelInfo);
+	}
+
+	@Transactional
+	public ExcelInfo deleteExcelInfo(String memberEmail, Long excelInfoId){
+		ExcelInfo excelInfo = excelInfoRepository.findByIdAndMemberEmail(excelInfoId, memberEmail)
+				.orElseThrow(
+				() -> new CustomException(ErrorCode.EXCEL_NOT_EXISTS)
+		);
+		excelInfoRepository.delete(excelInfo);
+		minioService.deleteExcel(excelInfo);
+		return excelInfo;
 	}
 
 	private Member getMemberByEmail(String email) {
