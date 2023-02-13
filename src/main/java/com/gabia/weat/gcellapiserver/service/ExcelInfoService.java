@@ -56,7 +56,7 @@ public class ExcelInfoService {
 	}
 
 	private ExcelInfo createNewExcelInfo(Member member, String fileName, String realFileName) {
-		excelInfoRepository.findByMemberAndName(member, fileName).ifPresent(e -> {
+		excelInfoRepository.findByMemberAndNameAndIsDeletedFalse(member, fileName).ifPresent(e -> {
 			throw new CustomException(ErrorCode.DUPLICATE_FILE_NAME);
 		});
 

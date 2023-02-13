@@ -4,7 +4,6 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.dto.FileDto;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
@@ -70,7 +68,7 @@ public class ExcelInfoServiceTest {
 		FileCreateRequestDto fileCreateRequestDTO = this.getFileCreateRequestDTO();
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
-		given(excelInfoRepository.findByMemberAndName(any(), any())).willReturn(Optional.empty());
+		given(excelInfoRepository.findByMemberAndNameAndIsDeletedFalse(any(), any())).willReturn(Optional.empty());
 		given(excelInfoUtil.getFileBaseUrl()).willReturn("testFileBaseUrl");
 		given(excelInfoUtil.getRandomRealFileName()).willReturn("testFileName.xlsx");
 		given(excelInfoRepository.save(any())).willReturn(excelInfo);
@@ -106,7 +104,7 @@ public class ExcelInfoServiceTest {
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		given(excelInfoUtil.getRandomRealFileName()).willReturn("testPath");
-		given(excelInfoRepository.findByMemberAndName(any(), any())).willReturn(Optional.of(excelInfo));
+		given(excelInfoRepository.findByMemberAndNameAndIsDeletedFalse(any(), any())).willReturn(Optional.of(excelInfo));
 
 		// when & then
 		assertThrows(CustomException.class, () -> excelInfoService.createExcel(testEmail, fileCreateRequestDTO));
