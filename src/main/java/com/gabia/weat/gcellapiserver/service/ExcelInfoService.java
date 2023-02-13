@@ -41,10 +41,9 @@ public class ExcelInfoService {
 	@Transactional
 	public FileUpdateNameResponseDto updateExcelInfoName(String memberEmail, Long excelInfoId,
 		FileUpdateNameRequestDto fileUpdateNameRequestDto) {
-		ExcelInfo excelInfo = excelInfoRepository.findByIdFetchJoin(excelInfoId).orElseThrow(
+		ExcelInfo excelInfo = excelInfoRepository.findByIdAndMemberEmail(excelInfoId, memberEmail).orElseThrow(
 			() -> new CustomException(ErrorCode.EXCEL_NOT_EXISTS)
 		);
-		excelInfo.validate(memberEmail);
 		excelInfo.updateName(fileUpdateNameRequestDto.fileName());
 		return FileDtoConverter.createEntityToUpdateNameResponseDto(excelInfo);
 	}

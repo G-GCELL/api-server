@@ -47,13 +47,5 @@ public class ExcelInfo extends BaseTimeEntity {
 		this.name = name;
 	}
 
-	public void validate(String memberEmail) {
-		if (this.member == null || !this.getMember().getEmail().equals(memberEmail)) {
-			throw new CustomException(ErrorCode.EXCEL_NOT_MATCHES);
-		}
-		if (this.isDeleted) {
-			throw new CustomException(ErrorCode.EXCEL_DELETED);
-		}
-	}
 
 }
