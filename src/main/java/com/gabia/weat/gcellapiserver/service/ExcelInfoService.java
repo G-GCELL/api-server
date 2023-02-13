@@ -32,7 +32,7 @@ public class ExcelInfoService {
 		Member member = this.getMemberByEmail(email);
 		String randomFileName = excelInfoUtil.getRandomRealFileName();
 		ExcelInfo excelInfo = excelInfoRepository.save(
-			this.getExcelInfo(member, fileCreateRequestDto.fileName(), randomFileName)
+			this.createNewExcelInfo(member, fileCreateRequestDto.fileName(), randomFileName)
 		);
 		this.sendExcelCreateRequestMessage(member.getMemberId(), randomFileName, fileCreateRequestDto);
 		return excelInfo.getExcelInfoId();
@@ -54,8 +54,8 @@ public class ExcelInfoService {
 		});
 	}
 
-	private ExcelInfo getExcelInfo(Member member, String fileName, String realFileName) {
-		excelInfoRepository.findByMemberAndName(member, fileName).ifPresent(e -> {
+	private ExcelInfo createNewExcelInfo(Member member, String fileName, String realFileName) {
+		excelInfoRepository.findByMemberAndNameAndIsDeletedFalse(member, fileName).ifPresent(e -> {
 			throw new CustomException(ErrorCode.DUPLICATE_FILE_NAME);
 		});
 
