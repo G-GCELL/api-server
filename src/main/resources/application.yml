@@ -15,8 +15,7 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: ${FETCH_SIZE}
-    jpa:
-      open-in-view: false
+    open-in-view: false
 
   rabbitmq:
     host: ${RABBITMQ_HOST}
@@ -26,6 +25,13 @@ spring:
     template:
       exchange: ${EXCHANGE_NAME}
       routing-key: ${ROUTING_KEY}
+      default-receive-queue: ${QUEUE_NAME}
+    listener:
+      simple:
+        concurrency: ${CONCURRENCY}
+        max-concurrency: ${MAX_CONCURRENCY}
+        prefetch: ${PREFETCH}
+        acknowledge-mode: manual
 
 excel-info:
   file-base-url: ${FILE_BASE_URL}
