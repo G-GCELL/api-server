@@ -2,6 +2,8 @@ package com.gabia.weat.gcellapiserver.config;
 
 import java.util.Objects;
 
+import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory.ConfirmType;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -26,6 +28,14 @@ public class RabbitmqConfig {
 	private String username;
 	@Value("${spring.rabbitmq.password}")
 	private String password;
+	@Value("${spring.rabbitmq.listener.simple.concurrency}")
+	private Integer concurrency;
+	@Value("${spring.rabbitmq.listener.simple.max-concurrency}")
+	private Integer maxConcurrency;
+	@Value("${spring.rabbitmq.listener.simple.prefetch}")
+	private Integer prefetch;
+	@Value("${spring.rabbitmq.listener.simple.acknowledge-mode}")
+	private AcknowledgeMode acknowledgeMode;
 	@Value("${spring.rabbitmq.template.exchange}")
 	private String exchange;
 	@Value("${spring.rabbitmq.template.routing-key}")
@@ -41,6 +51,19 @@ public class RabbitmqConfig {
 		connectionFactory.setPublisherReturns(true);
 		connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
 		return connectionFactory;
+	}
+
+	@Bean
+	SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory,
+		MessageConverter messageConverter) {
+		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+		listenerContainerFactory.setConnectionFactory(connectionFactory);
+		listenerContainerFactory.setMessageConverter(messageConverter);
+		listenerContainerFactory.setConcurrentConsumers(concurrency);
+		listenerContainerFactory.setMaxConcurrentConsumers(maxConcurrency);
+		listenerContainerFactory.setPrefetchCount(prefetch);
+		listenerContainerFactory.setAcknowledgeMode(acknowledgeMode);
+		return listenerContainerFactory;
 	}
 
 	@Bean
