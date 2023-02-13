@@ -9,10 +9,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,8 +24,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity(name = "excel_info")
 @Table(
-	uniqueConstraints = {
-		@UniqueConstraint(name = "member_name_unique", columnNames = {"member_id", "name"})
+	indexes = {
+		@Index(name = "member_name_is_deleted_index", columnList = "member_id, name, is_deleted")
 	}
 )
 public class ExcelInfo extends BaseTimeEntity {
@@ -40,7 +40,7 @@ public class ExcelInfo extends BaseTimeEntity {
 	private String name;
 	@Column
 	private String path;
-	@Column
+	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
 	public void updateName(String name) {
