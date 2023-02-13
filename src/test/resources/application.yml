@@ -16,6 +16,13 @@ spring:
     template:
       exchange: exchange
       routing-key: routing-key
+      default-receive-queue: queue
+    listener:
+      simple:
+        concurrency: 1
+        max-concurrency: 3
+        prefetch: 10
+        acknowledge-mode: manual
 
 excel-info:
   file-base-url: url
