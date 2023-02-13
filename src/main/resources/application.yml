@@ -26,6 +26,7 @@ spring:
     template:
       exchange: ${EXCHANGE_NAME}
       routing-key: ${ROUTING_KEY}
+      default-receive-queue: ${QUEUE_NAME}
 
 excel-info:
   file-base-url: ${FILE_BASE_URL}
