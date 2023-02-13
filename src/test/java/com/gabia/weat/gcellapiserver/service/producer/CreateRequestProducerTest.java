@@ -31,7 +31,8 @@ public class CreateRequestProducerTest {
 
 		// when & then
 		assertThatCode(() -> createRequestProducer.sendMessage(fileCreateRequestMsgDto)).doesNotThrowAnyException();
-		verify(rabbitTemplate, times(1)).correlationConvertAndSend(eq(fileCreateRequestMsgDto), any(CorrelationData.class));
+		verify(rabbitTemplate, times(1)).correlationConvertAndSend(eq(fileCreateRequestMsgDto),
+			any(CorrelationData.class));
 	}
 
 	private FileCreateRequestMsgDto getFileCreateRequestMsgDTO() {

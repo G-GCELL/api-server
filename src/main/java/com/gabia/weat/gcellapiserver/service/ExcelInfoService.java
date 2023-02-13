@@ -51,11 +51,11 @@ public class ExcelInfoService {
 	}
 
 	@Transactional
-	public ExcelInfo deleteExcelInfo(String memberEmail, Long excelInfoId){
+	public ExcelInfo deleteExcelInfo(String memberEmail, Long excelInfoId) {
 		ExcelInfo excelInfo = excelInfoRepository.findByIdAndMemberEmail(excelInfoId, memberEmail)
-				.orElseThrow(
+			.orElseThrow(
 				() -> new CustomException(ErrorCode.EXCEL_NOT_EXISTS)
-		);
+			);
 		excelInfoRepository.delete(excelInfo);
 		minioService.deleteExcel(excelInfo);
 		return excelInfo;

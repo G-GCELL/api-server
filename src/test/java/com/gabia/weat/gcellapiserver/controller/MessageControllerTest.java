@@ -21,7 +21,7 @@ public class MessageControllerTest {
 
 	@Test
 	@DisplayName("연결_테스트")
-	public void connect_test(){
+	public void connect_test() {
 		// given
 		given(messageService.connect(any(), any())).willReturn(1L);
 
@@ -31,5 +31,5 @@ public class MessageControllerTest {
 		// then
 		verify(messageService, times(1)).connect(any(), any());
 	}
-	
+
 }
