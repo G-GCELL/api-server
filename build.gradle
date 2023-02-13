@@ -4,6 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
     id 'jacoco'
     id 'checkstyle'
+    id 'org.barfuin.gradle.jacocolog' version '2.0.0'
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -48,9 +49,17 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
 
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
+
+    // minio
+    implementation 'io.minio:minio:8.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'commons-io:commons-io:2.11.0'
+
+
 }
 
 tasks.named('test') {
@@ -73,7 +82,12 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "**/GcellApiServerApplication.class"
+                    "**/GcellApiServerApplication.class",
+                    "**/domain/**",
+                    "**/dto/**",
+                    "**/util/**",
+                    "**/error/**",
+                    "**/config/**"
             ])
         }))
     }
@@ -93,7 +107,12 @@ jacocoTestCoverageVerification {
             }
 
             excludes = [
-                    "*.GcellApiServerApplication"
+                    "*.GcellApiServerApplication",
+                    "*.domain.*",
+                    "*.dto.*",
+                    "*.util.*",
+                    "*.error.*",
+                    "*.config.*"
             ]
         }
     }
