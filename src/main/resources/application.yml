@@ -15,8 +15,7 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: ${FETCH_SIZE}
-    jpa:
-      open-in-view: false
+    open-in-view: false
 
   rabbitmq:
     host: ${RABBITMQ_HOST}
