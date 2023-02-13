@@ -27,6 +27,12 @@ spring:
       exchange: ${EXCHANGE_NAME}
       routing-key: ${ROUTING_KEY}
       default-receive-queue: ${QUEUE_NAME}
+    listener:
+      simple:
+        concurrency: ${CONCURRENCY}
+        max-concurrency: ${MAX_CONCURRENCY}
+        prefetch: ${PREFETCH}
+        acknowledge-mode: manual
 
 excel-info:
   file-base-url: ${FILE_BASE_URL}
