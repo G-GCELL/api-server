@@ -3,6 +3,8 @@ package com.gabia.weat.gcellapiserver.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.gabia.weat.gcellapiserver.domain.type.MessageType;
+
 import lombok.Builder;
 
 public class MessageDto {
@@ -21,6 +23,15 @@ public class MessageDto {
 		LocalDateTime endDateMax,
 		BigDecimal costMin,
 		BigDecimal costMax
+	) {
+
+	}
+
+	public record CreateProgressMsgDto(
+		Long memberId,
+		MessageType messageType,
+		String memberFileName,
+		Integer progressRate
 	) {
 
 	}
