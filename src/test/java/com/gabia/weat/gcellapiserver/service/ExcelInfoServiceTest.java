@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.transaction.annotation.Transactional;
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class ExcelInfoServiceTest {
 

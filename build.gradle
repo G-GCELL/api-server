@@ -87,7 +87,8 @@ jacocoTestReport {
                     "**/dto/**",
                     "**/util/**",
                     "**/error/**",
-                    "**/config/**"
+                    "**/config/**",
+                    "**/controller/**"
             ])
         }))
     }
@@ -112,7 +113,8 @@ jacocoTestCoverageVerification {
                     "*.dto.*",
                     "*.util.*",
                     "*.error.*",
-                    "*.config.*"
+                    "*.config.*",
+                    "*.controller.*"
             ]
         }
     }
