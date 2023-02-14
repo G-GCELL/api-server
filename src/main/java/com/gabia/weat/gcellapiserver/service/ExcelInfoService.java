@@ -3,13 +3,17 @@ package com.gabia.weat.gcellapiserver.service;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameResponseDto;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileListRequestDto;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.dto.FileDto;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
@@ -59,6 +63,13 @@ public class ExcelInfoService {
 		excelInfoRepository.delete(excelInfo);
 		minioService.deleteExcel(excelInfo);
 		return excelInfo;
+	}
+
+	public Page<ExcelInfo> getExcelInfo(String memberEmail, Pageable pageable, FileListRequestDto fileListRequestDto){
+		Member member = memberRepository.findByEmail(memberEmail).orElseThrow(()->{
+			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+		});
+		return excelInfoRepository.findByMemberPaging(member, fileListRequestDto, pageable);
 	}
 
 	private Member getMemberByEmail(String email) {

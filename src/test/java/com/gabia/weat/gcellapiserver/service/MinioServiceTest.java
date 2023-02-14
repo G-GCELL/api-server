@@ -100,6 +100,7 @@ public class MinioServiceTest {
 			.thenThrow(InsufficientDataException.class)
 			.thenThrow(mock(XmlParserException.class))
 			.thenThrow(mock(ErrorResponseException.class));
+
 		// then
 		for (int i = 0; i < testLength; i++) {
 			org.junit.jupiter.api.Assertions.assertThrows(CustomException.class, () -> {
