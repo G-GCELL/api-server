@@ -36,10 +36,8 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<ExcelInfo> findByMemberPaging(Member member, FileListRequestDto fileListRequestDto
-	, Pageable pageable) {
-		List<Long> excelInfoIdList = queryFactory.select(excelInfo.excelInfoId)
-			.from(excelInfo)
+	public Page<ExcelInfo> findByMemberPaging(Member member , Pageable pageable, FileListRequestDto fileListRequestDto) {
+		List<ExcelInfo> excelInfoList = queryFactory.selectFrom(excelInfo)
 			.where(excelInfo.member.eq(member),
 				conditionExcelInfoId(fileListRequestDto.excelInfoId(), fileListRequestDto.idCondition()),
 				conditionExcelInfoName(fileListRequestDto.fileName(), fileListRequestDto.nameCondition()),
@@ -51,23 +49,19 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 			.limit(pageable.getPageSize())
 			.fetch();
 
-		List<ExcelInfo> excelInfoList = queryFactory.selectFrom(excelInfo)
-			.where(excelInfo.excelInfoId.in(excelInfoIdList))
-			.fetch();
-
 		JPAQuery<Long> countQuery = queryFactory.select(excelInfo.count()).from(excelInfo);
 
 		return PageableExecutionUtils.getPage(excelInfoList, pageable, countQuery::fetchOne);
 	}
 
 	private BooleanExpression conditionExcelInfoId(Long excelInfoId, IdCondition idCondition){
-		if (excelInfoId == 0L){
+		if (excelInfoId == null){
 			return null;
 		}
-		if (idCondition.equals(IdCondition.IN)){
+		if (IdCondition.IN.equals(idCondition)){
 			return excelInfo.excelInfoId.in(excelInfoId);
 		}
-		if (idCondition.equals(IdCondition.NOT_IN)){
+		if (IdCondition.NOT_IN.equals(idCondition)){
 			return excelInfo.excelInfoId.notIn(excelInfoId);
 		}
 		return excelInfo.excelInfoId.eq(excelInfoId);
@@ -77,7 +71,7 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 		if (StringUtils.isNullOrEmpty(excelInfoName)){
 			return null;
 		}
-		if (nameCondition.equals(NameCondition.LIKE)){
+		if (NameCondition.LIKE.equals(nameCondition)){
 			return excelInfo.name.contains(excelInfoName);
 		}
 		return excelInfo.name.eq(excelInfoName);
@@ -87,7 +81,7 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 		if (createdAt == null){
 			return null;
 		}
-		if (createdAtCondition.equals(CreatedAtCondition.LESS_THAN)){
+		if (CreatedAtCondition.LESS_THAN.equals(createdAtCondition)){
 			return excelInfo.createdAt.before(createdAt);
 		}
 		return excelInfo.createdAt.after(createdAt);
@@ -111,7 +105,7 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 				return new OrderSpecifier(direction, excelInfo.name);
 			}
 		}
-		return null;
+		return new OrderSpecifier(Order.ASC, excelInfo.excelInfoId);
 	}
 
 

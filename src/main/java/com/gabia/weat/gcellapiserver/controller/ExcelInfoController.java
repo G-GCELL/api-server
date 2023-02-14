@@ -3,11 +3,14 @@ package com.gabia.weat.gcellapiserver.controller;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameResponseDto;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileListRequestDto;
 
 import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.dto.FileDto;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +56,12 @@ public class ExcelInfoController {
 	public ResponseEntity<ApiResponseDto> deleteExcelInfo(@PathVariable("id") Long excelInfoId){
 		excelInfoService.deleteExcelInfo(this.getConnectMemberEmail(), excelInfoId);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponseDto.success());
+	}
+
+	@GetMapping
+	public ResponseEntity<ApiResponseDto> getExcelInfoList(FileListRequestDto fileListRequestDto, Pageable pageable){
+		Page<ExcelInfo> excelInfos = excelInfoService.getExcelInfo(getConnectMemberEmail(), pageable, fileListRequestDto);
+		return ResponseEntity.ok(ApiResponseDto.success(excelInfos));
 	}
 
 	private String getConnectMemberEmail() {
