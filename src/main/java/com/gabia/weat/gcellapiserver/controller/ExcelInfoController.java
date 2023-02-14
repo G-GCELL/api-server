@@ -52,7 +52,7 @@ public class ExcelInfoController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<ApiResponseDto> deleteExcelInfo(@PathVariable("id") Long excelInfoId){
 		excelInfoService.deleteExcelInfo(this.getConnectMemberEmail(), excelInfoId);
-		return ResponseEntity.ok(ApiResponseDto.success());
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponseDto.success());
 	}
 
 	private String getConnectMemberEmail() {
