@@ -36,7 +36,7 @@ public class MinioService {
 		try {
 			byte[] bytes = minioClient.getObject(
 				GetObjectArgs.builder()
-					.bucket(bucketName).object(excelInfo.getName())
+					.bucket(bucketName).object(excelInfo.getPath())
 					.build()
 			).readAllBytes();
 			return bytes;
@@ -52,7 +52,7 @@ public class MinioService {
 			minioClient.removeObject(
 				RemoveObjectArgs.builder()
 					.bucket(bucketName)
-					.object(excelInfo.getName())
+					.object(excelInfo.getPath())
 					.build()
 			);
 		} catch (Exception e) {
