@@ -66,10 +66,8 @@ public class ExcelInfoService {
 	}
 
 	public Page<ExcelInfo> getExcelInfo(String memberEmail, Pageable pageable, FileListRequestDto fileListRequestDto){
-		Member member = memberRepository.findByEmail(memberEmail).orElseThrow(()->{
-			throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
-		});
-		return excelInfoRepository.findByMemberPaging(member, fileListRequestDto, pageable);
+		Member member = this.getMemberByEmail(memberEmail);
+		return excelInfoRepository.findByMemberPaging(member, pageable, fileListRequestDto);
 	}
 
 	private Member getMemberByEmail(String email) {
