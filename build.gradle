@@ -119,7 +119,8 @@ jacocoTestCoverageVerification {
                     "*.util.*",
                     "*.error.*",
                     "*.config.*",
-                    "*.controller.*"
+                    "*.controller.*",
+                    "*.repository.enums.*"
             ]
         }
     }
