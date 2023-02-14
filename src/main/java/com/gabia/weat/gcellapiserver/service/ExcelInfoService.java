@@ -29,6 +29,7 @@ public class ExcelInfoService {
 	private final CreateRequestProducer createRequestProducer;
 	private final MinioService minioService;
 
+	@Transactional
 	public Long createExcel(String email, FileCreateRequestDto fileCreateRequestDto) {
 		Member member = this.getMemberByEmail(email);
 		String randomFileName = excelInfoUtil.getRandomRealFileName();

@@ -1,6 +1,7 @@
 package com.gabia.weat.gcellapiserver.service.consumer;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.CreateProgressMsgDto;
+import com.gabia.weat.gcellapiserver.service.MessageService;
 import com.rabbitmq.client.Channel;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,6 +23,8 @@ public class CreateProgressConsumerTest {
 
 	@Mock
 	private Channel channel;
+	@Mock
+	private MessageService messageService;
 	@InjectMocks
 	private CreateProgressConsumer createProgressConsumer;
 
@@ -34,6 +38,7 @@ public class CreateProgressConsumerTest {
 		// when & then
 		assertThatCode(
 			() -> createProgressConsumer.receiveMessage(createProgressMsgDto, channel, tag)).doesNotThrowAnyException();
+		verify(messageService, times(1)).sendMessageToMemberId(any(), any(), any());
 		verify(channel, times(1)).basicAck(eq(tag), anyBoolean());
 	}
 
