@@ -69,7 +69,6 @@ public class ExcelInfoServiceTest {
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		given(excelInfoRepository.findByMemberAndNameAndIsDeletedFalse(any(), any())).willReturn(Optional.empty());
-		given(excelInfoUtil.getFileBaseUrl()).willReturn("testFileBaseUrl");
 		given(excelInfoUtil.getRandomRealFileName()).willReturn("testFileName.xlsx");
 		given(excelInfoRepository.save(any())).willReturn(excelInfo);
 

@@ -59,15 +59,10 @@ public class ExcelInfoService {
 			throw new CustomException(ErrorCode.DUPLICATE_FILE_NAME);
 		});
 
-		String path = new StringBuffer(excelInfoUtil.getFileBaseUrl())
-			.append("/")
-			.append(realFileName)
-			.toString();
-
 		return ExcelInfo.builder()
 			.member(member)
 			.name(fileName)
-			.path(path)
+			.path(realFileName)
 			.isDeleted(false)
 			.build();
 	}
