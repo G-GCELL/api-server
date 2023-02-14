@@ -36,7 +36,7 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<ExcelInfo> findByMember(Member member, FileListRequestDto fileListRequestDto
+	public Page<ExcelInfo> findByMemberPaging(Member member, FileListRequestDto fileListRequestDto
 	, Pageable pageable) {
 		List<Long> excelInfoIdList = queryFactory.select(excelInfo.excelInfoId)
 			.from(excelInfo)
@@ -50,7 +50,7 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
-		pageable.getSort();
+
 		List<ExcelInfo> excelInfoList = queryFactory.selectFrom(excelInfo)
 			.where(excelInfo.excelInfoId.in(excelInfoIdList))
 			.fetch();
