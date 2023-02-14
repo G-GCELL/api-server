@@ -2,6 +2,7 @@ package com.gabia.weat.gcellapiserver.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -9,11 +10,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
+import com.gabia.weat.gcellapiserver.config.QueryDslTestConfig;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.dto.FileDto;
+import com.gabia.weat.gcellapiserver.repository.enums.CreatedAtCondition;
+import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 
 @DataJpaTest
+@Import(QueryDslTestConfig.class)
 public class ExcelInfoRepositoryTest {
 
 	@Autowired
@@ -77,5 +87,102 @@ public class ExcelInfoRepositoryTest {
 		// then
 		assertThat(findExcelInfoOptional.isPresent()).isFalse();
 	}
+
+	@Test
+	@DisplayName("엑셀 조회 동적 정렬 테스트")
+	public void getExcelInfoOrderTest(){
+		// given
+		ExcelInfo excelInfo1 = ExcelInfo.builder().name("abc").member(member).build();
+		ExcelInfo excelInfo2 = ExcelInfo.builder().name("bcd").member(member).build();
+
+		memberRepository.save(member);
+		excelInfoRepository.save(excelInfo1);
+		excelInfoRepository.save(excelInfo2);
+
+		PageRequest namePaging = PageRequest.of(0,2, Sort.Direction.ASC, "name");
+		PageRequest createdAtPaging =  PageRequest.of(0, 2, Sort.Direction.DESC, "createdAt");
+
+		FileDto.FileListRequestDto nameDto = FileDto.FileListRequestDto.builder().build();
+		FileDto.FileListRequestDto createdAtDto = FileDto.FileListRequestDto.builder().build();
+
+		// when
+		Page<ExcelInfo> nameResult = excelInfoRepository.findByMemberPaging(member, namePaging, nameDto);
+		Page<ExcelInfo> createdAtResult = excelInfoRepository.findByMemberPaging(member, createdAtPaging, createdAtDto);
+
+		// then
+		assertThat(nameResult.getContent().get(0).getName()).isEqualTo(excelInfo1.getName());
+		assertThat(createdAtResult.getContent().get(0).getName()).isEqualTo(excelInfo2.getName());
+	}
+
+	@Test
+	@DisplayName("엑셀 조회 동적 조건 조회 테스트")
+	public void getExcelInfoWhereTest(){
+		// given
+		int testSize = 10;
+		LocalDateTime now = LocalDateTime.now();
+		PageRequest pageRequest = PageRequest.of(0,testSize);
+
+		FileDto.FileListRequestDto nameEqCondition = FileDto.FileListRequestDto.builder().nameCondition(NameCondition.EQUAL)
+			.fileName("엔도1").build();
+		FileDto.FileListRequestDto nameInCondition = FileDto.FileListRequestDto.builder().nameCondition(NameCondition.LIKE)
+			.fileName("엔도").build();
+		FileDto.FileListRequestDto createdAtGtCondition = FileDto.FileListRequestDto.builder().createdAtCondition(
+				CreatedAtCondition.GREATER_THAN)
+			.createdAt(now).build();
+		FileDto.FileListRequestDto createdAtLtCondition = FileDto.FileListRequestDto.builder().createdAtCondition(CreatedAtCondition.LESS_THAN)
+			.createdAt(now).build();
+		FileDto.FileListRequestDto isDeleteCondition = FileDto.FileListRequestDto.builder().isDelete(true).build();
+
+		memberRepository.save(member);
+		for (int i = 0; i < testSize; i++) {
+			boolean isDelete = i%2 == 1;
+			excelInfoRepository.save(ExcelInfo.builder().member(member).name("엔도" + Integer.toString(i))
+				.isDeleted(isDelete).build());
+		}
+
+		// when
+		Page<ExcelInfo> nameEqResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nameEqCondition);
+		Page<ExcelInfo> nameInResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nameInCondition);
+		Page<ExcelInfo> createdAtGtResult = excelInfoRepository.findByMemberPaging(member, pageRequest, createdAtGtCondition);
+		Page<ExcelInfo> createdAtLtResult = excelInfoRepository.findByMemberPaging(member, pageRequest, createdAtLtCondition);
+		Page<ExcelInfo> isDeleteResult = excelInfoRepository.findByMemberPaging(member, pageRequest, isDeleteCondition);
+
+		// then
+		assertThat(nameEqResult.getContent().get(0).getName()).isEqualTo(nameEqCondition.fileName());
+		assertThat(nameInResult.getContent().size()).isEqualTo(testSize);
+		assertThat(createdAtGtResult.getContent().size()).isEqualTo(10);
+		assertThat(createdAtLtResult.getContent().size()).isEqualTo(0);
+		assertThat(isDeleteResult.getContent().size()).isEqualTo(5);
+
+	}
+
+	@Test
+	@DisplayName("엑셀 조회 복합 조건 정렬 테스트")
+	public void getExcelInfoCompositeTest(){
+		// given
+		int testSize = 10;
+		PageRequest namePaging = PageRequest.of(0,testSize, Sort.Direction.ASC, "name");
+		PageRequest createdAtPaging = PageRequest.of(0, testSize, Sort.Direction.DESC, "createdAt");
+
+		FileDto.FileListRequestDto nameInCondition = FileDto.FileListRequestDto.builder().nameCondition(NameCondition.LIKE)
+			.fileName("엔도").build();
+
+		memberRepository.save(member);
+		for (int i = 0; i < testSize; i++) {
+			boolean isDelete = i%2 == 1;
+			excelInfoRepository.save(ExcelInfo.builder().member(member).name("엔도" + Integer.toString(i))
+				.isDeleted(isDelete).build());
+		}
+
+		// when
+		Page<ExcelInfo> namePagingResult = excelInfoRepository.findByMemberPaging(member,  namePaging, nameInCondition);
+		Page<ExcelInfo> createdAtPagingResult = excelInfoRepository.findByMemberPaging(member, createdAtPaging, nameInCondition);
+
+		// then
+		assertThat(namePagingResult.getContent().get(0).getName()).isEqualTo("엔도0");
+		assertThat(createdAtPagingResult.getContent().get(0).getName()).isEqualTo("엔도9");
+
+	}
+
 
 }

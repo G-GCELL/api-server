@@ -38,6 +38,7 @@ public class FileDto {
 
 	}
 
+	@Builder
 	public record FileListRequestDto(
 		Long excelInfoId,
 		IdCondition idCondition,
