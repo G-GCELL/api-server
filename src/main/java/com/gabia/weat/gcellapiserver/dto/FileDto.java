@@ -2,6 +2,10 @@ package com.gabia.weat.gcellapiserver.dto;
 
 import java.time.LocalDateTime;
 
+import com.gabia.weat.gcellapiserver.repository.enums.CreatedAtCondition;
+import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
+import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
+
 import lombok.Builder;
 
 public class FileDto {
@@ -31,6 +35,18 @@ public class FileDto {
 
 	@Builder
 	public record FileUpdateNameResponseDto(Long id, String fileName, boolean isDelete, LocalDateTime createdAt) {
+
+	}
+
+	public record FileListRequestDto(
+		Long excelInfoId,
+		IdCondition idCondition,
+		String fileName,
+		NameCondition nameCondition,
+		LocalDateTime createdAt,
+		CreatedAtCondition createdAtCondition,
+		Boolean isDelete
+	){
 
 	}
 
