@@ -27,7 +27,6 @@ public class ExcelInfoService {
 	private final MemberRepository memberRepository;
 	private final ExcelInfoRepository excelInfoRepository;
 	private final CreateRequestProducer createRequestProducer;
-
 	private final MinioService minioService;
 
 	public Long createExcel(String email, FileCreateRequestDto fileCreateRequestDto) {
