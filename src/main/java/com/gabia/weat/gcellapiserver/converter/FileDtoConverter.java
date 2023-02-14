@@ -35,7 +35,7 @@ public class FileDtoConverter {
 			.build();
 	}
 
-	public static FileUpdateNameResponseDto createEntityToUpdateNameResponseDto(ExcelInfo excelInfo){
+	public static FileUpdateNameResponseDto createEntityToUpdateNameResponseDto(ExcelInfo excelInfo) {
 		return FileUpdateNameResponseDto.builder()
 			.id(excelInfo.getExcelInfoId())
 			.createdAt(excelInfo.getCreatedAt())

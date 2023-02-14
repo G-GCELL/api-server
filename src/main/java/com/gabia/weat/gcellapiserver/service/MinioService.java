@@ -1,6 +1,8 @@
 package com.gabia.weat.gcellapiserver.service;
 
+import io.minio.RemoveObjectArgs;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,9 @@ import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.transaction.annotation.Transactional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -41,4 +46,18 @@ public class MinioService {
 		}
 	}
 
+	@Transactional
+	public void deleteExcel(ExcelInfo excelInfo) {
+		try {
+			minioClient.removeObject(
+				RemoveObjectArgs.builder()
+					.bucket(bucketName)
+					.object(excelInfo.getPath())
+					.build()
+			);
+		} catch (Exception e) {
+			log.error("ExamInfo : " + excelInfo, e);
+			throw new CustomException(ErrorCode.MINIO_ERROR);
+		}
+	}
 }
