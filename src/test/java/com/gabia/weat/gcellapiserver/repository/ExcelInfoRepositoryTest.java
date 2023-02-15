@@ -1,9 +1,12 @@
 package com.gabia.weat.gcellapiserver.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +23,7 @@ import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.dto.FileDto;
 import com.gabia.weat.gcellapiserver.repository.enums.CreatedAtCondition;
+import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 
 @DataJpaTest
@@ -122,6 +126,18 @@ public class ExcelInfoRepositoryTest {
 		LocalDateTime now = LocalDateTime.now();
 		PageRequest pageRequest = PageRequest.of(0,testSize);
 
+		memberRepository.save(member);
+		for (int i = 0; i < testSize; i++) {
+			boolean isDelete = i%2 == 1;
+			excelInfoRepository.save(ExcelInfo.builder().member(member).name("엔도" + Integer.toString(i))
+				.isDeleted(isDelete).build());
+		}
+
+		FileDto.FileListRequestDto idInCondition = FileDto.FileListRequestDto.builder().idCondition(IdCondition.NOT_IN)
+			.excelInfoId(excelInfoRepository.findAll().stream()
+				.map(e->e.getExcelInfoId())
+				.filter(e -> (e % 2) == 1)
+				.collect(Collectors.toList())).build();
 		FileDto.FileListRequestDto nameEqCondition = FileDto.FileListRequestDto.builder().nameCondition(NameCondition.EQUAL)
 			.fileName("엔도1").build();
 		FileDto.FileListRequestDto nameInCondition = FileDto.FileListRequestDto.builder().nameCondition(NameCondition.LIKE)
@@ -133,14 +149,8 @@ public class ExcelInfoRepositoryTest {
 			.createdAt(now).build();
 		FileDto.FileListRequestDto isDeleteCondition = FileDto.FileListRequestDto.builder().isDelete(true).build();
 
-		memberRepository.save(member);
-		for (int i = 0; i < testSize; i++) {
-			boolean isDelete = i%2 == 1;
-			excelInfoRepository.save(ExcelInfo.builder().member(member).name("엔도" + Integer.toString(i))
-				.isDeleted(isDelete).build());
-		}
-
 		// when
+		Page<ExcelInfo> idInResult = excelInfoRepository.findByMemberPaging(member, pageRequest, idInCondition);
 		Page<ExcelInfo> nameEqResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nameEqCondition);
 		Page<ExcelInfo> nameInResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nameInCondition);
 		Page<ExcelInfo> createdAtGtResult = excelInfoRepository.findByMemberPaging(member, pageRequest, createdAtGtCondition);
@@ -148,6 +158,7 @@ public class ExcelInfoRepositoryTest {
 		Page<ExcelInfo> isDeleteResult = excelInfoRepository.findByMemberPaging(member, pageRequest, isDeleteCondition);
 
 		// then
+		assertThat(idInResult.getContent().size()).isEqualTo(5);
 		assertThat(nameEqResult.getContent().get(0).getName()).isEqualTo(nameEqCondition.fileName());
 		assertThat(nameInResult.getContent().size()).isEqualTo(testSize);
 		assertThat(createdAtGtResult.getContent().size()).isEqualTo(10);
