@@ -13,16 +13,9 @@ spring:
     port: 0000
     username: username
     password: password
-    template:
-      exchange: exchange
-      routing-key: routing-key
-      default-receive-queue: queue
-    listener:
-      simple:
-        concurrency: 1
-        max-concurrency: 3
-        prefetch: 10
-        acknowledge-mode: manual
+
+  application:
+    name: name
 
 excel-info:
   file-base-url: url
@@ -38,3 +31,10 @@ minio:
 
 sse:
   timeout: 60000
+
+rabbitmq:
+  direct-exchange: direct-exchange
+  creation-progress-exchange: creation-progress-exchange
+  creation-request-queue: creation-request-queue
+
+  creation-request-routing-key: creation-request-routing-key
