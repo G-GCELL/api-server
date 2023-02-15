@@ -44,12 +44,12 @@ public class RabbitmqConfig {
 	private String password;
 	@Value("${rabbitmq.direct-exchange}")
 	private String directExchange;
-	@Value("${rabbitmq.creation-progress-exchange}")
-	private String creationProgressExchange;
-	@Value("${rabbitmq.creation-request-queue}")
-	private String creationRequestQueue;
-	@Value("${rabbitmq.creation-request-routing-key}")
-	private String creationRequestRoutingKey;
+	@Value("${rabbitmq.file-create-progress-exchange}")
+	private String fileCreateProgressExchange;
+	@Value("${rabbitmq.file-create-request-queue}")
+	private String fileCreateRequestQueue;
+	@Value("${rabbitmq.file-create-request-routing-key}")
+	private String fileCreateRequestRoutingKey;
 
 	@Bean
 	ConnectionFactory connectionFactory() {
@@ -75,12 +75,12 @@ public class RabbitmqConfig {
 	}
 
 	@Bean
-	Queue creationRequestQueue() {
-		return new Queue(creationRequestQueue, true);
+	Queue fileCreateRequestQueue() {
+		return new Queue(fileCreateRequestQueue, true);
 	}
 
 	@Bean
-	Queue creationProgressQueue() {
+	Queue fileCreateProgressQueue() {
 		return new Queue(applicationName.toLowerCase(), true);
 	}
 
@@ -90,26 +90,26 @@ public class RabbitmqConfig {
 	}
 
 	@Bean
-	FanoutExchange creationProgressExchange() {
-		return new FanoutExchange(creationProgressExchange, true, false);
+	FanoutExchange fileCreateProgressExchange() {
+		return new FanoutExchange(fileCreateProgressExchange, true, false);
 	}
 
 	@Bean
-	Declarables creationRequestBindings() {
+	Declarables fileCreateRequestBindings() {
 		return new Declarables(
-			BindingBuilder.bind(creationRequestQueue()).to(directExchange()).with(creationRequestRoutingKey)
+			BindingBuilder.bind(fileCreateRequestQueue()).to(directExchange()).with(fileCreateRequestRoutingKey)
 		);
 	}
 
 	@Bean
-	Declarables creationProgressBindings() {
+	Declarables fileCreateProgressBindings() {
 		return new Declarables(
-			BindingBuilder.bind(creationProgressQueue()).to(creationProgressExchange())
+			BindingBuilder.bind(fileCreateProgressQueue()).to(fileCreateProgressExchange())
 		);
 	}
 
 	@Bean
-	SimpleRabbitListenerContainerFactory creationProgressListenerFactory() {
+	SimpleRabbitListenerContainerFactory fileCreateProgressListenerFactory() {
 		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
 		listenerContainerFactory.setConnectionFactory(connectionFactory());
 		listenerContainerFactory.setMessageConverter(messageConverter());
@@ -118,11 +118,11 @@ public class RabbitmqConfig {
 	}
 
 	@Bean
-	RabbitTemplate creationRequestRabbitTemplate() {
+	RabbitTemplate fileCreateRequestRabbitTemplate() {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
 		rabbitTemplate.setMessageConverter(messageConverter());
 		rabbitTemplate.setExchange(directExchange);
-		rabbitTemplate.setRoutingKey(creationRequestRoutingKey);
+		rabbitTemplate.setRoutingKey(fileCreateRequestRoutingKey);
 		rabbitTemplate.setMandatory(true);
 
 		rabbitTemplate.setReturnsCallback(returned -> {

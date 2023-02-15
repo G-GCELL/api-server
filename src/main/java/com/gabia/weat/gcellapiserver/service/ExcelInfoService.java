@@ -15,7 +15,7 @@ import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
-import com.gabia.weat.gcellapiserver.service.producer.CreateRequestProducer;
+import com.gabia.weat.gcellapiserver.service.producer.FileCreateRequestProducer;
 import com.gabia.weat.gcellapiserver.util.ExcelInfoUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class ExcelInfoService {
 	private final ExcelInfoUtil excelInfoUtil;
 	private final MemberRepository memberRepository;
 	private final ExcelInfoRepository excelInfoRepository;
-	private final CreateRequestProducer createRequestProducer;
+	private final FileCreateRequestProducer fileCreateRequestProducer;
 	private final MinioService minioService;
 
 	@Transactional
@@ -89,7 +89,7 @@ public class ExcelInfoService {
 
 	private void sendExcelCreateRequestMessage(Long memberId, String newFileName,
 		FileCreateRequestDto fileCreateRequestDto) {
-		createRequestProducer.sendMessage(
+		fileCreateRequestProducer.sendMessage(
 			FileDtoConverter.createDtoToCreateMsgDto(memberId, newFileName, fileCreateRequestDto));
 	}
 
