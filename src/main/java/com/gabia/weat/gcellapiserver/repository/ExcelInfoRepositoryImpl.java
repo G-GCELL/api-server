@@ -26,15 +26,16 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
+public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<FileListResponseDto> findByMemberPaging(Member member , Pageable pageable, FileListRequestDto fileListRequestDto) {
+	public Page<FileListResponseDto> findByMemberPaging(Member member, Pageable pageable,
+		FileListRequestDto fileListRequestDto) {
 		List<FileListResponseDto> excelInfoList = queryFactory.select(Projections.constructor(FileListResponseDto.class,
 				excelInfo.excelInfoId, excelInfo.name, excelInfo.createdAt, excelInfo.isDeleted
-				))
+			))
 			.from(excelInfo)
 			.where(excelInfo.member.eq(member),
 				conditionExcelInfoId(fileListRequestDto.excelInfoIdList(), fileListRequestDto.idCondition()),
@@ -52,52 +53,52 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 		return PageableExecutionUtils.getPage(excelInfoList, pageable, countQuery::fetchOne);
 	}
 
-	private BooleanExpression conditionExcelInfoId(List<Long> excelInfoId, IdCondition idCondition){
-		if (excelInfoId == null){
+	private BooleanExpression conditionExcelInfoId(List<Long> excelInfoId, IdCondition idCondition) {
+		if (excelInfoId == null) {
 			return null;
 		}
-		if (IdCondition.NOT_IN.equals(idCondition)){
+		if (IdCondition.NOT_IN.equals(idCondition)) {
 			return excelInfo.excelInfoId.notIn(excelInfoId);
 		}
 		return excelInfo.excelInfoId.in(excelInfoId);
 	}
 
-	private BooleanExpression conditionExcelInfoName(String excelInfoName, NameCondition nameCondition){
-		if (StringUtils.isNullOrEmpty(excelInfoName)){
+	private BooleanExpression conditionExcelInfoName(String excelInfoName, NameCondition nameCondition) {
+		if (StringUtils.isNullOrEmpty(excelInfoName)) {
 			return null;
 		}
-		if (NameCondition.LIKE.equals(nameCondition)){
+		if (NameCondition.LIKE.equals(nameCondition)) {
 			return excelInfo.name.contains(excelInfoName);
 		}
 		return excelInfo.name.eq(excelInfoName);
 	}
 
-	private BooleanExpression conditionCreatedAt(LocalDateTime minCreatedAt, LocalDateTime maxCreatedAt){
-		if (minCreatedAt == null && maxCreatedAt == null){
+	private BooleanExpression conditionCreatedAt(LocalDateTime minCreatedAt, LocalDateTime maxCreatedAt) {
+		if (minCreatedAt == null && maxCreatedAt == null) {
 			return null;
 		}
-		if (minCreatedAt == null){
+		if (minCreatedAt == null) {
 			return excelInfo.createdAt.before(maxCreatedAt);
 		}
-		if (maxCreatedAt == null){
+		if (maxCreatedAt == null) {
 			return excelInfo.createdAt.after(minCreatedAt);
 		}
 		return excelInfo.createdAt.between(minCreatedAt, maxCreatedAt);
 	}
 
-	private BooleanExpression conditionIsDelete(Boolean isDelete){
-		if (isDelete == null){
+	private BooleanExpression conditionIsDelete(Boolean isDelete) {
+		if (isDelete == null) {
 			return null;
 		}
 		return excelInfo.isDeleted.eq(isDelete);
 	}
 
-	private OrderSpecifier<?> excelInfoSort(Pageable pageable){
-		if (!pageable.getSort().isEmpty()){
+	private OrderSpecifier<?> excelInfoSort(Pageable pageable) {
+		if (!pageable.getSort().isEmpty()) {
 			for (Sort.Order order :
 				pageable.getSort()) {
 				Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-				if (order.getProperty().equals("createdAt")){
+				if (order.getProperty().equals("createdAt")) {
 					return new OrderSpecifier(direction, excelInfo.createdAt);
 				}
 				return new OrderSpecifier(direction, excelInfo.name);
@@ -105,6 +106,5 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 		}
 		return new OrderSpecifier(Order.ASC, excelInfo.excelInfoId);
 	}
-
 
 }

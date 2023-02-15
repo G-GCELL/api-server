@@ -11,6 +11,7 @@ import com.gabia.weat.gcellapiserver.dto.FileDto;
 
 public interface ExcelInfoRepositoryCustom {
 
-	Page<FileListResponseDto> findByMemberPaging(Member member , Pageable pageable, FileDto.FileListRequestDto fileListRequestDto
-		);
+	Page<FileListResponseDto> findByMemberPaging(Member member, Pageable pageable,
+		FileDto.FileListRequestDto fileListRequestDto
+	);
 }

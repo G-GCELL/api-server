@@ -62,7 +62,8 @@ public class ExcelInfoService {
 		return excelInfo;
 	}
 
-	public Page<FileListResponseDto> getExcelInfo(String memberEmail, Pageable pageable, FileListRequestDto fileListRequestDto){
+	public Page<FileListResponseDto> getExcelInfo(String memberEmail, Pageable pageable,
+		FileListRequestDto fileListRequestDto) {
 		Member member = this.getMemberByEmail(memberEmail);
 		return excelInfoRepository.findByMemberPaging(member, pageable, fileListRequestDto);
 	}

@@ -47,7 +47,7 @@ public class FileDto {
 		LocalDateTime minCreatedAt,
 		LocalDateTime maxCreatedAt,
 		Boolean isDelete
-	){
+	) {
 
 	}
 
@@ -56,7 +56,8 @@ public class FileDto {
 		String fileName,
 		LocalDateTime createdAt,
 		Boolean isDelete
-	){
+	) {
 
 	}
+
 }

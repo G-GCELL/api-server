@@ -50,14 +50,16 @@ public class ExcelInfoController {
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<ApiResponseDto> deleteExcelInfo(@PathVariable("id") Long excelInfoId){
+	public ResponseEntity<ApiResponseDto> deleteExcelInfo(@PathVariable("id") Long excelInfoId) {
 		excelInfoService.deleteExcelInfo(this.getConnectMemberEmail(), excelInfoId);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponseDto.success());
 	}
 
 	@GetMapping
-	public ResponseEntity<ApiResponseDto> getExcelInfoList(@ModelAttribute FileListRequestDto fileListRequestDto, Pageable pageable){
-		Page<FileListResponseDto> excelInfos = excelInfoService.getExcelInfo(getConnectMemberEmail(), pageable, fileListRequestDto);
+	public ResponseEntity<ApiResponseDto> getExcelInfoList(@ModelAttribute FileListRequestDto fileListRequestDto,
+		Pageable pageable) {
+		Page<FileListResponseDto> excelInfos = excelInfoService.getExcelInfo(getConnectMemberEmail(), pageable,
+			fileListRequestDto);
 		return ResponseEntity.ok(ApiResponseDto.success(excelInfos));
 	}
 

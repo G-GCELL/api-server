@@ -10,6 +10,7 @@ import jakarta.persistence.PersistenceContext;
 
 @Configuration
 public class QueryDSLConfig {
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -17,4 +18,5 @@ public class QueryDSLConfig {
 	public JPAQueryFactory jpaQueryFactory() {
 		return new JPAQueryFactory(entityManager);
 	}
+
 }
