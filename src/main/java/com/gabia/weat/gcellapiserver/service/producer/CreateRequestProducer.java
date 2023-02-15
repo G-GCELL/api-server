@@ -12,11 +12,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateRequestProducer {
 
-	private final RabbitTemplate rabbitTemplate;
+	private final RabbitTemplate creationRequestRabbitTemplate;
 
 	public void sendMessage(FileCreateRequestMsgDto fileCreateRequestMsgDto) {
 		CorrelationData correlationData = new CorrelationData();
-		rabbitTemplate.correlationConvertAndSend(fileCreateRequestMsgDto, correlationData);
+		creationRequestRabbitTemplate.correlationConvertAndSend(fileCreateRequestMsgDto, correlationData);
 	}
 
 }

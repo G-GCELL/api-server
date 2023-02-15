@@ -3,10 +3,18 @@ package com.gabia.weat.gcellapiserver.config;
 import java.util.Objects;
 
 import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Declarables;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory.ConfirmType;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionNameStrategy;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -21,8 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
+@EnableRabbit
 public class RabbitmqConfig {
 
+	@Value("${spring.application.name}")
+	private String applicationName;
 	@Value("${spring.rabbitmq.host}")
 	private String host;
 	@Value("${spring.rabbitmq.port}")
@@ -31,18 +42,14 @@ public class RabbitmqConfig {
 	private String username;
 	@Value("${spring.rabbitmq.password}")
 	private String password;
-	@Value("${spring.rabbitmq.listener.simple.concurrency}")
-	private Integer concurrency;
-	@Value("${spring.rabbitmq.listener.simple.max-concurrency}")
-	private Integer maxConcurrency;
-	@Value("${spring.rabbitmq.listener.simple.prefetch}")
-	private Integer prefetch;
-	@Value("${spring.rabbitmq.listener.simple.acknowledge-mode}")
-	private AcknowledgeMode acknowledgeMode;
-	@Value("${spring.rabbitmq.template.exchange}")
-	private String exchange;
-	@Value("${spring.rabbitmq.template.routing-key}")
-	private String routingKey;
+	@Value("${rabbitmq.direct-exchange}")
+	private String directExchange;
+	@Value("${rabbitmq.creation-progress-exchange}")
+	private String creationProgressExchange;
+	@Value("${rabbitmq.creation-request-queue}")
+	private String creationRequestQueue;
+	@Value("${rabbitmq.creation-request-routing-key}")
+	private String creationRequestRoutingKey;
 
 	@Bean
 	ConnectionFactory connectionFactory() {
@@ -53,28 +60,69 @@ public class RabbitmqConfig {
 		connectionFactory.setPassword(password);
 		connectionFactory.setPublisherReturns(true);
 		connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
+		connectionFactory.setConnectionNameStrategy(connectionNameStrategy());
 		return connectionFactory;
 	}
 
 	@Bean
-	SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory,
-		MessageConverter messageConverter) {
+	ConnectionNameStrategy connectionNameStrategy() {
+		return connectionFactory -> applicationName;
+	}
+
+	@Bean
+	RabbitAdmin rabbitAdmin() {
+		return new RabbitAdmin(connectionFactory());
+	}
+
+	@Bean
+	Queue creationRequestQueue() {
+		return new Queue(creationRequestQueue, true);
+	}
+
+	@Bean
+	Queue creationProgressQueue() {
+		return new Queue(applicationName.toLowerCase(), true);
+	}
+
+	@Bean
+	DirectExchange directExchange() {
+		return new DirectExchange(directExchange, true, false);
+	}
+
+	@Bean
+	FanoutExchange creationProgressExchange() {
+		return new FanoutExchange(creationProgressExchange, true, false);
+	}
+
+	@Bean
+	Declarables creationRequestBindings() {
+		return new Declarables(
+			BindingBuilder.bind(creationRequestQueue()).to(directExchange()).with(creationRequestRoutingKey)
+		);
+	}
+
+	@Bean
+	Declarables creationProgressBindings() {
+		return new Declarables(
+			BindingBuilder.bind(creationProgressQueue()).to(creationProgressExchange())
+		);
+	}
+
+	@Bean("creationProgressListenerFactory")
+	SimpleRabbitListenerContainerFactory creationProgressListenerFactory() {
 		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
-		listenerContainerFactory.setConnectionFactory(connectionFactory);
-		listenerContainerFactory.setMessageConverter(messageConverter);
-		listenerContainerFactory.setConcurrentConsumers(concurrency);
-		listenerContainerFactory.setMaxConcurrentConsumers(maxConcurrency);
-		listenerContainerFactory.setPrefetchCount(prefetch);
-		listenerContainerFactory.setAcknowledgeMode(acknowledgeMode);
+		listenerContainerFactory.setConnectionFactory(connectionFactory());
+		listenerContainerFactory.setMessageConverter(messageConverter());
+		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 		return listenerContainerFactory;
 	}
 
 	@Bean
-	RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
-		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setExchange(exchange);
-		rabbitTemplate.setRoutingKey(routingKey);
-		rabbitTemplate.setMessageConverter(messageConverter);
+	RabbitTemplate creationRequestRabbitTemplate() {
+		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+		rabbitTemplate.setMessageConverter(messageConverter());
+		rabbitTemplate.setExchange(directExchange);
+		rabbitTemplate.setRoutingKey(creationRequestRoutingKey);
 		rabbitTemplate.setMandatory(true);
 
 		rabbitTemplate.setReturnsCallback(returned -> {
