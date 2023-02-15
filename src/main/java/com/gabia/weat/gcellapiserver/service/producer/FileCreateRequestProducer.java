@@ -10,14 +10,14 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CreateRequestProducer implements Producer<FileCreateRequestMsgDto> {
+public class FileCreateRequestProducer implements Producer<FileCreateRequestMsgDto> {
 
-	private final RabbitTemplate creationRequestRabbitTemplate;
+	private final RabbitTemplate fileCreateRequestRabbitTemplate;
 
 	@Override
 	public void sendMessage(FileCreateRequestMsgDto message) {
 		CorrelationData correlationData = new CorrelationData();
-		creationRequestRabbitTemplate.correlationConvertAndSend(message, correlationData);
+		fileCreateRequestRabbitTemplate.correlationConvertAndSend(message, correlationData);
 	}
 
 }

@@ -43,7 +43,6 @@ sse:
 
 rabbitmq:
   direct-exchange: ${DIRECT_EXCHANGE}
-  creation-progress-exchange: ${CREATION_PROGRESS_EXCHANGE}
-  creation-request-queue: ${CREATION_REQUEST_QUEUE}
-
-  creation-request-routing-key: ${CREATION_REQUEST_ROUTING_KEY}
+  file-create-progress-exchange: ${FILE_CREATE_PROGRESS_EXCHANGE}
+  file-create-request-queue: ${FILE_CREATE_REQUEST_QUEUE}
+  file-create-request-routing-key: ${FILE_CREATE_REQUEST_ROUTING_KEY}
