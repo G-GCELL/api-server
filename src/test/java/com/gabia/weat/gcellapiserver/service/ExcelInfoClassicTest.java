@@ -2,32 +2,18 @@ package com.gabia.weat.gcellapiserver.service;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.dto.FileDto;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
-import com.gabia.weat.gcellapiserver.repository.enums.CreatedAtCondition;
-import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileListRequestDto;
-
-import java.awt.print.Pageable;
-import java.time.LocalDateTime;
 
 @SpringBootTest
 public class ExcelInfoClassicTest {
