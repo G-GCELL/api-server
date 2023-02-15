@@ -1,9 +1,6 @@
 package com.gabia.weat.gcellapiserver.service;
 
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameResponseDto;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileListRequestDto;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,7 +62,7 @@ public class ExcelInfoService {
 		return excelInfo;
 	}
 
-	public Page<ExcelInfo> getExcelInfo(String memberEmail, Pageable pageable, FileListRequestDto fileListRequestDto){
+	public Page<FileListResponseDto> getExcelInfo(String memberEmail, Pageable pageable, FileListRequestDto fileListRequestDto){
 		Member member = this.getMemberByEmail(memberEmail);
 		return excelInfoRepository.findByMemberPaging(member, pageable, fileListRequestDto);
 	}

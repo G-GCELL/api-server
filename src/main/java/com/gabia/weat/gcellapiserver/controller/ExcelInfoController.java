@@ -1,9 +1,6 @@
 package com.gabia.weat.gcellapiserver.controller;
 
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameResponseDto;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileListRequestDto;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
 
 import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
@@ -59,8 +56,8 @@ public class ExcelInfoController {
 	}
 
 	@GetMapping
-	public ResponseEntity<ApiResponseDto> getExcelInfoList(FileListRequestDto fileListRequestDto, Pageable pageable){
-		Page<ExcelInfo> excelInfos = excelInfoService.getExcelInfo(getConnectMemberEmail(), pageable, fileListRequestDto);
+	public ResponseEntity<ApiResponseDto> getExcelInfoList(@ModelAttribute FileListRequestDto fileListRequestDto, Pageable pageable){
+		Page<FileListResponseDto> excelInfos = excelInfoService.getExcelInfo(getConnectMemberEmail(), pageable, fileListRequestDto);
 		return ResponseEntity.ok(ApiResponseDto.success(excelInfos));
 	}
 

@@ -1,6 +1,7 @@
 package com.gabia.weat.gcellapiserver.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -102,16 +103,16 @@ public class ExcelInfoRepositoryTest {
 		PageRequest namePaging = PageRequest.of(0,2, Sort.Direction.ASC, "name");
 		PageRequest createdAtPaging =  PageRequest.of(0, 2, Sort.Direction.DESC, "createdAt");
 
-		FileDto.FileListRequestDto nameDto = FileDto.FileListRequestDto.builder().build();
-		FileDto.FileListRequestDto createdAtDto = FileDto.FileListRequestDto.builder().build();
+		FileListRequestDto nameDto = FileListRequestDto.builder().build();
+		FileListRequestDto createdAtDto = FileListRequestDto.builder().build();
 
 		// when
-		Page<ExcelInfo> nameResult = excelInfoRepository.findByMemberPaging(member, namePaging, nameDto);
-		Page<ExcelInfo> createdAtResult = excelInfoRepository.findByMemberPaging(member, createdAtPaging, createdAtDto);
+		Page<FileListResponseDto> nameResult = excelInfoRepository.findByMemberPaging(member, namePaging, nameDto);
+		Page<FileListResponseDto> createdAtResult = excelInfoRepository.findByMemberPaging(member, createdAtPaging, createdAtDto);
 
 		// then
-		assertThat(nameResult.getContent().get(0).getName()).isEqualTo(excelInfo1.getName());
-		assertThat(createdAtResult.getContent().get(0).getName()).isEqualTo(excelInfo2.getName());
+		assertThat(nameResult.getContent().get(0).fileName()).isEqualTo(excelInfo1.getName());
+		assertThat(createdAtResult.getContent().get(0).fileName()).isEqualTo(excelInfo2.getName());
 	}
 
 	@Test
@@ -128,32 +129,32 @@ public class ExcelInfoRepositoryTest {
 				.isDeleted(isDelete).build());
 		}
 
-		FileDto.FileListRequestDto idInCondition = FileDto.FileListRequestDto.builder().idCondition(IdCondition.NOT_IN)
-			.excelInfoId(excelInfoRepository.findAll().stream()
+		FileListRequestDto idInCondition = FileListRequestDto.builder().idCondition(IdCondition.NOT_IN)
+			.excelInfoIdList(excelInfoRepository.findAll().stream()
 				.map(e->e.getExcelInfoId())
 				.filter(e -> (e % 2) == 1)
 				.collect(Collectors.toList())).build();
-		FileDto.FileListRequestDto nameEqCondition = FileDto.FileListRequestDto.builder().nameCondition(NameCondition.EQUAL)
+		FileListRequestDto nameEqCondition = FileListRequestDto.builder().nameCondition(NameCondition.EQUAL)
 			.fileName("엔도1").build();
-		FileDto.FileListRequestDto nameInCondition = FileDto.FileListRequestDto.builder().nameCondition(NameCondition.LIKE)
+		FileListRequestDto nameInCondition = FileListRequestDto.builder().nameCondition(NameCondition.LIKE)
 			.fileName("엔도").build();
-		FileDto.FileListRequestDto createdAtGtCondition = FileDto.FileListRequestDto.builder().minCreatedAt(now).build();
-		FileDto.FileListRequestDto createdAtLtCondition = FileDto.FileListRequestDto.builder().maxCreatedAt(now).build();
-		FileDto.FileListRequestDto isDeleteCondition = FileDto.FileListRequestDto.builder().isDelete(true).build();
-		FileDto.FileListRequestDto nullCondition = FileDto.FileListRequestDto.builder().build();
+		FileListRequestDto createdAtGtCondition = FileListRequestDto.builder().minCreatedAt(now.minusMinutes(1)).build();
+		FileListRequestDto createdAtLtCondition = FileListRequestDto.builder().maxCreatedAt(now).build();
+		FileListRequestDto isDeleteCondition = FileListRequestDto.builder().isDelete(true).build();
+		FileListRequestDto nullCondition = FileListRequestDto.builder().build();
 
 		// when
-		Page<ExcelInfo> idInResult = excelInfoRepository.findByMemberPaging(member, pageRequest, idInCondition);
-		Page<ExcelInfo> nameEqResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nameEqCondition);
-		Page<ExcelInfo> nameInResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nameInCondition);
-		Page<ExcelInfo> createdAtGtResult = excelInfoRepository.findByMemberPaging(member, pageRequest, createdAtGtCondition);
-		Page<ExcelInfo> createdAtLtResult = excelInfoRepository.findByMemberPaging(member, pageRequest, createdAtLtCondition);
-		Page<ExcelInfo> isDeleteResult = excelInfoRepository.findByMemberPaging(member, pageRequest, isDeleteCondition);
-		Page<ExcelInfo> nullResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nullCondition);
+		Page<FileListResponseDto> idInResult = excelInfoRepository.findByMemberPaging(member, pageRequest, idInCondition);
+		Page<FileListResponseDto> nameEqResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nameEqCondition);
+		Page<FileListResponseDto> nameInResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nameInCondition);
+		Page<FileListResponseDto> createdAtGtResult = excelInfoRepository.findByMemberPaging(member, pageRequest, createdAtGtCondition);
+		Page<FileListResponseDto> createdAtLtResult = excelInfoRepository.findByMemberPaging(member, pageRequest, createdAtLtCondition);
+		Page<FileListResponseDto> isDeleteResult = excelInfoRepository.findByMemberPaging(member, pageRequest, isDeleteCondition);
+		Page<FileListResponseDto> nullResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nullCondition);
 
 		// then
 		assertThat(idInResult.getContent().size()).isEqualTo(5);
-		assertThat(nameEqResult.getContent().get(0).getName()).isEqualTo(nameEqCondition.fileName());
+		assertThat(nameEqResult.getContent().get(0).fileName()).isEqualTo(nameEqCondition.fileName());
 		assertThat(nameInResult.getContent().size()).isEqualTo(testSize);
 		assertThat(createdAtGtResult.getContent().size()).isEqualTo(testSize);
 		assertThat(createdAtLtResult.getContent().size()).isEqualTo(0);
@@ -180,12 +181,12 @@ public class ExcelInfoRepositoryTest {
 		}
 
 		// when
-		Page<ExcelInfo> namePagingResult = excelInfoRepository.findByMemberPaging(member,  namePaging, nameInCondition);
-		Page<ExcelInfo> createdAtPagingResult = excelInfoRepository.findByMemberPaging(member, createdAtPaging, nameInCondition);
+		Page<FileListResponseDto> namePagingResult = excelInfoRepository.findByMemberPaging(member,  namePaging, nameInCondition);
+		Page<FileListResponseDto> createdAtPagingResult = excelInfoRepository.findByMemberPaging(member, createdAtPaging, nameInCondition);
 
 		// then
-		assertThat(namePagingResult.getContent().get(0).getName()).isEqualTo("엔도0");
-		assertThat(createdAtPagingResult.getContent().get(0).getName()).isEqualTo("엔도9");
+		assertThat(namePagingResult.getContent().get(0).fileName()).isEqualTo("엔도0");
+		assertThat(createdAtPagingResult.getContent().get(0).fileName()).isEqualTo("엔도9");
 
 	}
 

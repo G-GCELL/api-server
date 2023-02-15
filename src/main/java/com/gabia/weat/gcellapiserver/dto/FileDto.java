@@ -40,7 +40,7 @@ public class FileDto {
 
 	@Builder
 	public record FileListRequestDto(
-		List<Long> excelInfoId,
+		List<Long> excelInfoIdList,
 		IdCondition idCondition,
 		String fileName,
 		NameCondition nameCondition,
@@ -51,4 +51,12 @@ public class FileDto {
 
 	}
 
+	public record FileListResponseDto(
+		Long excelInfoId,
+		String fileName,
+		LocalDateTime createdAt,
+		Boolean isDelete
+	){
+
+	}
 }

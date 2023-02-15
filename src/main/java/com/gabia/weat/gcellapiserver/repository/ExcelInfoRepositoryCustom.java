@@ -1,5 +1,7 @@
 package com.gabia.weat.gcellapiserver.repository;
 
+import static com.gabia.weat.gcellapiserver.dto.FileDto.FileListResponseDto;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,6 +11,6 @@ import com.gabia.weat.gcellapiserver.dto.FileDto;
 
 public interface ExcelInfoRepositoryCustom {
 
-	Page<ExcelInfo> findByMemberPaging(Member member , Pageable pageable, FileDto.FileListRequestDto fileListRequestDto
+	Page<FileListResponseDto> findByMemberPaging(Member member , Pageable pageable, FileDto.FileListRequestDto fileListRequestDto
 		);
 }

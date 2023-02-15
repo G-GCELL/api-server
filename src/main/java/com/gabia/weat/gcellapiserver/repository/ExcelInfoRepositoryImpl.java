@@ -17,6 +17,7 @@ import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -30,10 +31,13 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<ExcelInfo> findByMemberPaging(Member member , Pageable pageable, FileListRequestDto fileListRequestDto) {
-		List<ExcelInfo> excelInfoList = queryFactory.selectFrom(excelInfo)
+	public Page<FileListResponseDto> findByMemberPaging(Member member , Pageable pageable, FileListRequestDto fileListRequestDto) {
+		List<FileListResponseDto> excelInfoList = queryFactory.select(Projections.constructor(FileListResponseDto.class,
+				excelInfo.excelInfoId, excelInfo.name, excelInfo.createdAt, excelInfo.isDeleted
+				))
+			.from(excelInfo)
 			.where(excelInfo.member.eq(member),
-				conditionExcelInfoId(fileListRequestDto.excelInfoId(), fileListRequestDto.idCondition()),
+				conditionExcelInfoId(fileListRequestDto.excelInfoIdList(), fileListRequestDto.idCondition()),
 				conditionExcelInfoName(fileListRequestDto.fileName(), fileListRequestDto.nameCondition()),
 				conditionCreatedAt(fileListRequestDto.minCreatedAt(), fileListRequestDto.maxCreatedAt()),
 				conditionIsDelete(fileListRequestDto.isDelete())
