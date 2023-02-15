@@ -1,6 +1,7 @@
 package com.gabia.weat.gcellapiserver.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.gabia.weat.gcellapiserver.repository.enums.CreatedAtCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
@@ -40,7 +41,7 @@ public class FileDto {
 
 	@Builder
 	public record FileListRequestDto(
-		Long excelInfoId,
+		List<Long> excelInfoId,
 		IdCondition idCondition,
 		String fileName,
 		NameCondition nameCondition,

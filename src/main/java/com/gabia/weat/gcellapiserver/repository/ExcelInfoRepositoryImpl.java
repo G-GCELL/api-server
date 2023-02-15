@@ -54,17 +54,14 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 		return PageableExecutionUtils.getPage(excelInfoList, pageable, countQuery::fetchOne);
 	}
 
-	private BooleanExpression conditionExcelInfoId(Long excelInfoId, IdCondition idCondition){
+	private BooleanExpression conditionExcelInfoId(List<Long> excelInfoId, IdCondition idCondition){
 		if (excelInfoId == null){
 			return null;
-		}
-		if (IdCondition.IN.equals(idCondition)){
-			return excelInfo.excelInfoId.in(excelInfoId);
 		}
 		if (IdCondition.NOT_IN.equals(idCondition)){
 			return excelInfo.excelInfoId.notIn(excelInfoId);
 		}
-		return excelInfo.excelInfoId.eq(excelInfoId);
+		return excelInfo.excelInfoId.in(excelInfoId);
 	}
 
 	private BooleanExpression conditionExcelInfoName(String excelInfoName, NameCondition nameCondition){
