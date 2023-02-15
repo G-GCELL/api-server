@@ -108,7 +108,7 @@ public class RabbitmqConfig {
 		);
 	}
 
-	@Bean("creationProgressListenerFactory")
+	@Bean
 	SimpleRabbitListenerContainerFactory creationProgressListenerFactory() {
 		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
 		listenerContainerFactory.setConnectionFactory(connectionFactory());
