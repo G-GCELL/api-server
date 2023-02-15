@@ -34,7 +34,6 @@ sse:
 
 rabbitmq:
   direct-exchange: direct-exchange
-  creation-progress-exchange: creation-progress-exchange
-  creation-request-queue: creation-request-queue
-
-  creation-request-routing-key: creation-request-routing-key
+  file-create-progress-exchange: file-create-progress-exchange
+  file-create-request-queue: file-create-request-queue
+  file-create-request-routing-key: file-create-request-routing-key
