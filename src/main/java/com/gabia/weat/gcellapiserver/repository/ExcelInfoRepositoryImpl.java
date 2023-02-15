@@ -4,10 +4,8 @@ import static com.gabia.weat.gcellapiserver.domain.QExcelInfo.*;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,12 +13,8 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.dto.FileDto;
-import com.gabia.weat.gcellapiserver.repository.enums.CreatedAtCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
-import com.gabia.weat.gcellapiserver.repository.enums.OrderCondition;
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -41,7 +35,7 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 			.where(excelInfo.member.eq(member),
 				conditionExcelInfoId(fileListRequestDto.excelInfoId(), fileListRequestDto.idCondition()),
 				conditionExcelInfoName(fileListRequestDto.fileName(), fileListRequestDto.nameCondition()),
-				conditionCreatedAt(fileListRequestDto.createdAt(), fileListRequestDto.createdAtCondition()),
+				conditionCreatedAt(fileListRequestDto.minCreatedAt(), fileListRequestDto.maxCreatedAt()),
 				conditionIsDelete(fileListRequestDto.isDelete())
 			)
 			.orderBy(excelInfoSort(pageable))
@@ -74,14 +68,17 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom{
 		return excelInfo.name.eq(excelInfoName);
 	}
 
-	private BooleanExpression conditionCreatedAt(LocalDateTime createdAt, CreatedAtCondition createdAtCondition){
-		if (createdAt == null){
+	private BooleanExpression conditionCreatedAt(LocalDateTime minCreatedAt, LocalDateTime maxCreatedAt){
+		if (minCreatedAt == null && maxCreatedAt == null){
 			return null;
 		}
-		if (CreatedAtCondition.LESS_THAN.equals(createdAtCondition)){
-			return excelInfo.createdAt.before(createdAt);
+		if (minCreatedAt == null){
+			return excelInfo.createdAt.before(maxCreatedAt);
 		}
-		return excelInfo.createdAt.after(createdAt);
+		if (maxCreatedAt == null){
+			return excelInfo.createdAt.after(minCreatedAt);
+		}
+		return excelInfo.createdAt.between(minCreatedAt, maxCreatedAt);
 	}
 
 	private BooleanExpression conditionIsDelete(Boolean isDelete){

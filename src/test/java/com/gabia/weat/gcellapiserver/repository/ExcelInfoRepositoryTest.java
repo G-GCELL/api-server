@@ -1,10 +1,8 @@
 package com.gabia.weat.gcellapiserver.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,7 +20,6 @@ import com.gabia.weat.gcellapiserver.config.QueryDslTestConfig;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.dto.FileDto;
-import com.gabia.weat.gcellapiserver.repository.enums.CreatedAtCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 
@@ -99,7 +96,6 @@ public class ExcelInfoRepositoryTest {
 		ExcelInfo excelInfo1 = ExcelInfo.builder().name("abc").member(member).build();
 		ExcelInfo excelInfo2 = ExcelInfo.builder().name("bcd").member(member).build();
 
-		memberRepository.save(member);
 		excelInfoRepository.save(excelInfo1);
 		excelInfoRepository.save(excelInfo2);
 
@@ -126,7 +122,6 @@ public class ExcelInfoRepositoryTest {
 		LocalDateTime now = LocalDateTime.now();
 		PageRequest pageRequest = PageRequest.of(0,testSize);
 
-		memberRepository.save(member);
 		for (int i = 0; i < testSize; i++) {
 			boolean isDelete = i%2 == 1;
 			excelInfoRepository.save(ExcelInfo.builder().member(member).name("엔도" + Integer.toString(i))
@@ -142,12 +137,10 @@ public class ExcelInfoRepositoryTest {
 			.fileName("엔도1").build();
 		FileDto.FileListRequestDto nameInCondition = FileDto.FileListRequestDto.builder().nameCondition(NameCondition.LIKE)
 			.fileName("엔도").build();
-		FileDto.FileListRequestDto createdAtGtCondition = FileDto.FileListRequestDto.builder().createdAtCondition(
-				CreatedAtCondition.GREATER_THAN)
-			.createdAt(now).build();
-		FileDto.FileListRequestDto createdAtLtCondition = FileDto.FileListRequestDto.builder().createdAtCondition(CreatedAtCondition.LESS_THAN)
-			.createdAt(now).build();
+		FileDto.FileListRequestDto createdAtGtCondition = FileDto.FileListRequestDto.builder().minCreatedAt(now).build();
+		FileDto.FileListRequestDto createdAtLtCondition = FileDto.FileListRequestDto.builder().maxCreatedAt(now).build();
 		FileDto.FileListRequestDto isDeleteCondition = FileDto.FileListRequestDto.builder().isDelete(true).build();
+		FileDto.FileListRequestDto nullCondition = FileDto.FileListRequestDto.builder().build();
 
 		// when
 		Page<ExcelInfo> idInResult = excelInfoRepository.findByMemberPaging(member, pageRequest, idInCondition);
@@ -156,14 +149,16 @@ public class ExcelInfoRepositoryTest {
 		Page<ExcelInfo> createdAtGtResult = excelInfoRepository.findByMemberPaging(member, pageRequest, createdAtGtCondition);
 		Page<ExcelInfo> createdAtLtResult = excelInfoRepository.findByMemberPaging(member, pageRequest, createdAtLtCondition);
 		Page<ExcelInfo> isDeleteResult = excelInfoRepository.findByMemberPaging(member, pageRequest, isDeleteCondition);
+		Page<ExcelInfo> nullResult = excelInfoRepository.findByMemberPaging(member, pageRequest, nullCondition);
 
 		// then
 		assertThat(idInResult.getContent().size()).isEqualTo(5);
 		assertThat(nameEqResult.getContent().get(0).getName()).isEqualTo(nameEqCondition.fileName());
 		assertThat(nameInResult.getContent().size()).isEqualTo(testSize);
-		assertThat(createdAtGtResult.getContent().size()).isEqualTo(10);
+		assertThat(createdAtGtResult.getContent().size()).isEqualTo(testSize);
 		assertThat(createdAtLtResult.getContent().size()).isEqualTo(0);
 		assertThat(isDeleteResult.getContent().size()).isEqualTo(5);
+		assertThat(nullResult.getContent().size()).isEqualTo(testSize);
 
 	}
 
@@ -178,7 +173,6 @@ public class ExcelInfoRepositoryTest {
 		FileDto.FileListRequestDto nameInCondition = FileDto.FileListRequestDto.builder().nameCondition(NameCondition.LIKE)
 			.fileName("엔도").build();
 
-		memberRepository.save(member);
 		for (int i = 0; i < testSize; i++) {
 			boolean isDelete = i%2 == 1;
 			excelInfoRepository.save(ExcelInfo.builder().member(member).name("엔도" + Integer.toString(i))

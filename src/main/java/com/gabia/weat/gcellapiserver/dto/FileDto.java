@@ -3,7 +3,6 @@ package com.gabia.weat.gcellapiserver.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.gabia.weat.gcellapiserver.repository.enums.CreatedAtCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 
@@ -45,8 +44,8 @@ public class FileDto {
 		IdCondition idCondition,
 		String fileName,
 		NameCondition nameCondition,
-		LocalDateTime createdAt,
-		CreatedAtCondition createdAtCondition,
+		LocalDateTime minCreatedAt,
+		LocalDateTime maxCreatedAt,
 		Boolean isDelete
 	){
 
