@@ -46,5 +46,5 @@ public class MessageBrokerLogFormatDto extends LogFormatDto {
 		log.append("input: " + input);
 		return log.toString();
 	}
-	
+
 }
