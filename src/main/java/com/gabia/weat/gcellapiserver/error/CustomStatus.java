@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum CustomStatus {
-
+	ESSENTIAL_VALUE_ERROR(10000),
 	MEMBER_NOT_FOUND(14040),
 	MINIO_ERROR(25000),
 	EXCEL_NOT_EXISTS(24040),

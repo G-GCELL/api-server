@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-
+	BAD_REQUEST(HttpStatus.BAD_REQUEST, CustomStatus.ESSENTIAL_VALUE_ERROR, "요청 값이 잘못되었습니다."),
 	MINIO_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, CustomStatus.MINIO_ERROR, "MinIO 라이브러리 에러"),
 	EXCEL_NOT_EXISTS(HttpStatus.NOT_FOUND, CustomStatus.EXCEL_NOT_EXISTS, "해당 엑셀파일이 존재하지 않습니다."),
 	EXCEL_NOT_MATCHES(HttpStatus.FORBIDDEN, CustomStatus.EXCEL_NOT_MATCHES, "액셀파일 유저와 해당 유저가 일치하지 않습니다."),

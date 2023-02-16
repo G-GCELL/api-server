@@ -17,6 +17,7 @@ import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.service.ExcelInfoService;
 import com.gabia.weat.gcellapiserver.service.MinioService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,7 +29,7 @@ public class ExcelInfoController {
 	private final MinioService minioService;
 
 	@PostMapping(value = "")
-	public ResponseEntity<ApiResponseDto> createExcel(@RequestBody FileCreateRequestDto fileCreateRequestDto) {
+	public ResponseEntity<ApiResponseDto> createExcel(@RequestBody @Valid FileCreateRequestDto fileCreateRequestDto) {
 		Long createExcelInfoId = excelInfoService.createExcel(this.getConnectMemberEmail(), fileCreateRequestDto);
 		String downloadUrl = "/excels/" + createExcelInfoId;
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDto.success(downloadUrl));
@@ -43,7 +44,7 @@ public class ExcelInfoController {
 
 	@PatchMapping(value = "/{id}")
 	public ResponseEntity<ApiResponseDto> updateExcelName(
-		@RequestBody FileUpdateNameRequestDto fileUpdateNameRequestDto, @PathVariable("id") Long excelInfoId) {
+		@RequestBody @Valid FileUpdateNameRequestDto fileUpdateNameRequestDto, @PathVariable("id") Long excelInfoId) {
 		FileUpdateNameResponseDto fileUpdateNameResponseDto = excelInfoService.updateExcelInfoName(
 			this.getConnectMemberEmail(), excelInfoId, fileUpdateNameRequestDto);
 		return ResponseEntity.ok(ApiResponseDto.success(fileUpdateNameResponseDto));
@@ -56,7 +57,7 @@ public class ExcelInfoController {
 	}
 
 	@GetMapping
-	public ResponseEntity<ApiResponseDto> getExcelInfoList(@ModelAttribute FileListRequestDto fileListRequestDto,
+	public ResponseEntity<ApiResponseDto> getExcelInfoList(@ModelAttribute @Valid FileListRequestDto fileListRequestDto,
 		Pageable pageable) {
 		Page<FileListResponseDto> excelInfos = excelInfoService.getExcelInfo(getConnectMemberEmail(), pageable,
 			fileListRequestDto);
