@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.CodeSignature;
+import org.slf4j.event.Level;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gabia.weat.gcellapiserver.annotation.MessageLog;
 import com.gabia.weat.gcellapiserver.dto.log.ApiLogFormatDto.ApiLogFormatDtoBuilder;
 import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
@@ -53,6 +55,22 @@ public class LogAspect {
 			String input = this.getInput(joinPoint);
 			this.printApiLog(logFormatBuilder, time, input);
 			logFormatFactory.endTrace();
+		}
+	}
+
+	@Around("@annotation(messageLog)")
+	public void messageBrokerLogAdvisor(ProceedingJoinPoint joinPoint, MessageLog messageLog) throws Throwable {
+		boolean success = true;
+		Exception throwException = null;
+		try {
+			joinPoint.proceed();
+		} catch (Exception e) {
+			success = false;
+			throwException = e;
+			throw e;
+		} finally {
+			String input = this.getInput(joinPoint);
+			this.printMessageBrokerLog(success, messageLog, throwException, input);
 		}
 	}
 
@@ -110,6 +128,18 @@ public class LogAspect {
 			.methodName(stackTraceElement.getMethodName())
 			.exceptionName(e.getClass().getName())
 			.message(e.getMessage())
+			.build());
+	}
+
+	private void printMessageBrokerLog(boolean success, MessageLog messageLog, Exception exception, String input) {
+		logPrinter.logging(logFormatFactory.getMessageBrokerLogFormatBuilder()
+			.level(success ? Level.INFO : Level.ERROR)
+			.exchangeName(messageLog.exchange())
+			.queueName(messageLog.queue())
+			.success(success)
+			.exceptionName(exception.getClass().getName())
+			.message(exception.getMessage())
+			.input(input)
 			.build());
 	}
 
