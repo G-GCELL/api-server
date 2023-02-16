@@ -59,7 +59,12 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
     implementation 'commons-io:commons-io:2.11.0'
 
-
+    // QueryDSL
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    implementation "com.querydsl:querydsl-core:5.0.0"
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
 tasks.named('test') {
@@ -88,7 +93,8 @@ jacocoTestReport {
                     "**/util/**",
                     "**/error/**",
                     "**/config/**",
-                    "**/controller/**"
+                    "**/controller/**",
+                    "**/repository/enums/**"
             ])
         }))
     }
@@ -114,7 +120,8 @@ jacocoTestCoverageVerification {
                     "*.util.*",
                     "*.error.*",
                     "*.config.*",
-                    "*.controller.*"
+                    "*.controller.*",
+                    "*.repository.enums.*"
             ]
         }
     }

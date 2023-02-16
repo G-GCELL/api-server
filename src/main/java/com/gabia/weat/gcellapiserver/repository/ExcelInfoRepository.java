@@ -1,5 +1,6 @@
 package com.gabia.weat.gcellapiserver.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +11,7 @@ import com.gabia.weat.gcellapiserver.domain.Member;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ExcelInfoRepository extends JpaRepository<ExcelInfo, Long> {
+public interface ExcelInfoRepository extends JpaRepository<ExcelInfo, Long>, ExcelInfoRepositoryCustom {
 
 	Optional<ExcelInfo> findByMemberAndNameAndIsDeletedFalse(Member member, String name);
 
