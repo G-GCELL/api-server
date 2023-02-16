@@ -1,3 +1,6 @@
+server:
+  name: name
+
 spring:
   jpa:
     show-sql: true
