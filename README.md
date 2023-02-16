@@ -1,4 +1,9 @@
 ## 프로젝트 Wiki
+
+[![pipeline status](http://mentoring-gitlab.gabia.com/mentee/mentee_2023.01/team/weat/gcell-api-server/badges/dev/pipeline.svg)](http://mentoring-gitlab.gabia.com/mentee/mentee_2023.01/team/weat/gcell-api-server/-/commits/dev)
+
+[![coverage report](http://mentoring-gitlab.gabia.com/mentee/mentee_2023.01/team/weat/gcell-api-server/badges/dev/coverage.svg)](http://mentoring-gitlab.gabia.com/mentee/mentee_2023.01/team/weat/gcell-api-server/-/commits/dev)
+
 ### 👉 [Wiki Home](https://mentoring-gitlab.gabia.com/mentee/mentee_2023.01/team/weat/gcell-api-server/-/wikis/home)
 ### 👉 [개발 환경](https://mentoring-gitlab.gabia.com/mentee/mentee_2023.01/team/weat/gcell-api-server/-/wikis/%EA%B0%9C%EB%B0%9C-%ED%99%98%EA%B2%BD)
 ### 👉 [설계 문서](https://mentoring-gitlab.gabia.com/mentee/mentee_2023.01/team/weat/gcell-api-server/-/wikis/%EC%84%A4%EA%B3%84-%EB%AC%B8%EC%84%9C)
