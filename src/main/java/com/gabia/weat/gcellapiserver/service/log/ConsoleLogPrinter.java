@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ConsoleLogPrinter implements LogPrinter {
 
 	@Override
-	public void logging(LogFormatDto logFormatDto) {
+	public void print(LogFormatDto logFormatDto) {
 		log.atLevel(logFormatDto.getLevel()).log(logFormatDto.toString());
 	}
 

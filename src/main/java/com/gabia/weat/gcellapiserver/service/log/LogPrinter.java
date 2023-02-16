@@ -4,6 +4,6 @@ import com.gabia.weat.gcellapiserver.dto.log.LogFormatDto;
 
 public interface LogPrinter {
 
-	void logging(LogFormatDto logFormatDto);
+	void print(LogFormatDto logFormatDto);
 
 }
