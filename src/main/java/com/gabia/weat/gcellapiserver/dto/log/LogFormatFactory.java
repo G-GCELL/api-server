@@ -14,7 +14,7 @@ public class LogFormatFactory {
 
 	@Value("${server.name}")
 	private String serverName;
-	private static final int TRACE_ID_LENGTH = 7;
+	private final int TRACE_ID_LENGTH = 7;
 	private ThreadLocal<String> traceInfoHolder = new ThreadLocal<>();
 
 	public void startTrace() {
