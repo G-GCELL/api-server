@@ -2,6 +2,7 @@ package com.gabia.weat.gcellapiserver.service.consumer;
 
 import java.io.IOException;
 
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -21,8 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 public class CreateProgressConsumer {
 
 	private final MessageService messageService;
+	private final Queue creationProgressQueue;
 
-	@RabbitListener(queues = "${spring.rabbitmq.template.default-receive-queue}")
+	@RabbitListener(queues = "#{creationProgressQueue.getName()}")
 	public void receiveMessage(CreateProgressMsgDto createProgressMsgDto, Channel channel,
 		@Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
 		sendCreateProgressMessage(createProgressMsgDto);

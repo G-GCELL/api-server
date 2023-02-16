@@ -23,16 +23,9 @@ spring:
     port: ${RABBITMQ_PORT}
     username: ${RABBITMQ_USER}
     password: ${RABBITMQ_PASSWORD}
-    template:
-      exchange: ${EXCHANGE_NAME}
-      routing-key: ${ROUTING_KEY}
-      default-receive-queue: ${QUEUE_NAME}
-    listener:
-      simple:
-        concurrency: ${CONCURRENCY}
-        max-concurrency: ${MAX_CONCURRENCY}
-        prefetch: ${PREFETCH}
-        acknowledge-mode: manual
+
+  application:
+    name: ${SERVER_NAME}
 
 excel-info:
   file-base-url: ${FILE_BASE_URL}
@@ -48,3 +41,10 @@ minio:
 
 sse:
   timeout: ${SSE_TIMEOUT}
+
+rabbitmq:
+  direct-exchange: ${DIRECT_EXCHANGE}
+  creation-progress-exchange: ${CREATION_PROGRESS_EXCHANGE}
+  creation-request-queue: ${CREATION_REQUEST_QUEUE}
+
+  creation-request-routing-key: ${CREATION_REQUEST_ROUTING_KEY}
