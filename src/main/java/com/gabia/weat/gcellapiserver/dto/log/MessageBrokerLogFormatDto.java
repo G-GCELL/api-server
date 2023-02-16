@@ -17,16 +17,18 @@ public class MessageBrokerLogFormatDto extends LogFormatDto {
 	private String queueName;
 	private boolean success;
 	private String exceptionName;
+	private String message;
 	private String input;
 
 	@Builder
 	public MessageBrokerLogFormatDto(Level level, String serverName, String traceId, String exchangeName,
-		String queueName, boolean success, String exceptionName, String input) {
+		String queueName, boolean success, String exceptionName, String message, String input) {
 		super(level, serverName, traceId);
 		this.exchangeName = exchangeName;
 		this.queueName = queueName;
 		this.success = success;
 		this.exceptionName = exceptionName;
+		this.message = message;
 		this.input = input;
 	}
 
@@ -39,9 +41,10 @@ public class MessageBrokerLogFormatDto extends LogFormatDto {
 			this.exchangeName
 		));
 		log.append(success ? SEND_SUCCESS_PREFIX : SEND_FAIL_PREFIX);
-		log.append("(" + queueName + ")");
-		if (success) {
+		log.append("(" + queueName + ") ");
+		if (!success) {
 			log.append("cause: " + exceptionName + ", ");
+			log.append("message: " + message + ", ");
 		}
 		log.append("input: " + input);
 		return log.toString();
