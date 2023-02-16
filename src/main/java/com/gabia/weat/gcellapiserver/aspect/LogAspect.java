@@ -18,6 +18,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gabia.weat.gcellapiserver.annotation.MessageLog;
 import com.gabia.weat.gcellapiserver.dto.log.ApiLogFormatDto.ApiLogFormatDtoBuilder;
 import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
+import com.gabia.weat.gcellapiserver.dto.log.MessageBrokerLogFormatDto.MessageBrokerLogFormatDtoBuilder;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.service.log.LogPrinter;
@@ -118,12 +119,12 @@ public class LogAspect {
 			.time(time)
 			.input(input)
 			.build();
-		logPrinter.logging(logFormatBuilder.build());
+		logPrinter.print(logFormatBuilder.build());
 	}
 
 	private void printErrorLog(Exception e) {
 		StackTraceElement stackTraceElement = e.getStackTrace()[0];
-		logPrinter.logging(logFormatFactory.getErrorLogFormatBuilder()
+		logPrinter.print(logFormatFactory.getErrorLogFormatBuilder()
 			.className(stackTraceElement.getClassName())
 			.methodName(stackTraceElement.getMethodName())
 			.exceptionName(e.getClass().getName())
@@ -132,15 +133,20 @@ public class LogAspect {
 	}
 
 	private void printMessageBrokerLog(boolean success, MessageLog messageLog, Exception exception, String input) {
-		logPrinter.logging(logFormatFactory.getMessageBrokerLogFormatBuilder()
+		MessageBrokerLogFormatDtoBuilder logFormatDtoBuilder = logFormatFactory.getMessageBrokerLogFormatBuilder()
 			.level(success ? Level.INFO : Level.ERROR)
 			.exchangeName(messageLog.exchange())
 			.queueName(messageLog.queue())
 			.success(success)
-			.exceptionName(exception.getClass().getName())
-			.message(exception.getMessage())
-			.input(input)
-			.build());
+			.input(input);
+
+		if (exception != null) {
+			logFormatDtoBuilder.exceptionName(exception.getClass().getName())
+				.message(exception.getMessage());
+		}
+
+		logPrinter.print(logFormatDtoBuilder.build());
+
 	}
 
 }
