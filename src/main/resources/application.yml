@@ -1,5 +1,6 @@
 server:
   port: ${API_SERVER_PORT}
+  name: ${SERVER_NAME}
 
 spring:
   datasource:
