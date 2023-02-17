@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
@@ -25,13 +23,8 @@ import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
-import com.gabia.weat.gcellapiserver.service.producer.CreateRequestProducer;
+import com.gabia.weat.gcellapiserver.service.producer.FileCreateRequestProducer;
 import com.gabia.weat.gcellapiserver.util.ExcelInfoUtil;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(MockitoExtension.class)
 public class ExcelInfoServiceTest {
@@ -43,7 +36,7 @@ public class ExcelInfoServiceTest {
 	@Mock
 	private ExcelInfoRepository excelInfoRepository;
 	@Mock
-	private CreateRequestProducer createRequestProducer;
+	private FileCreateRequestProducer fileCreateRequestProducer;
 	@InjectMocks
 	private ExcelInfoService excelInfoService;
 
@@ -84,7 +77,7 @@ public class ExcelInfoServiceTest {
 
 		// then
 		assertThat(saveExcelInfoId).isEqualTo(excelInfo.getExcelInfoId());
-		verify(createRequestProducer, times(1)).sendMessage(any());
+		verify(fileCreateRequestProducer, times(1)).sendMessage(any());
 	}
 
 	@Test

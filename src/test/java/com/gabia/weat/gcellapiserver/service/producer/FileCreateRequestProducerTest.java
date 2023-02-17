@@ -15,13 +15,13 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateRequestProducerTest {
+public class FileCreateRequestProducerTest {
 
 	@Mock
 	private RabbitTemplate rabbitTemplate;
 
 	@InjectMocks
-	private CreateRequestProducer createRequestProducer;
+	private FileCreateRequestProducer fileCreateRequestProducer;
 
 	@Test
 	@DisplayName("엑셀_생성_요청_메시지_발행_테스트")
@@ -30,7 +30,7 @@ public class CreateRequestProducerTest {
 		FileCreateRequestMsgDto fileCreateRequestMsgDto = this.getFileCreateRequestMsgDTO();
 
 		// when & then
-		assertThatCode(() -> createRequestProducer.sendMessage(fileCreateRequestMsgDto)).doesNotThrowAnyException();
+		assertThatCode(() -> fileCreateRequestProducer.sendMessage(fileCreateRequestMsgDto)).doesNotThrowAnyException();
 		verify(rabbitTemplate, times(1)).correlationConvertAndSend(eq(fileCreateRequestMsgDto),
 			any(CorrelationData.class));
 	}
