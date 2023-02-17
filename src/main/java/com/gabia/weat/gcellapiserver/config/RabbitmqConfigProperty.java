@@ -14,14 +14,32 @@ public class RabbitmqConfigProperty {
 	private int port;
 	private String username;
 	private String password;
-	private String directExchange;
-	private String fileCreateProgressExchange;
-	private String fileCreateRequestQueue;
-	private String fileCreateProgressQueue;
-	private String fileCreateRequestRoutingKey;
+	private ExchangeProperty exchange;
+	private QueueProperty queue;
+	private RoutingKeyProperty routingKey;
 
-	public String getFileCreateProgressQueue(String applicationName) {
-		return fileCreateProgressQueue + "-" + applicationName.substring(applicationName.length() - 1);
+	@Getter
+	@AllArgsConstructor
+	public static class ExchangeProperty {
+		private String directExchange;
+		private String fileCreateProgressExchange;
+	}
+
+	@Getter
+	@AllArgsConstructor
+	public static class QueueProperty {
+		private String fileCreateRequestQueue;
+		private String fileCreateProgressQueue;
+
+		public String getFileCreateProgressQueue(String applicationName) {
+			return fileCreateProgressQueue + "-" + applicationName.substring(applicationName.length() - 1);
+		}
+	}
+
+	@Getter
+	@AllArgsConstructor
+	public static class RoutingKeyProperty {
+		private String fileCreateRequestRoutingKey;
 	}
 
 }

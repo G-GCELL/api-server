@@ -63,28 +63,28 @@ public class RabbitmqConfig {
 
 	@Bean
 	Queue fileCreateRequestQueue() {
-		return new Queue(property.getFileCreateRequestQueue(), true);
+		return new Queue(property.getQueue().getFileCreateRequestQueue(), true);
 	}
 
 	@Bean
 	Queue fileCreateProgressQueue() {
-		return new Queue(property.getFileCreateProgressQueue(applicationName), true);
+		return new Queue(property.getQueue().getFileCreateProgressQueue(applicationName), true);
 	}
 
 	@Bean
 	DirectExchange directExchange() {
-		return new DirectExchange(property.getDirectExchange(), true, false);
+		return new DirectExchange(property.getExchange().getDirectExchange(), true, false);
 	}
 
 	@Bean
 	FanoutExchange fileCreateProgressExchange() {
-		return new FanoutExchange(property.getFileCreateProgressExchange(), true, false);
+		return new FanoutExchange(property.getExchange().getFileCreateProgressExchange(), true, false);
 	}
 
 	@Bean
 	Declarables fileCreateRequestBindings() {
 		return new Declarables(
-			BindingBuilder.bind(fileCreateRequestQueue()).to(directExchange()).with(property.getFileCreateRequestRoutingKey())
+			BindingBuilder.bind(fileCreateRequestQueue()).to(directExchange()).with(property.getRoutingKey().getFileCreateRequestRoutingKey())
 		);
 	}
 
@@ -108,8 +108,8 @@ public class RabbitmqConfig {
 	RabbitTemplate fileCreateRequestRabbitTemplate() {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
 		rabbitTemplate.setMessageConverter(messageConverter());
-		rabbitTemplate.setExchange(property.getDirectExchange());
-		rabbitTemplate.setRoutingKey(property.getFileCreateRequestRoutingKey());
+		rabbitTemplate.setExchange(property.getExchange().getDirectExchange());
+		rabbitTemplate.setRoutingKey(property.getRoutingKey().getFileCreateRequestRoutingKey());
 		rabbitTemplate.setMandatory(true);
 
 		// 임시 코드
