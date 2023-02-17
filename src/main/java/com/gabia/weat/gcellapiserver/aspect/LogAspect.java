@@ -98,7 +98,7 @@ public class LogAspect {
 		logFormatBuilder.success(false).status(errorCode.getCode().getStatus());
 	}
 
-	private String getInput(ProceedingJoinPoint joinPoint) throws JsonProcessingException {
+	private String getInput(ProceedingJoinPoint joinPoint) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());
 
@@ -110,12 +110,20 @@ public class LogAspect {
 		for (int index = 0; index < paramNames.length; index++) {
 			input.append(paramNames[index]);
 			input.append(" : ");
-			input.append(objectMapper.writeValueAsString(args[index]));
+			input.append(this.parseJson(objectMapper, args[index]));
 			if (index != paramNames.length - 1)
 				input.append(", ");
 		}
 		input.append("}");
 		return input.toString();
+	}
+
+	private String parseJson(ObjectMapper mapper, Object value) {
+		try {
+			return mapper.writeValueAsString(value);
+		} catch (JsonProcessingException e) {
+			return value.toString();
+		}
 	}
 
 	private void printApiLog(ApiLogFormatDtoBuilder logFormatBuilder, long time, String input) {
