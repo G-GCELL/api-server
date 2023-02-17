@@ -25,39 +25,26 @@ import org.springframework.context.annotation.Configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
 @EnableRabbit
+@RequiredArgsConstructor
 public class RabbitmqConfig {
 
 	@Value("${spring.application.name}")
 	private String applicationName;
-	@Value("${spring.rabbitmq.host}")
-	private String host;
-	@Value("${spring.rabbitmq.port}")
-	private int port;
-	@Value("${spring.rabbitmq.username}")
-	private String username;
-	@Value("${spring.rabbitmq.password}")
-	private String password;
-	@Value("${rabbitmq.direct-exchange}")
-	private String directExchange;
-	@Value("${rabbitmq.file-create-progress-exchange}")
-	private String fileCreateProgressExchange;
-	@Value("${rabbitmq.file-create-request-queue}")
-	private String fileCreateRequestQueue;
-	@Value("${rabbitmq.file-create-request-routing-key}")
-	private String fileCreateRequestRoutingKey;
+	private final RabbitmqConfigProperty property;
 
 	@Bean
 	ConnectionFactory connectionFactory() {
 		CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-		connectionFactory.setHost(host);
-		connectionFactory.setPort(port);
-		connectionFactory.setUsername(username);
-		connectionFactory.setPassword(password);
+		connectionFactory.setHost(property.getHost());
+		connectionFactory.setPort(property.getPort());
+		connectionFactory.setUsername(property.getUsername());
+		connectionFactory.setPassword(property.getPassword());
 		connectionFactory.setPublisherReturns(true);
 		connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
 		connectionFactory.setConnectionNameStrategy(connectionNameStrategy());
@@ -76,28 +63,28 @@ public class RabbitmqConfig {
 
 	@Bean
 	Queue fileCreateRequestQueue() {
-		return new Queue(fileCreateRequestQueue, true);
+		return new Queue(property.getFileCreateRequestQueue(), true);
 	}
 
 	@Bean
 	Queue fileCreateProgressQueue() {
-		return new Queue(applicationName.toLowerCase(), true);
+		return new Queue(property.getFileCreateProgressQueue(applicationName), true);
 	}
 
 	@Bean
 	DirectExchange directExchange() {
-		return new DirectExchange(directExchange, true, false);
+		return new DirectExchange(property.getDirectExchange(), true, false);
 	}
 
 	@Bean
 	FanoutExchange fileCreateProgressExchange() {
-		return new FanoutExchange(fileCreateProgressExchange, true, false);
+		return new FanoutExchange(property.getFileCreateProgressExchange(), true, false);
 	}
 
 	@Bean
 	Declarables fileCreateRequestBindings() {
 		return new Declarables(
-			BindingBuilder.bind(fileCreateRequestQueue()).to(directExchange()).with(fileCreateRequestRoutingKey)
+			BindingBuilder.bind(fileCreateRequestQueue()).to(directExchange()).with(property.getFileCreateRequestRoutingKey())
 		);
 	}
 
@@ -121,14 +108,16 @@ public class RabbitmqConfig {
 	RabbitTemplate fileCreateRequestRabbitTemplate() {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
 		rabbitTemplate.setMessageConverter(messageConverter());
-		rabbitTemplate.setExchange(directExchange);
-		rabbitTemplate.setRoutingKey(fileCreateRequestRoutingKey);
+		rabbitTemplate.setExchange(property.getDirectExchange());
+		rabbitTemplate.setRoutingKey(property.getFileCreateRequestRoutingKey());
 		rabbitTemplate.setMandatory(true);
 
+		// 임시 코드
 		rabbitTemplate.setReturnsCallback(returned -> {
 			log.info("[반환된 메시지] " + returned);
 		});
 
+		// 임시 코드
 		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
 			if (ack && Objects.requireNonNull(correlationData).getReturned() == null) {
 				log.info("[메시지 발행 성공]");
