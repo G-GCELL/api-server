@@ -41,12 +41,12 @@ public class MessageBrokerLogFormatDto extends LogFormatDto {
 			this.exchangeName
 		));
 		log.append(success ? SEND_SUCCESS_PREFIX : SEND_FAIL_PREFIX);
-		log.append("(" + queueName + ") ");
+		log.append(String.format("(%s) ", queueName));
 		if (!success) {
-			log.append("cause: " + exceptionName + ", ");
-			log.append("message: " + message + ", ");
+			log.append(String.format("cause: %s, ", exceptionName));
+			log.append(String.format("message: %s, ", message));
 		}
-		log.append("input: " + input);
+		log.append(String.format("input: %s", input));
 		return log.toString();
 	}
 
