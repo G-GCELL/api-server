@@ -15,7 +15,7 @@ import lombok.Builder;
 public class FileDto {
 
 	public record FileCreateRequestDto(
-		@NotBlank
+
 		String fileName,
 		String[] inAccountId,
 		String[] notAccountId,

@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ApiResponseDto> validationExceptionHandler(MethodArgumentNotValidException exception){
 		return ResponseEntity.status(exception.getStatusCode())
-			.body(ApiResponseDto.fail(ErrorCode.BAD_REQUEST));
+			.body(ApiResponseDto.fail(ErrorCode.UNKNOWN_ERROR));
 	}
 
 }
