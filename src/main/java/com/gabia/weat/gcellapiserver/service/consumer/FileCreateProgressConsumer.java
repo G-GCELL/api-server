@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.gabia.weat.gcellapiserver.annotation.MessageLog;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
+import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.service.MessageService;
 import com.rabbitmq.client.Channel;
 
@@ -26,17 +27,17 @@ public class FileCreateProgressConsumer implements Consumer<FileCreateProgressMs
 	@Override
 	@MessageLog(exchange = "@fileCreateProgressExchange.getName()", queue = "@fileCreateProgressQueue.getName()")
 	@RabbitListener(queues = "#{fileCreateProgressQueue}", containerFactory = "fileCreateProgressListenerFactory")
-	public void receiveMessage(FileCreateProgressMsgDto message, Channel channel,
+	public void receiveMessage(MessageWrapperDto<FileCreateProgressMsgDto> message, Channel channel,
 		@Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
 		sendFileCreateProgressMessage(message);
 		channel.basicAck(tag, false);
 	}
 
-	private void sendFileCreateProgressMessage(FileCreateProgressMsgDto fileCreateProgressMsgDto) {
+	private void sendFileCreateProgressMessage(MessageWrapperDto<FileCreateProgressMsgDto> messageWrapperDto) {
 		messageService.sendMessageToMemberId(
-			fileCreateProgressMsgDto.memberId(),
-			MessageType.FILE_CREATION_PROGRESS,
-			fileCreateProgressMsgDto
+			messageWrapperDto.getMessage().memberId(),
+			messageWrapperDto.getMessage().messageType(),
+			messageWrapperDto
 		);
 	}
 
