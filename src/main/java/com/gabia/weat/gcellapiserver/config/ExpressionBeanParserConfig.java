@@ -30,7 +30,6 @@ public class ExpressionBeanParserConfig {
 		return new SpelExpressionParser();
 	}
 
-
 	private BeanResolver beanResolver(){
 		return (context, beanName) -> applicationContext.getBean(beanName);
 	}
