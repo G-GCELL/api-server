@@ -11,12 +11,6 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
 
-  rabbitmq:
-    host: host
-    port: 0000
-    username: username
-    password: password
-
   application:
     name: name
 
@@ -36,7 +30,15 @@ sse:
   timeout: 60000
 
 rabbitmq:
-  direct-exchange: direct-exchange
-  file-create-progress-exchange: file-create-progress-exchange
-  file-create-request-queue: file-create-request-queue
-  file-create-request-routing-key: file-create-request-routing-key
+  host: host
+  port: 0000
+  username: user
+  password: password
+  exchange:
+    direct-exchange: exchange
+    file-create-progress-exchange: exchange
+  queue:
+    file-create-request-queue: queue
+    file-create-progress-queue: queue
+  routing-key:
+    file-create-request-routing-key: key

@@ -41,8 +41,11 @@ rabbitmq:
   port: ${RABBITMQ_PORT}
   username: ${RABBITMQ_USER}
   password: ${RABBITMQ_PASSWORD}
-  direct-exchange: ${DIRECT_EXCHANGE}
-  file-create-progress-exchange: ${FILE_CREATE_PROGRESS_EXCHANGE}
-  file-create-request-queue: ${FILE_CREATE_REQUEST_QUEUE}
-  file-create-progress-queue: ${FILE_CREATE_PROGRESS_QUEUE}
-  file-create-request-routing-key: ${FILE_CREATE_REQUEST_ROUTING_KEY}
+  exchange:
+    direct-exchange: ${DIRECT_EXCHANGE}
+    file-create-progress-exchange: ${FILE_CREATE_PROGRESS_EXCHANGE}
+  queue:
+    file-create-request-queue: ${FILE_CREATE_REQUEST_QUEUE}
+    file-create-progress-queue: ${FILE_CREATE_PROGRESS_QUEUE}
+  routing-key:
+    file-create-request-routing-key: ${FILE_CREATE_REQUEST_ROUTING_KEY}
