@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.gabia.weat.gcellapiserver.annotation.MessageLog;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
+import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +18,7 @@ public class FileCreateRequestProducer implements Producer<FileCreateRequestMsgD
 
 	@Override
 	@MessageLog(exchange = "@directExchange.getName()", queue = "@fileCreateRequestQueue.getName()")
-	public void sendMessage(FileCreateRequestMsgDto message) {
+	public void sendMessage(MessageWrapperDto<FileCreateRequestMsgDto> message) {
 		CorrelationData correlationData = new CorrelationData();
 		fileCreateRequestRabbitTemplate.correlationConvertAndSend(message, correlationData);
 	}

@@ -67,4 +67,8 @@ public class LogFormatFactory {
 			.traceId(traceId);
 	}
 
+	public String getTraceId() {
+		return this.traceInfoHolder.get();
+	}
+
 }
