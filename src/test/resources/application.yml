@@ -30,15 +30,15 @@ sse:
   timeout: 60000
 
 rabbitmq:
-  host: ${RABBITMQ_HOST}
-  port: ${RABBITMQ_PORT}
-  username: ${RABBITMQ_USER}
-  password: ${RABBITMQ_PASSWORD}
+  host: host
+  port: 0000
+  username: user
+  password: password
   exchange:
-    direct-exchange: ${DIRECT_EXCHANGE}
-    file-create-progress-exchange: ${FILE_CREATE_PROGRESS_EXCHANGE}
+    direct-exchange: exchange
+    file-create-progress-exchange: exchange
   queue:
-    file-create-request-queue: ${FILE_CREATE_REQUEST_QUEUE}
-    file-create-progress-queue: ${FILE_CREATE_PROGRESS_QUEUE}
+    file-create-request-queue: queue
+    file-create-progress-queue: queue
   routing-key:
-    file-create-request-routing-key: ${FILE_CREATE_REQUEST_ROUTING_KEY}
+    file-create-request-routing-key: key
