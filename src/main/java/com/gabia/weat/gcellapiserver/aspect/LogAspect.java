@@ -22,6 +22,7 @@ import com.gabia.weat.gcellapiserver.dto.log.MessageBrokerLogFormatDto.MessageBr
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.service.log.LogPrinter;
+import com.gabia.weat.gcellapiserver.parser.CustomExpressionBeanParser;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class LogAspect {
 
 	private final LogFormatFactory logFormatFactory;
 	private final LogPrinter logPrinter;
+	private final CustomExpressionBeanParser expressionBeanParser;
 
 	@Around("within(com.gabia.weat.gcellapiserver.controller..*)")
 	public Object apiLogAdvisor(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -60,11 +62,11 @@ public class LogAspect {
 	}
 
 	@Around("@annotation(messageLog)")
-	public void messageBrokerLogAdvisor(ProceedingJoinPoint joinPoint, MessageLog messageLog) throws Throwable {
+	public Object messageBrokerLogAdvisor(ProceedingJoinPoint joinPoint, MessageLog messageLog) throws Throwable {
 		boolean success = true;
 		Exception throwException = null;
 		try {
-			joinPoint.proceed();
+			return joinPoint.proceed();
 		} catch (Exception e) {
 			success = false;
 			throwException = e;
@@ -87,7 +89,7 @@ public class LogAspect {
 	}
 
 	private void successStatus(ApiLogFormatDtoBuilder logFormatBuilder, Object result) {
-		int status = (result instanceof ResponseEntity response) ?
+		int status = result instanceof ResponseEntity response ?
 			response.getStatusCode().value() : HttpStatus.OK.value();
 		logFormatBuilder.success(true).status(status);
 	}
@@ -96,7 +98,7 @@ public class LogAspect {
 		logFormatBuilder.success(false).status(errorCode.getCode().getStatus());
 	}
 
-	private String getInput(ProceedingJoinPoint joinPoint) throws JsonProcessingException {
+	private String getInput(ProceedingJoinPoint joinPoint) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());
 
@@ -106,12 +108,22 @@ public class LogAspect {
 
 		StringBuilder input = new StringBuilder("{");
 		for (int index = 0; index < paramNames.length; index++) {
-			input.append(paramNames[index] + " : " + objectMapper.writeValueAsString(args[index]));
+			input.append(paramNames[index]);
+			input.append(" : ");
+			input.append(this.parseJson(objectMapper, args[index]));
 			if (index != paramNames.length - 1)
 				input.append(", ");
 		}
 		input.append("}");
 		return input.toString();
+	}
+
+	private String parseJson(ObjectMapper mapper, Object value) {
+		try {
+			return mapper.writeValueAsString(value);
+		} catch (JsonProcessingException e) {
+			return value.toString();
+		}
 	}
 
 	private void printApiLog(ApiLogFormatDtoBuilder logFormatBuilder, long time, String input) {
@@ -133,10 +145,12 @@ public class LogAspect {
 	}
 
 	private void printMessageBrokerLog(boolean success, MessageLog messageLog, Exception exception, String input) {
+		String exchangeName = (String)expressionBeanParser.parse(messageLog.exchange());
+		String queueName = (String)expressionBeanParser.parse(messageLog.queue());
 		MessageBrokerLogFormatDtoBuilder logFormatDtoBuilder = logFormatFactory.getMessageBrokerLogFormatBuilder()
 			.level(success ? Level.INFO : Level.ERROR)
-			.exchangeName(messageLog.exchange())
-			.queueName(messageLog.queue())
+			.exchangeName(exchangeName)
+			.queueName(queueName)
 			.success(success)
 			.input(input);
 
@@ -146,7 +160,6 @@ public class LogAspect {
 		}
 
 		logPrinter.print(logFormatDtoBuilder.build());
-
 	}
 
 }

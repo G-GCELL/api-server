@@ -34,6 +34,13 @@ public class LogFormatFactory {
 			.traceId(this.traceInfoHolder.get());
 	}
 
+	public ApiLogFormatDtoBuilder getApiLogFormatBuilder(String traceId) {
+		return ApiLogFormatDto.builder()
+			.level(Level.INFO)
+			.serverName(serverName)
+			.traceId(traceId);
+	}
+
 	public ErrorLogFormatDtoBuilder getErrorLogFormatBuilder() {
 		return ErrorLogFormatDto.builder()
 			.level(Level.ERROR)
@@ -41,10 +48,23 @@ public class LogFormatFactory {
 			.traceId(this.traceInfoHolder.get());
 	}
 
+	public ErrorLogFormatDtoBuilder getErrorLogFormatBuilder(String traceId) {
+		return ErrorLogFormatDto.builder()
+			.level(Level.ERROR)
+			.serverName(serverName)
+			.traceId(traceId);
+	}
+
 	public MessageBrokerLogFormatDtoBuilder getMessageBrokerLogFormatBuilder() {
 		return MessageBrokerLogFormatDto.builder()
 			.serverName(serverName)
 			.traceId(this.traceInfoHolder.get());
+	}
+
+	public MessageBrokerLogFormatDtoBuilder getMessageBrokerLogFormatBuilder(String traceId) {
+		return MessageBrokerLogFormatDto.builder()
+			.serverName(serverName)
+			.traceId(traceId);
 	}
 
 }
