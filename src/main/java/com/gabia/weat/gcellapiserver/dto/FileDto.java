@@ -34,10 +34,8 @@ public class FileDto {
 		@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 		LocalDateTime endDateMax,
 		@NotBlank
-		@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 		String costMin,
 		@NotBlank
-		@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 		String costMax
 	) {
 
