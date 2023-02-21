@@ -20,7 +20,7 @@ public class FileDto {
 		@NotBlank
 		String fileName,
 		@NotEmpty
-		String[] columnName,
+		String[] columnNames,
 		String[] inAccountId,
 		String[] notAccountId,
 		String[] inProductCode,
