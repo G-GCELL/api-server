@@ -22,6 +22,7 @@ public class FileDtoConverter {
 		return FileCreateRequestMsgDto.builder()
 			.memberId(memberId)
 			.fileName(newFileName)
+			.columnNames(fileCreateRequestDto.columnNames())
 			.inAccountId(fileCreateRequestDto.inAccountId())
 			.notAccountId(fileCreateRequestDto.notAccountId())
 			.inProductCode(fileCreateRequestDto.inProductCode())

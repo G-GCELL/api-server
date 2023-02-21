@@ -13,6 +13,7 @@ public class MessageDto {
 	public record FileCreateRequestMsgDto(
 		Long memberId,
 		String fileName,
+		String[] columnNames,
 		String[] inAccountId,
 		String[] notAccountId,
 		String[] inProductCode,
