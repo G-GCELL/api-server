@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "rabbitmq")
-public class RabbitmqConfigProperty {
+public class RabbitmqProperty {
 
 	private String host;
 	private int port;
