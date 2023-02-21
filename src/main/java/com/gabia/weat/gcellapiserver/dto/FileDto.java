@@ -9,6 +9,7 @@ import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
@@ -18,6 +19,8 @@ public class FileDto {
 	public record FileCreateRequestDto(
 		@NotBlank
 		String fileName,
+		@NotEmpty
+		String[] columnName,
 		String[] inAccountId,
 		String[] notAccountId,
 		String[] inProductCode,
