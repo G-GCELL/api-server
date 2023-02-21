@@ -26,7 +26,7 @@ public class FileCreateRequestProducerTest {
 
 	@Test
 	@DisplayName("엑셀_생성_요청_메시지_발행_테스트")
-	public void vsendMessage_test() {
+	public void sendMessage_test() {
 		//given
 		FileCreateRequestMsgDto fileCreateRequestMsgDto = this.getFileCreateRequestMsgDTO();
 		String traceId = "testid";
