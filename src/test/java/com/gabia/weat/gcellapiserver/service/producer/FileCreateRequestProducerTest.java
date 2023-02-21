@@ -43,6 +43,7 @@ public class FileCreateRequestProducerTest {
 		return new FileCreateRequestMsgDto(
 			1L,
 			"testFileName",
+			new String[] {"testColumn"},
 			null,
 			null,
 			null,
