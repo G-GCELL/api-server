@@ -41,6 +41,7 @@ public class ExcelInfoControllerTest {
 	private FileCreateRequestDto getFileCreateRequestDTO() {
 		return new FileCreateRequestDto(
 			"testName",
+			new String[] {"test_column"},
 			null,
 			null,
 			null,

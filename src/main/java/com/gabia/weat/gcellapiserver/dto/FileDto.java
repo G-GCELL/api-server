@@ -9,28 +9,32 @@ import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 
 public class FileDto {
 
 	public record FileCreateRequestDto(
-
+		@NotBlank
 		String fileName,
+		@NotEmpty
+		String[] columnNames,
 		String[] inAccountId,
 		String[] notAccountId,
 		String[] inProductCode,
 		String[] notProductCode,
-		@NotBlank
+		@NotNull
 		@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 		LocalDateTime startDateMin,
-		@NotBlank
+		@NotNull
 		@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 		LocalDateTime startDateMax,
-		@NotBlank
+		@NotNull
 		@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 		LocalDateTime endDateMin,
-		@NotBlank
+		@NotNull
 		@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 		LocalDateTime endDateMax,
 		@NotBlank

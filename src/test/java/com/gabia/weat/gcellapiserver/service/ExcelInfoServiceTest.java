@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
@@ -37,6 +38,8 @@ public class ExcelInfoServiceTest {
 	private ExcelInfoRepository excelInfoRepository;
 	@Mock
 	private FileCreateRequestProducer fileCreateRequestProducer;
+	@Mock
+	private LogFormatFactory logFormatFactory;
 	@InjectMocks
 	private ExcelInfoService excelInfoService;
 
@@ -130,6 +133,7 @@ public class ExcelInfoServiceTest {
 	private FileCreateRequestDto getFileCreateRequestDTO() {
 		return new FileCreateRequestDto(
 			"testName",
+			new String[] {"test_column"},
 			null,
 			null,
 			null,

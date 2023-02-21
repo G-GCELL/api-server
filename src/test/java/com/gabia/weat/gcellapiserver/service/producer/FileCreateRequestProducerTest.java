@@ -13,6 +13,7 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
+import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 
 @ExtendWith(MockitoExtension.class)
 public class FileCreateRequestProducerTest {
@@ -28,10 +29,13 @@ public class FileCreateRequestProducerTest {
 	public void sendMessage_test() {
 		//given
 		FileCreateRequestMsgDto fileCreateRequestMsgDto = this.getFileCreateRequestMsgDTO();
+		String traceId = "testid";
+		MessageWrapperDto<FileCreateRequestMsgDto> messageWrapperDto = this.getMessageWrapperDto(
+			fileCreateRequestMsgDto, traceId);
 
 		// when & then
-		assertThatCode(() -> fileCreateRequestProducer.sendMessage(fileCreateRequestMsgDto)).doesNotThrowAnyException();
-		verify(rabbitTemplate, times(1)).correlationConvertAndSend(eq(fileCreateRequestMsgDto),
+		assertThatCode(() -> fileCreateRequestProducer.sendMessage(messageWrapperDto)).doesNotThrowAnyException();
+		verify(rabbitTemplate, times(1)).correlationConvertAndSend(eq(messageWrapperDto),
 			any(CorrelationData.class));
 	}
 
@@ -50,6 +54,11 @@ public class FileCreateRequestProducerTest {
 			null,
 			null
 		);
+	}
+
+	private MessageWrapperDto<FileCreateRequestMsgDto> getMessageWrapperDto(FileCreateRequestMsgDto messageDto,
+		String traceId) {
+		return new MessageWrapperDto<>(messageDto, traceId);
 	}
 
 }

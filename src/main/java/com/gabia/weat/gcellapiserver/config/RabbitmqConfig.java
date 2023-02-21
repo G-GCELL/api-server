@@ -36,7 +36,7 @@ public class RabbitmqConfig {
 
 	@Value("${spring.application.name}")
 	private String applicationName;
-	private final RabbitmqConfigProperty property;
+	private final RabbitmqProperty property;
 
 	@Bean
 	ConnectionFactory connectionFactory() {

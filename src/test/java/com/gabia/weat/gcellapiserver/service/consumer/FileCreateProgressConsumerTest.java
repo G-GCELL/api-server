@@ -13,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
+import com.gabia.weat.gcellapiserver.dto.MessageDto;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
+import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.service.MessageService;
 import com.rabbitmq.client.Channel;
 
@@ -31,12 +33,16 @@ public class FileCreateProgressConsumerTest {
 	@DisplayName("엑셀_생성_진행률_메시지_소비_테스트")
 	public void receiveMessage_test() throws IOException {
 		// given
-		FileCreateProgressMsgDto fileCreateProgressMsgDto = this.getCreateProgressMsgDto();
+		String traceId = "testid";
 		long tag = 0L;
+		FileCreateProgressMsgDto fileCreateProgressMsgDto = this.getCreateProgressMsgDto();
+		MessageWrapperDto<FileCreateProgressMsgDto> messageWrapperDto = this.getMessageWrapperDto(
+			fileCreateProgressMsgDto, traceId);
 
 		// when & then
 		assertThatCode(
-			() -> fileCreateProgressConsumer.receiveMessage(fileCreateProgressMsgDto, channel, tag)).doesNotThrowAnyException();
+			() -> fileCreateProgressConsumer.receiveMessage(messageWrapperDto, channel,
+				tag)).doesNotThrowAnyException();
 		verify(messageService, times(1)).sendMessageToMemberId(any(), any(), any());
 		verify(channel, times(1)).basicAck(eq(tag), anyBoolean());
 	}
@@ -48,6 +54,12 @@ public class FileCreateProgressConsumerTest {
 			"testFileName",
 			10
 		);
+	}
+
+	private MessageWrapperDto<FileCreateProgressMsgDto> getMessageWrapperDto(
+		FileCreateProgressMsgDto messageDto,
+		String traceId) {
+		return new MessageWrapperDto<>(messageDto, traceId);
 	}
 
 }

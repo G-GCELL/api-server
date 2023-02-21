@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.dto.FileDto;
+import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
+import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
@@ -29,6 +30,7 @@ public class ExcelInfoService {
 	private final ExcelInfoRepository excelInfoRepository;
 	private final FileCreateRequestProducer fileCreateRequestProducer;
 	private final MinioService minioService;
+	private final LogFormatFactory logFormatFactory;
 
 	@Transactional
 	public Long createExcel(String email, FileCreateRequestDto fileCreateRequestDto) {
@@ -37,7 +39,8 @@ public class ExcelInfoService {
 		ExcelInfo excelInfo = excelInfoRepository.save(
 			this.createNewExcelInfo(member, fileCreateRequestDto.fileName(), randomFileName)
 		);
-		this.sendExcelCreateRequestMessage(member.getMemberId(), randomFileName, fileCreateRequestDto);
+		String traceId = logFormatFactory.getTraceId();
+		this.sendExcelCreateRequestMessage(member.getMemberId(), randomFileName, traceId, fileCreateRequestDto);
 		return excelInfo.getExcelInfoId();
 	}
 
@@ -87,10 +90,12 @@ public class ExcelInfoService {
 			.build();
 	}
 
-	private void sendExcelCreateRequestMessage(Long memberId, String newFileName,
+	private void sendExcelCreateRequestMessage(Long memberId, String newFileName, String traceId,
 		FileCreateRequestDto fileCreateRequestDto) {
 		fileCreateRequestProducer.sendMessage(
-			FileDtoConverter.createDtoToCreateMsgDto(memberId, newFileName, fileCreateRequestDto));
+			MessageWrapperDto.wrapMessageDto(
+				FileDtoConverter.createDtoToCreateMsgDto(memberId, newFileName, fileCreateRequestDto), traceId)
+		);
 	}
 
 }
