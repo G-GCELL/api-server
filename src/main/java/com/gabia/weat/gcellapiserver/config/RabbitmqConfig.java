@@ -34,8 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class RabbitmqConfig {
 
-	@Value("${spring.application.name}")
-	private String applicationName;
+	@Value("${server.name}")
+	private String serverName;
 	private final RabbitmqProperty property;
 
 	@Bean
@@ -53,7 +53,7 @@ public class RabbitmqConfig {
 
 	@Bean
 	ConnectionNameStrategy connectionNameStrategy() {
-		return connectionFactory -> applicationName;
+		return connectionFactory -> serverName;
 	}
 
 	@Bean
@@ -67,31 +67,16 @@ public class RabbitmqConfig {
 	}
 
 	@Bean
-	Queue fileCreateProgressQueue() {
-		return new Queue(property.getQueue().getFileCreateProgressQueue(applicationName), true);
-	}
-
-	@Bean
 	DirectExchange directExchange() {
 		return new DirectExchange(property.getExchange().getDirectExchange(), true, false);
 	}
 
 	@Bean
-	FanoutExchange fileCreateProgressExchange() {
-		return new FanoutExchange(property.getExchange().getFileCreateProgressExchange(), true, false);
-	}
-
-	@Bean
 	Declarables fileCreateRequestBindings() {
 		return new Declarables(
-			BindingBuilder.bind(fileCreateRequestQueue()).to(directExchange()).with(property.getRoutingKey().getFileCreateRequestRoutingKey())
-		);
-	}
-
-	@Bean
-	Declarables fileCreateProgressBindings() {
-		return new Declarables(
-			BindingBuilder.bind(fileCreateProgressQueue()).to(fileCreateProgressExchange())
+			BindingBuilder.bind(fileCreateRequestQueue())
+				.to(directExchange())
+				.with(property.getRoutingKey().getFileCreateRequestRoutingKey())
 		);
 	}
 
@@ -100,6 +85,8 @@ public class RabbitmqConfig {
 		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
 		listenerContainerFactory.setConnectionFactory(connectionFactory());
 		listenerContainerFactory.setMessageConverter(messageConverter());
+		listenerContainerFactory.setContainerCustomizer(
+			container -> container.setQueueNames(property.getQueue().getFileCreateProgressQueue(serverName)));
 		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 		return listenerContainerFactory;
 	}

@@ -18,9 +18,6 @@ spring:
         default_batch_fetch_size: ${FETCH_SIZE}
     open-in-view: false
 
-  application:
-    name: ${SERVER_NAME}
-
 excel-info:
   file-base-url: ${FILE_BASE_URL}
   excel-extension: ${EXCEL_EXTENSION}
@@ -43,7 +40,6 @@ rabbitmq:
   password: ${RABBITMQ_PASSWORD}
   exchange:
     direct-exchange: ${DIRECT_EXCHANGE}
-    file-create-progress-exchange: ${FILE_CREATE_PROGRESS_EXCHANGE}
   queue:
     file-create-request-queue: ${FILE_CREATE_REQUEST_QUEUE}
     file-create-progress-queue: ${FILE_CREATE_PROGRESS_QUEUE}
