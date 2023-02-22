@@ -67,31 +67,14 @@ public class RabbitmqConfig {
 	}
 
 	@Bean
-	Queue fileCreateProgressQueue() {
-		return new Queue(property.getQueue().getFileCreateProgressQueue(applicationName), true);
-	}
-
-	@Bean
 	DirectExchange directExchange() {
 		return new DirectExchange(property.getExchange().getDirectExchange(), true, false);
-	}
-
-	@Bean
-	FanoutExchange fileCreateProgressExchange() {
-		return new FanoutExchange(property.getExchange().getFileCreateProgressExchange(), true, false);
 	}
 
 	@Bean
 	Declarables fileCreateRequestBindings() {
 		return new Declarables(
 			BindingBuilder.bind(fileCreateRequestQueue()).to(directExchange()).with(property.getRoutingKey().getFileCreateRequestRoutingKey())
-		);
-	}
-
-	@Bean
-	Declarables fileCreateProgressBindings() {
-		return new Declarables(
-			BindingBuilder.bind(fileCreateProgressQueue()).to(fileCreateProgressExchange())
 		);
 	}
 
