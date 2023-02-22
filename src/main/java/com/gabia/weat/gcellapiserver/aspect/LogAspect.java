@@ -4,7 +4,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.CodeSignature;
-import org.slf4j.event.Level;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +14,17 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.gabia.weat.gcellapiserver.annotation.MessageLog;
+import com.gabia.weat.gcellapiserver.annotation.ConsumerLog;
+import com.gabia.weat.gcellapiserver.annotation.ProducerLog;
+import com.gabia.weat.gcellapiserver.domain.type.TargetType;
+import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.dto.log.ApiLogFormatDto.ApiLogFormatDtoBuilder;
 import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
 import com.gabia.weat.gcellapiserver.dto.log.MessageBrokerLogFormatDto.MessageBrokerLogFormatDtoBuilder;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.service.log.LogPrinter;
-import com.gabia.weat.gcellapiserver.parser.CustomExpressionBeanParser;
+import com.gabia.weat.gcellapiserver.parser.CustomExpressionParser;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,7 @@ public class LogAspect {
 
 	private final LogFormatFactory logFormatFactory;
 	private final LogPrinter logPrinter;
-	private final CustomExpressionBeanParser expressionBeanParser;
+	private final CustomExpressionParser expressionBeanParser;
 
 	@Around("within(com.gabia.weat.gcellapiserver.controller..*)")
 	public Object apiLogAdvisor(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -61,19 +63,34 @@ public class LogAspect {
 		}
 	}
 
-	@Around("@annotation(messageLog)")
-	public Object messageBrokerLogAdvisor(ProceedingJoinPoint joinPoint, MessageLog messageLog) throws Throwable {
-		boolean success = true;
-		Exception throwException = null;
+	@Around("@annotation(consumerLog)")
+	public Object consumerLogAdvisor(ProceedingJoinPoint joinPoint, ConsumerLog consumerLog) throws Throwable {
+		this.setTraceId(joinPoint);
+		return this.messageLogAdviceLog(joinPoint, TargetType.CONSUMER, consumerLog.queue());
+	}
+
+	@Around("@annotation(producerLog)")
+	public Object producerLogAdvisor(ProceedingJoinPoint joinPoint, ProducerLog producerLog) throws Throwable {
+		return this.messageLogAdviceLog(joinPoint, TargetType.PRODUCER, producerLog.exchange());
+	}
+
+	private Object messageLogAdviceLog(ProceedingJoinPoint joinPoint, TargetType type, String target) throws Throwable {
 		try {
+			this.printMessageBrokerLog(type, target, this.getInput(joinPoint));
 			return joinPoint.proceed();
 		} catch (Exception e) {
-			success = false;
-			throwException = e;
-			throw e;
-		} finally {
-			String input = this.getInput(joinPoint);
-			this.printMessageBrokerLog(success, messageLog, throwException, input);
+			this.printErrorLog(e);
+		}
+		return null;
+	}
+
+	private void setTraceId(ProceedingJoinPoint joinPoint){
+		Object[] args = joinPoint.getArgs();
+		for (Object arg : args){
+			if (arg instanceof MessageWrapperDto<?> dto){
+				logFormatFactory.startTrace(dto.getTraceId());
+				break;
+			}
 		}
 	}
 
@@ -144,22 +161,16 @@ public class LogAspect {
 			.build());
 	}
 
-	private void printMessageBrokerLog(boolean success, MessageLog messageLog, Exception exception, String input) {
-		String exchangeName = (String)expressionBeanParser.parse(messageLog.exchange());
-		String queueName = (String)expressionBeanParser.parse(messageLog.queue());
+	private void printMessageBrokerLog(TargetType type, String target, String input) {
+		String targetName = (String)expressionBeanParser.parse(target);
 		MessageBrokerLogFormatDtoBuilder logFormatDtoBuilder = logFormatFactory.getMessageBrokerLogFormatBuilder()
-			.level(success ? Level.INFO : Level.ERROR)
-			.exchangeName(exchangeName)
-			.queueName(queueName)
-			.success(success)
+			.type(type)
+			.exchangeName(type == TargetType.PRODUCER ? targetName : null)
+			.queueName(type == TargetType.CONSUMER ? targetName : null)
 			.input(input);
-
-		if (exception != null) {
-			logFormatDtoBuilder.exceptionName(exception.getClass().getName())
-				.message(exception.getMessage());
-		}
 
 		logPrinter.print(logFormatDtoBuilder.build());
 	}
+
 
 }
