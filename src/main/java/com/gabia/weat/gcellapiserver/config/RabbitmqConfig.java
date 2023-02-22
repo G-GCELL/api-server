@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RabbitmqConfig {
 
 	@Value("${spring.application.name}")
-	private String applicationName;
+	private String serverName;
 	private final RabbitmqProperty property;
 
 	@Bean
@@ -53,7 +53,7 @@ public class RabbitmqConfig {
 
 	@Bean
 	ConnectionNameStrategy connectionNameStrategy() {
-		return connectionFactory -> applicationName;
+		return connectionFactory -> serverName;
 	}
 
 	@Bean
@@ -74,7 +74,9 @@ public class RabbitmqConfig {
 	@Bean
 	Declarables fileCreateRequestBindings() {
 		return new Declarables(
-			BindingBuilder.bind(fileCreateRequestQueue()).to(directExchange()).with(property.getRoutingKey().getFileCreateRequestRoutingKey())
+			BindingBuilder.bind(fileCreateRequestQueue())
+				.to(directExchange())
+				.with(property.getRoutingKey().getFileCreateRequestRoutingKey())
 		);
 	}
 
@@ -83,6 +85,8 @@ public class RabbitmqConfig {
 		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
 		listenerContainerFactory.setConnectionFactory(connectionFactory());
 		listenerContainerFactory.setMessageConverter(messageConverter());
+		listenerContainerFactory.setContainerCustomizer(
+			container -> container.setQueueNames(property.getQueue().getFileCreateProgressQueue(serverName)));
 		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 		return listenerContainerFactory;
 	}

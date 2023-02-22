@@ -26,7 +26,7 @@ public class FileCreateProgressConsumer implements Consumer<FileCreateProgressMs
 
 	@Override
 	@MessageLog(exchange = "@fileCreateProgressExchange.getName()", queue = "@fileCreateProgressQueue.getName()")
-	@RabbitListener(queues = "#{fileCreateProgressQueue}", containerFactory = "fileCreateProgressListenerFactory")
+	@RabbitListener(containerFactory = "fileCreateProgressListenerFactory")
 	public void receiveMessage(MessageWrapperDto<FileCreateProgressMsgDto> message, Channel channel,
 		@Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
 		sendFileCreateProgressMessage(message);

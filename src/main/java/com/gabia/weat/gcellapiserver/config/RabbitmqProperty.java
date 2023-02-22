@@ -30,8 +30,8 @@ public class RabbitmqProperty {
 		private String fileCreateRequestQueue;
 		private String fileCreateProgressQueue;
 
-		public String getFileCreateProgressQueue(String applicationName) {
-			return fileCreateProgressQueue + "-" + applicationName.substring(applicationName.length() - 1);
+		public String getFileCreateProgressQueue(String serverName) {
+			return fileCreateProgressQueue + "-" + serverName.substring(serverName.length() - 1);
 		}
 	}
 
