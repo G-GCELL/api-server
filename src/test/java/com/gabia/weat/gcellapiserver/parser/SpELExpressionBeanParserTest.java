@@ -7,15 +7,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.expression.BeanResolver;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import com.gabia.weat.gcellapiserver.config.ExpressionBeanParserConfig;
 
-@SpringBootTest(classes = {ExpressionBeanParserConfig.class, SpELExpressionBeanParserTest.TestBeanConfig.class})
+@SpringBootTest(classes = {
+	ApplicationContext.class,
+	SpELExpressionBeanParserTest.TestExpressionParserConfig.class,
+	SpELExpressionBeanParserTest.TestBeanConfig.class
+})
 public class SpELExpressionBeanParserTest {
 
 	@Autowired
-	private CustomExpressionBeanParser expressionBeanParser;
+	private CustomExpressionParser expressionParser;
 
 	@Test
 	@DisplayName("SpEL 표현식 파싱 테스트")
@@ -24,10 +32,33 @@ public class SpELExpressionBeanParserTest {
 		String spEL = "@testBean.getValue()";
 
 		// when
-		String value = (String)expressionBeanParser.parse(spEL);
+		String value = (String)expressionParser.parse(spEL);
 
 		// then
 		assertThat(value).isEqualTo("test");
+
+	}
+
+	@TestConfiguration
+	public static class TestExpressionParserConfig{
+
+		@Autowired
+		private ApplicationContext applicationContext;
+
+		@Bean
+		public CustomExpressionParser expressionBeanParser(){
+			StandardEvaluationContext context = new StandardEvaluationContext();
+			context.setBeanResolver(this.beanResolver());
+			return new SpELExpressionBeanParser(this.expressionParser(), context);
+		}
+
+		private ExpressionParser expressionParser(){
+			return new SpelExpressionParser();
+		}
+
+		private BeanResolver beanResolver(){
+			return (context, beanName) -> applicationContext.getBean(beanName);
+		}
 
 	}
 
