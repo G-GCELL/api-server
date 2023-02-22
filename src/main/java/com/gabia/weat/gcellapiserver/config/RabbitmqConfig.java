@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class RabbitmqConfig {
 
-	@Value("${spring.application.name}")
+	@Value("${server.name}")
 	private String serverName;
 	private final RabbitmqProperty property;
 
