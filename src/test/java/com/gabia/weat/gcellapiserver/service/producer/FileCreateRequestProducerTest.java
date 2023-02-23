@@ -3,6 +3,8 @@ package com.gabia.weat.gcellapiserver.service.producer;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +45,7 @@ public class FileCreateRequestProducerTest {
 		return new FileCreateRequestMsgDto(
 			1L,
 			"testFileName",
-			new String[] {"testColumn"},
+			List.of("testColumn"),
 			null,
 			null,
 			null,

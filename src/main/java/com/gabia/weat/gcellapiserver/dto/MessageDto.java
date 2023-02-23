@@ -2,6 +2,7 @@ package com.gabia.weat.gcellapiserver.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 
@@ -13,11 +14,11 @@ public class MessageDto {
 	public record FileCreateRequestMsgDto(
 		Long memberId,
 		String fileName,
-		String[] columnNames,
-		String[] inAccountId,
-		String[] notAccountId,
-		String[] inProductCode,
-		String[] notProductCode,
+		List<String> columnNames,
+		List<String> inAccountId,
+		List<String> notAccountId,
+		List<String> inProductCode,
+		List<String> notProductCode,
 		LocalDateTime startDateMin,
 		LocalDateTime startDateMax,
 		LocalDateTime endDateMin,

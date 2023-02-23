@@ -2,6 +2,7 @@ package com.gabia.weat.gcellapiserver.service;
 
 import static org.mockito.BDDMockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -133,7 +134,7 @@ public class ExcelInfoServiceTest {
 	private FileCreateRequestDto getFileCreateRequestDTO() {
 		return new FileCreateRequestDto(
 			"testName",
-			new String[] {"test_column"},
+			List.of("test_column"),
 			null,
 			null,
 			null,
