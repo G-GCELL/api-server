@@ -20,11 +20,11 @@ public class FileDto {
 		@NotBlank
 		String fileName,
 		@NotEmpty
-		String[] columnNames,
-		String[] inAccountId,
-		String[] notAccountId,
-		String[] inProductCode,
-		String[] notProductCode,
+		List<String> columnNames,
+		List<String> inAccountId,
+		List<String> notAccountId,
+		List<String> inProductCode,
+		List<String> notProductCode,
 		@NotNull
 		@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 		LocalDateTime startDateMin,

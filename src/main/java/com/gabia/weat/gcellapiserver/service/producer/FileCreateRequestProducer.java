@@ -4,7 +4,7 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import com.gabia.weat.gcellapiserver.annotation.MessageLog;
+import com.gabia.weat.gcellapiserver.annotation.ProducerLog;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 
@@ -17,7 +17,7 @@ public class FileCreateRequestProducer implements Producer<FileCreateRequestMsgD
 	private final RabbitTemplate fileCreateRequestRabbitTemplate;
 
 	@Override
-	@MessageLog(exchange = "@directExchange.getName()", queue = "@fileCreateRequestQueue.getName()")
+	@ProducerLog(exchange = "${rabbitmq.exchange.direct-exchange}")
 	public void sendMessage(MessageWrapperDto<FileCreateRequestMsgDto> message) {
 		CorrelationData correlationData = new CorrelationData();
 		fileCreateRequestRabbitTemplate.correlationConvertAndSend(message, correlationData);

@@ -11,6 +11,8 @@ import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
 
+import java.util.List;
+
 import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;
 import com.gabia.weat.gcellapiserver.service.ExcelInfoService;
 
@@ -41,7 +43,7 @@ public class ExcelInfoControllerTest {
 	private FileCreateRequestDto getFileCreateRequestDTO() {
 		return new FileCreateRequestDto(
 			"testName",
-			new String[] {"test_column"},
+			List.of("test_column"),
 			null,
 			null,
 			null,

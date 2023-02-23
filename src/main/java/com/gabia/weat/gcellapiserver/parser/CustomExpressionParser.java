@@ -1,6 +1,6 @@
 package com.gabia.weat.gcellapiserver.parser;
 
-public interface CustomExpressionBeanParser {
+public interface CustomExpressionParser {
 
 	Object parse(String value);
 

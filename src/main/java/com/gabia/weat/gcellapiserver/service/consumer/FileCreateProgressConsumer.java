@@ -7,8 +7,7 @@ import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
-import com.gabia.weat.gcellapiserver.annotation.MessageLog;
-import com.gabia.weat.gcellapiserver.domain.type.MessageType;
+import com.gabia.weat.gcellapiserver.annotation.ConsumerLog;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.service.MessageService;
@@ -25,7 +24,7 @@ public class FileCreateProgressConsumer implements Consumer<FileCreateProgressMs
 	private final MessageService messageService;
 
 	@Override
-	@MessageLog(exchange = "@fileCreateProgressExchange.getName()", queue = "@fileCreateProgressQueue.getName()")
+	@ConsumerLog(queue = "${rabbitmq.queue.file-create-progress-queue}")
 	@RabbitListener(containerFactory = "fileCreateProgressListenerFactory")
 	public void receiveMessage(MessageWrapperDto<FileCreateProgressMsgDto> message, Channel channel,
 		@Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
