@@ -21,8 +21,7 @@ public class MessageBrokerLogFormatDto extends LogFormatDto {
 
 	@Builder
 	public MessageBrokerLogFormatDto(Level level, String serverName, String traceId, TargetType type,
-		String exchangeName,
-		String queueName, String input) {
+		String exchangeName, String queueName, String input) {
 		super(level, serverName, traceId);
 		this.type = type;
 		this.exchangeName = exchangeName;
