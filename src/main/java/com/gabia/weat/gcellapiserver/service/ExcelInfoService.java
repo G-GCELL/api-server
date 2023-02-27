@@ -40,7 +40,7 @@ public class ExcelInfoService {
 			this.createNewExcelInfo(member, fileCreateRequestDto.fileName(), randomFileName)
 		);
 		String traceId = logFormatFactory.getTraceId();
-		this.sendExcelCreateRequestMessage(member.getMemberId(), randomFileName, traceId, fileCreateRequestDto);
+		this.sendExcelCreateRequestMessage(member.getMemberId(), excelInfo.getExcelInfoId(), randomFileName, traceId, fileCreateRequestDto);
 		return excelInfo.getExcelInfoId();
 	}
 
@@ -90,11 +90,17 @@ public class ExcelInfoService {
 			.build();
 	}
 
-	private void sendExcelCreateRequestMessage(Long memberId, String newFileName, String traceId,
-		FileCreateRequestDto fileCreateRequestDto) {
+	private void sendExcelCreateRequestMessage(
+		Long memberId,
+		Long excelInfoId,
+		String newFileName,
+		String traceId,
+		FileCreateRequestDto fileCreateRequestDto
+	) {
 		fileCreateRequestProducer.sendMessage(
 			MessageWrapperDto.wrapMessageDto(
-				FileDtoConverter.createDtoToCreateMsgDto(memberId, newFileName, fileCreateRequestDto), traceId)
+				FileDtoConverter.createDtoToCreateMsgDto(memberId, excelInfoId, newFileName, fileCreateRequestDto),
+				traceId)
 		);
 	}
 

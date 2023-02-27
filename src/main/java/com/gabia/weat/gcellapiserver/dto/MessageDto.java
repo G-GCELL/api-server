@@ -7,12 +7,14 @@ import java.util.List;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 
 import lombok.Builder;
+import lombok.Setter;
 
 public class MessageDto {
 
 	@Builder
 	public record FileCreateRequestMsgDto(
 		Long memberId,
+		Long excelInfoId,
 		String fileName,
 		List<String> columnNames,
 		List<String> inAccountId,
@@ -31,10 +33,19 @@ public class MessageDto {
 
 	public record FileCreateProgressMsgDto(
 		Long memberId,
+		Long excelInfoId,
 		MessageType messageType,
 		String memberFileName,
 		Integer progressRate
 	) {
+
+	}
+
+	public record FileCreateCompleteMsgDto(
+		Long memberId,
+		Long excelInfoId,
+		String fileName
+	){
 
 	}
 
