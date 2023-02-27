@@ -3,6 +3,7 @@ package com.gabia.weat.gcellapiserver.config;
 import java.util.Objects;
 
 import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Declarables;
 import org.springframework.amqp.core.DirectExchange;
@@ -59,6 +60,22 @@ public class RabbitmqConfig {
 	@Bean
 	RabbitAdmin rabbitAdmin() {
 		return new RabbitAdmin(connectionFactory());
+	}
+
+	@Bean
+	FanoutExchange fileCreateProgressExchange() {
+		return new FanoutExchange(property.getExchange().getFileCreateProgressExchange(), true, false);
+	}
+
+	@Bean
+	Queue fileCreateProgressQueue() {
+		return new Queue(property.getQueue().getFileCreateProgressQueue(serverName), true);
+	}
+
+	@Bean
+	Binding fileCreateProgressBinding() {
+		return BindingBuilder.bind(fileCreateProgressQueue())
+			.to(fileCreateProgressExchange());
 	}
 
 	@Bean
