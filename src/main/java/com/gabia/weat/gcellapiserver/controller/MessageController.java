@@ -5,26 +5,35 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import com.gabia.weat.gcellapiserver.service.MessageService;
+import com.gabia.weat.gcellapiserver.service.MessageSender;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@CrossOrigin("*") // 임시 코드
 @RequiredArgsConstructor
 public class MessageController {
 
 	@Value("${sse.timeout}")
 	private long sseTimeOut;
-	private final MessageService messageService;
+	private final MessageSender messageSender;
 
-	@CrossOrigin("*")
+
 	@GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public ResponseEntity<SseEmitter> connect() {
+	public ResponseEntity<SseEmitter> connectProgress() {
 		SseEmitter sseEmitter = new SseEmitter(sseTimeOut);
-		messageService.connect(this.getConnectMemberEmail(), sseEmitter);
+		messageSender.connect(this.getConnectMemberEmail(), sseEmitter);
+		return ResponseEntity.ok(sseEmitter);
+	}
+
+	@GetMapping(value = "/connect/file/{excel-info-id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public ResponseEntity<SseEmitter> connectComplete(@PathVariable("excel-info-id") Long excelInfoId) {
+		SseEmitter sseEmitter = new SseEmitter(sseTimeOut);
+		messageSender.registryFileConnection(excelInfoId, sseEmitter);
 		return ResponseEntity.ok(sseEmitter);
 	}
 
