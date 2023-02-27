@@ -40,6 +40,7 @@ rabbitmq:
   password: ${RABBITMQ_PASSWORD}
   exchange:
     direct-exchange: ${DIRECT_EXCHANGE}
+    file-create-progress-exchange: ${FILE_CREATE_PROGRESS_EXCHANGE}
   queue:
     file-create-progress-queue: ${FILE_CREATE_PROGRESS_QUEUE}
   routing-key:
