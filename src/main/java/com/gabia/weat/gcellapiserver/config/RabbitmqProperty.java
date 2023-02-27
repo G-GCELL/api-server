@@ -27,7 +27,6 @@ public class RabbitmqProperty {
 	@Getter
 	@AllArgsConstructor
 	public static class QueueProperty {
-		private String fileCreateRequestQueue;
 		private String fileCreateProgressQueue;
 
 		public String getFileCreateProgressQueue(String serverName) {
