@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;

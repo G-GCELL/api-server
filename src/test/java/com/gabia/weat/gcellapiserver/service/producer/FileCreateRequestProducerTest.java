@@ -44,6 +44,7 @@ public class FileCreateRequestProducerTest {
 	private FileCreateRequestMsgDto getFileCreateRequestMsgDTO() {
 		return new FileCreateRequestMsgDto(
 			1L,
+			1L,
 			"testFileName",
 			List.of("testColumn"),
 			null,
