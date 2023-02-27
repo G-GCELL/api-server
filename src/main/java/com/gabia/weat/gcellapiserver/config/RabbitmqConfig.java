@@ -62,25 +62,6 @@ public class RabbitmqConfig {
 	}
 
 	@Bean
-	Queue fileCreateRequestQueue() {
-		return new Queue(property.getQueue().getFileCreateRequestQueue(), true);
-	}
-
-	@Bean
-	DirectExchange directExchange() {
-		return new DirectExchange(property.getExchange().getDirectExchange(), true, false);
-	}
-
-	@Bean
-	Declarables fileCreateRequestBindings() {
-		return new Declarables(
-			BindingBuilder.bind(fileCreateRequestQueue())
-				.to(directExchange())
-				.with(property.getRoutingKey().getFileCreateRequestRoutingKey())
-		);
-	}
-
-	@Bean
 	SimpleRabbitListenerContainerFactory fileCreateProgressListenerFactory() {
 		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
 		listenerContainerFactory.setConnectionFactory(connectionFactory());
