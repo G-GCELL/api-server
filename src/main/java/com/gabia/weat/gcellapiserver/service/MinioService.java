@@ -46,7 +46,6 @@ public class MinioService {
 		}
 	}
 
-	@Transactional
 	public void deleteExcel(ExcelInfo excelInfo) {
 		try {
 			minioClient.removeObject(

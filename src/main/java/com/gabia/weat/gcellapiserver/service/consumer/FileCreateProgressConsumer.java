@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.gabia.weat.gcellapiserver.annotation.ConsumerLog;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
-import com.gabia.weat.gcellapiserver.service.MessageService;
+import com.gabia.weat.gcellapiserver.service.MessageHandler;
 import com.rabbitmq.client.Channel;
 
 import lombok.RequiredArgsConstructor;
@@ -21,23 +21,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class FileCreateProgressConsumer implements Consumer<FileCreateProgressMsgDto> {
 
-	private final MessageService messageService;
+	private final MessageHandler messageHandler;
 
 	@Override
 	@ConsumerLog(queue = "${rabbitmq.queue.file-create-progress-queue}")
 	@RabbitListener(containerFactory = "fileCreateProgressListenerFactory")
 	public void receiveMessage(MessageWrapperDto<FileCreateProgressMsgDto> message, Channel channel,
 		@Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
-		sendFileCreateProgressMessage(message);
+		messageHandler.sendCreateExcelMsg(message);
 		channel.basicAck(tag, false);
-	}
-
-	private void sendFileCreateProgressMessage(MessageWrapperDto<FileCreateProgressMsgDto> messageWrapperDto) {
-		messageService.sendMessageToMemberId(
-			messageWrapperDto.getMessage().memberId(),
-			messageWrapperDto.getMessage().messageType(),
-			messageWrapperDto
-		);
 	}
 
 }

@@ -13,10 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
-import com.gabia.weat.gcellapiserver.dto.MessageDto;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
-import com.gabia.weat.gcellapiserver.service.MessageService;
+import com.gabia.weat.gcellapiserver.service.MessageHandler;
 import com.rabbitmq.client.Channel;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +24,7 @@ public class FileCreateProgressConsumerTest {
 	@Mock
 	private Channel channel;
 	@Mock
-	private MessageService messageService;
+	private MessageHandler messageHandler;
 	@InjectMocks
 	private FileCreateProgressConsumer fileCreateProgressConsumer;
 
@@ -43,12 +42,13 @@ public class FileCreateProgressConsumerTest {
 		assertThatCode(
 			() -> fileCreateProgressConsumer.receiveMessage(messageWrapperDto, channel,
 				tag)).doesNotThrowAnyException();
-		verify(messageService, times(1)).sendMessageToMemberId(any(), any(), any());
+		verify(messageHandler, times(1)).sendCreateExcelMsg(any());
 		verify(channel, times(1)).basicAck(eq(tag), anyBoolean());
 	}
 
 	private FileCreateProgressMsgDto getCreateProgressMsgDto() {
 		return new FileCreateProgressMsgDto(
+			1L,
 			1L,
 			MessageType.FILE_CREATION_PROGRESS,
 			"testFileName",
