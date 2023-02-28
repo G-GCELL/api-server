@@ -68,8 +68,18 @@ public class RabbitmqConfig {
 	}
 
 	@Bean
+	FanoutExchange fileCreateErrorExchange() {
+		return new FanoutExchange(property.getExchange().getFileCreateErrorExchange(), true, false);
+	}
+
+	@Bean
 	Queue fileCreateProgressQueue() {
 		return new Queue(property.getQueue().getFileCreateProgressQueue(serverName), true);
+	}
+
+	@Bean
+	Queue fileCreateErrorQueue() {
+		return new Queue(property.getQueue().getFileCreateErrorQueue(serverName), true);
 	}
 
 	@Bean
@@ -79,12 +89,31 @@ public class RabbitmqConfig {
 	}
 
 	@Bean
+	Binding fileCreateErrorBinding() {
+		return BindingBuilder.bind(fileCreateErrorQueue())
+			.to(fileCreateErrorExchange());
+	}
+
+	@Bean
 	SimpleRabbitListenerContainerFactory fileCreateProgressListenerFactory() {
 		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
 		listenerContainerFactory.setConnectionFactory(connectionFactory());
 		listenerContainerFactory.setMessageConverter(messageConverter());
 		listenerContainerFactory.setContainerCustomizer(
-			container -> container.setQueueNames(property.getQueue().getFileCreateProgressQueue(serverName)));
+			container -> container.setQueues(fileCreateProgressQueue())
+		);
+		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+		return listenerContainerFactory;
+	}
+
+	@Bean
+	SimpleRabbitListenerContainerFactory fileCreateErrorListenerFactory() {
+		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+		listenerContainerFactory.setConnectionFactory(connectionFactory());
+		listenerContainerFactory.setMessageConverter(messageConverter());
+		listenerContainerFactory.setContainerCustomizer(
+			container -> container.setQueues(fileCreateErrorQueue())
+		);
 		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 		return listenerContainerFactory;
 	}
