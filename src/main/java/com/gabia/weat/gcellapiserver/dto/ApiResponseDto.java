@@ -25,4 +25,8 @@ public class ApiResponseDto<T> {
 		return new ApiResponseDto(false, null, new ErrorDto(errorCode.getCode().getStatus(), errorCode.getMessage()));
 	}
 
+	public static ApiResponseDto fail(ErrorDto errorDto) {
+		return new ApiResponseDto(false, null, errorDto);
+	}
+
 }
