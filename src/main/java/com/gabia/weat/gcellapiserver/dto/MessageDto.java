@@ -7,7 +7,6 @@ import java.util.List;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 
 import lombok.Builder;
-import lombok.Setter;
 
 public class MessageDto {
 
@@ -46,6 +45,15 @@ public class MessageDto {
 		Long excelInfoId,
 		String fileName
 	){
+
+	}
+
+	public record FileCreateErrorMsgDto(
+		Long memberId,
+		Long excelInfoId,
+		int errorCode,
+		String errorMessage
+	) {
 
 	}
 
