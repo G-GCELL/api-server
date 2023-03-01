@@ -2,6 +2,7 @@ package com.gabia.weat.gcellapiserver.service;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
@@ -52,7 +53,7 @@ public class MinioServiceTest {
 		member = Member.builder().memberId(1L).name("안태욱").email("test@test.com")
 			.password("password").build();
 		excelInfo = ExcelInfo.builder().excelInfoId(1L).path("미니오에 저장될 파일 이름")
-			.name("데이터베이스에 저장될 파일 이름").isDeleted(false).member(member)
+			.name("데이터베이스에 저장될 파일 이름").status(ExcelStatusType.CREATED).member(member)
 			.build();
 	}
 
