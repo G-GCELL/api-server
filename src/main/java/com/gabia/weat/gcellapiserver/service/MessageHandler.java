@@ -11,6 +11,7 @@ import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -20,6 +21,7 @@ public class MessageHandler {
 	private final MessageSender messageSender;
 	private final ExcelInfoRepository excelInfoRepository;
 
+	@Transactional
 	public void sendCreateExcelMsg(MessageWrapperDto<FileCreateProgressMsgDto> messageWrapperDto) {
 		FileCreateProgressMsgDto message = messageWrapperDto.getMessage();
 		switch(message.messageType()){
@@ -32,6 +34,7 @@ public class MessageHandler {
 		ExcelInfo excelInfo = excelInfoRepository.findById(message.excelInfoId()).orElseThrow(() -> {
 			throw new CustomException(ErrorCode.EXCEL_NOT_EXISTS);
 		});
+		excelInfo.created();
 		FileCreateCompleteMsgDto fileCreateCompleteMsgDto = MessageDtoConverter.createProgressMsgToCreateCompleteMsg(message, excelInfo.getName());
 		messageSender.sendMessageToExcelInfoId(message.excelInfoId(), message.messageType(), fileCreateCompleteMsgDto);
 	}
