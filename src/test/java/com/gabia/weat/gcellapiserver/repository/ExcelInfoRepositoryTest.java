@@ -62,7 +62,7 @@ public class ExcelInfoRepositoryTest {
 		String fileName = saveExcelInfo.getName();
 
 		// when
-		Optional<ExcelInfo> findExcelInfoOptional = excelInfoRepository.findByMemberAndNameAndStatusCreated(member,
+		Optional<ExcelInfo> findExcelInfoOptional = excelInfoRepository.findByEmailAndName(member.getEmail(),
 			fileName);
 
 		// then
@@ -84,7 +84,7 @@ public class ExcelInfoRepositoryTest {
 		String fileName = saveExcelInfo.getName();
 
 		// when
-		Optional<ExcelInfo> findExcelInfoOptional = excelInfoRepository.findByMemberAndNameAndStatusCreated(member,
+		Optional<ExcelInfo> findExcelInfoOptional = excelInfoRepository.findByEmailAndName(member.getEmail(),
 			fileName);
 
 		// then

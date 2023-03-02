@@ -50,6 +50,9 @@ public class ExcelInfoService {
 		ExcelInfo excelInfo = excelInfoRepository.findByIdAndMemberEmail(excelInfoId, memberEmail).orElseThrow(
 			() -> new CustomException(ErrorCode.EXCEL_NOT_EXISTS)
 		);
+		excelInfoRepository.findByEmailAndName(memberEmail, fileUpdateNameRequestDto.fileName()).ifPresent(e ->{
+			throw new CustomException(ErrorCode.DUPLICATE_FILE_NAME);
+		});
 		excelInfo.updateName(fileUpdateNameRequestDto.fileName());
 		return FileDtoConverter.createEntityToUpdateNameResponseDto(excelInfo);
 	}
@@ -78,7 +81,7 @@ public class ExcelInfoService {
 	}
 
 	private ExcelInfo createNewExcelInfo(Member member, String fileName, String realFileName) {
-		excelInfoRepository.findByMemberAndNameAndStatusCreated(member, fileName).ifPresent(e -> {
+		excelInfoRepository.findByEmailAndName(member.getEmail(), fileName).ifPresent(e -> {
 			throw new CustomException(ErrorCode.DUPLICATE_FILE_NAME);
 		});
 

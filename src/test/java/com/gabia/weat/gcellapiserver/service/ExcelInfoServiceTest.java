@@ -73,7 +73,7 @@ public class ExcelInfoServiceTest {
 		FileCreateRequestDto fileCreateRequestDTO = this.getFileCreateRequestDTO();
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
-		given(excelInfoRepository.findByMemberAndNameAndStatusCreated(any(), any())).willReturn(Optional.empty());
+		given(excelInfoRepository.findByEmailAndName(any(), any())).willReturn(Optional.empty());
 		given(excelInfoUtil.getRandomRealFileName()).willReturn("testFileName.xlsx");
 		given(excelInfoRepository.save(any())).willReturn(excelInfo);
 
@@ -108,7 +108,7 @@ public class ExcelInfoServiceTest {
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		given(excelInfoUtil.getRandomRealFileName()).willReturn("testPath");
-		given(excelInfoRepository.findByMemberAndNameAndStatusCreated(any(), any())).willReturn(Optional.of(excelInfo));
+		given(excelInfoRepository.findByEmailAndName(any(), any())).willReturn(Optional.of(excelInfo));
 
 		// when & then
 		assertThrows(CustomException.class, () -> excelInfoService.createExcel(testEmail, fileCreateRequestDTO));
