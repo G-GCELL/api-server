@@ -22,12 +22,12 @@ public class RabbitmqProperty {
 	@AllArgsConstructor
 	public static class ExchangeProperty {
 		private String directExchange;
+		private String fileCreateProgressExchange;
 	}
 
 	@Getter
 	@AllArgsConstructor
 	public static class QueueProperty {
-		private String fileCreateRequestQueue;
 		private String fileCreateProgressQueue;
 
 		public String getFileCreateProgressQueue(String serverName) {
