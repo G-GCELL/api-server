@@ -9,27 +9,27 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gabia.weat.gcellapiserver.service.MessageService;
+import com.gabia.weat.gcellapiserver.service.MessageSender;
 
 @ExtendWith(MockitoExtension.class)
 public class MessageControllerTest {
 
 	@Mock
-	private MessageService messageService;
+	private MessageSender messageSender;
 	@InjectMocks
 	private MessageController messageController;
 
 	@Test
 	@DisplayName("연결_테스트")
-	public void connect_test(){
+	public void connect_test() {
 		// given
-		given(messageService.connect(any(), any())).willReturn(1L);
+		given(messageSender.connect(any(), any())).willReturn(1L);
 
 		// when
-		messageController.connect();
+		messageController.connectProgress();
 
 		// then
-		verify(messageService, times(1)).connect(any(), any());
+		verify(messageSender, times(1)).connect(any(), any());
 	}
-	
+
 }

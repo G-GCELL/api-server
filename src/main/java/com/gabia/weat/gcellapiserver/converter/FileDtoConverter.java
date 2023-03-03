@@ -11,7 +11,9 @@ import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
 
 public class FileDtoConverter {
 
-	public static FileCreateRequestMsgDto createDtoToCreateMsgDto(Long memberId,
+	public static FileCreateRequestMsgDto createDtoToCreateMsgDto(
+		Long memberId,
+		Long excelInfoId,
 		String newFileName,
 		FileCreateRequestDto fileCreateRequestDto) {
 		BigDecimal costMin =
@@ -21,7 +23,9 @@ public class FileDtoConverter {
 
 		return FileCreateRequestMsgDto.builder()
 			.memberId(memberId)
+			.excelInfoId(excelInfoId)
 			.fileName(newFileName)
+			.columnNames(fileCreateRequestDto.columnNames())
 			.inAccountId(fileCreateRequestDto.inAccountId())
 			.notAccountId(fileCreateRequestDto.notAccountId())
 			.inProductCode(fileCreateRequestDto.inProductCode())
@@ -35,7 +39,7 @@ public class FileDtoConverter {
 			.build();
 	}
 
-	public static FileUpdateNameResponseDto createEntityToUpdateNameResponseDto(ExcelInfo excelInfo){
+	public static FileUpdateNameResponseDto createEntityToUpdateNameResponseDto(ExcelInfo excelInfo) {
 		return FileUpdateNameResponseDto.builder()
 			.id(excelInfo.getExcelInfoId())
 			.createdAt(excelInfo.getCreatedAt())

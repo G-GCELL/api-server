@@ -1,5 +1,6 @@
 server:
   port: ${API_SERVER_PORT}
+  name: ${SERVER_NAME}
 
 spring:
   datasource:
@@ -15,17 +16,7 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: ${FETCH_SIZE}
-    jpa:
-      open-in-view: false
-
-  rabbitmq:
-    host: ${RABBITMQ_HOST}
-    port: ${RABBITMQ_PORT}
-    username: ${RABBITMQ_USER}
-    password: ${RABBITMQ_PASSWORD}
-    template:
-      exchange: ${EXCHANGE_NAME}
-      routing-key: ${ROUTING_KEY}
+    open-in-view: false
 
 excel-info:
   file-base-url: ${FILE_BASE_URL}
@@ -41,3 +32,16 @@ minio:
 
 sse:
   timeout: ${SSE_TIMEOUT}
+
+rabbitmq:
+  host: ${RABBITMQ_HOST}
+  port: ${RABBITMQ_PORT}
+  username: ${RABBITMQ_USER}
+  password: ${RABBITMQ_PASSWORD}
+  exchange:
+    direct-exchange: ${DIRECT_EXCHANGE}
+  queue:
+    file-create-request-queue: ${FILE_CREATE_REQUEST_QUEUE}
+    file-create-progress-queue: ${FILE_CREATE_PROGRESS_QUEUE}
+  routing-key:
+    file-create-request-routing-key: ${FILE_CREATE_REQUEST_ROUTING_KEY}

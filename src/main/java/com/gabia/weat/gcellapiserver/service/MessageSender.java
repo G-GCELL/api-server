@@ -7,6 +7,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
+import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
@@ -18,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MessageService {
+public class MessageSender {
 
 	private static final String CONNECT_MESSAGE = "connect_success";
 	private final SseRepository sseRepository;
@@ -32,8 +33,16 @@ public class MessageService {
 		return memberId;
 	}
 
+	public SseEmitter registryFileConnection(Long excelInfoId, SseEmitter sseEmitter){
+		return sseRepository.registryFileConnection(excelInfoId, sseEmitter);
+	}
+
 	public void sendMessageToMemberId(Long memberId, MessageType messageType, Object message) {
-		sseRepository.findById(memberId).ifPresent(sse -> sendMessage(message, messageType, sse));
+		sseRepository.findListById(memberId).forEach(sse -> this.sendMessage(message, messageType, sse));
+	}
+
+	public void sendMessageToExcelInfoId(Long excelInfoId, MessageType messageType, Object message){
+		sseRepository.findByExcelInfoId(excelInfoId).ifPresent(sse -> this.sendMessage(message, messageType, sse));
 	}
 
 	private void sendMessage(Object message, MessageType messageType, SseEmitter sseEmitter) {

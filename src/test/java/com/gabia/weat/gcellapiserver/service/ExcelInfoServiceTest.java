@@ -2,6 +2,7 @@ package com.gabia.weat.gcellapiserver.service;
 
 import static org.mockito.BDDMockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
@@ -20,10 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
-import com.gabia.weat.gcellapiserver.service.producer.CreateRequestProducer;
+import com.gabia.weat.gcellapiserver.service.producer.FileCreateRequestProducer;
 import com.gabia.weat.gcellapiserver.util.ExcelInfoUtil;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +39,9 @@ public class ExcelInfoServiceTest {
 	@Mock
 	private ExcelInfoRepository excelInfoRepository;
 	@Mock
-	private CreateRequestProducer createRequestProducer;
+	private FileCreateRequestProducer fileCreateRequestProducer;
+	@Mock
+	private LogFormatFactory logFormatFactory;
 	@InjectMocks
 	private ExcelInfoService excelInfoService;
 
@@ -69,7 +74,6 @@ public class ExcelInfoServiceTest {
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		given(excelInfoRepository.findByMemberAndNameAndIsDeletedFalse(any(), any())).willReturn(Optional.empty());
-		given(excelInfoUtil.getFileBaseUrl()).willReturn("testFileBaseUrl");
 		given(excelInfoUtil.getRandomRealFileName()).willReturn("testFileName.xlsx");
 		given(excelInfoRepository.save(any())).willReturn(excelInfo);
 
@@ -78,7 +82,7 @@ public class ExcelInfoServiceTest {
 
 		// then
 		assertThat(saveExcelInfoId).isEqualTo(excelInfo.getExcelInfoId());
-		verify(createRequestProducer, times(1)).sendMessage(any());
+		verify(fileCreateRequestProducer, times(1)).sendMessage(any());
 	}
 
 	@Test
@@ -112,16 +116,17 @@ public class ExcelInfoServiceTest {
 
 	@Test
 	@DisplayName("엑셀 파일이름 변경 테스트")
-	public void updateExcelFileNameTest(){
+	public void updateExcelFileNameTest() {
 		// given
 		Long excelInfoId = 1L;
-		String memberEmail =  getTestEmail();
+		String memberEmail = getTestEmail();
 		FileUpdateNameRequestDto fileUpdateNameRequestDto = this.getFileUpdateNameRequestDto();
 
 		given(excelInfoRepository.findByIdAndMemberEmail(any(), any())).willReturn(Optional.of(excelInfo));
 
 		// when
-		FileUpdateNameResponseDto fileUpdateNameResponseDto = excelInfoService.updateExcelInfoName(memberEmail, excelInfoId, fileUpdateNameRequestDto);
+		FileUpdateNameResponseDto fileUpdateNameResponseDto = excelInfoService.updateExcelInfoName(memberEmail,
+			excelInfoId, fileUpdateNameRequestDto);
 
 		// then
 		assertThat(fileUpdateNameResponseDto.fileName()).isEqualTo(fileUpdateNameRequestDto.fileName());
@@ -130,6 +135,7 @@ public class ExcelInfoServiceTest {
 	private FileCreateRequestDto getFileCreateRequestDTO() {
 		return new FileCreateRequestDto(
 			"testName",
+			List.of("test_column"),
 			null,
 			null,
 			null,
@@ -142,11 +148,11 @@ public class ExcelInfoServiceTest {
 			null);
 	}
 
-	private String getTestEmail(){
+	private String getTestEmail() {
 		return "test@gabia.com";
 	}
 
-	private FileUpdateNameRequestDto getFileUpdateNameRequestDto(){
+	private FileUpdateNameRequestDto getFileUpdateNameRequestDto() {
 		return FileUpdateNameRequestDto.builder()
 			.fileName("변경할 이름")
 			.build();

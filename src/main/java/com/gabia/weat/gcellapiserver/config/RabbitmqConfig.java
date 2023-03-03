@@ -2,9 +2,19 @@ package com.gabia.weat.gcellapiserver.config;
 
 import java.util.Objects;
 
+import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Declarables;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory.ConfirmType;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionNameStrategy;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -12,49 +22,89 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
+@EnableRabbit
+@RequiredArgsConstructor
 public class RabbitmqConfig {
 
-	@Value("${spring.rabbitmq.host}")
-	private String host;
-	@Value("${spring.rabbitmq.port}")
-	private int port;
-	@Value("${spring.rabbitmq.username}")
-	private String username;
-	@Value("${spring.rabbitmq.password}")
-	private String password;
-	@Value("${spring.rabbitmq.template.exchange}")
-	private String exchange;
-	@Value("${spring.rabbitmq.template.routing-key}")
-	private String routingKey;
+	@Value("${server.name}")
+	private String serverName;
+	private final RabbitmqProperty property;
 
 	@Bean
 	ConnectionFactory connectionFactory() {
 		CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-		connectionFactory.setHost(host);
-		connectionFactory.setPort(port);
-		connectionFactory.setUsername(username);
-		connectionFactory.setPassword(password);
+		connectionFactory.setHost(property.getHost());
+		connectionFactory.setPort(property.getPort());
+		connectionFactory.setUsername(property.getUsername());
+		connectionFactory.setPassword(property.getPassword());
 		connectionFactory.setPublisherReturns(true);
 		connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
+		connectionFactory.setConnectionNameStrategy(connectionNameStrategy());
 		return connectionFactory;
 	}
 
 	@Bean
-	RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
-		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setExchange(exchange);
-		rabbitTemplate.setRoutingKey(routingKey);
-		rabbitTemplate.setMessageConverter(messageConverter);
+	ConnectionNameStrategy connectionNameStrategy() {
+		return connectionFactory -> serverName;
+	}
+
+	@Bean
+	RabbitAdmin rabbitAdmin() {
+		return new RabbitAdmin(connectionFactory());
+	}
+
+	@Bean
+	Queue fileCreateRequestQueue() {
+		return new Queue(property.getQueue().getFileCreateRequestQueue(), true);
+	}
+
+	@Bean
+	DirectExchange directExchange() {
+		return new DirectExchange(property.getExchange().getDirectExchange(), true, false);
+	}
+
+	@Bean
+	Declarables fileCreateRequestBindings() {
+		return new Declarables(
+			BindingBuilder.bind(fileCreateRequestQueue())
+				.to(directExchange())
+				.with(property.getRoutingKey().getFileCreateRequestRoutingKey())
+		);
+	}
+
+	@Bean
+	SimpleRabbitListenerContainerFactory fileCreateProgressListenerFactory() {
+		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+		listenerContainerFactory.setConnectionFactory(connectionFactory());
+		listenerContainerFactory.setMessageConverter(messageConverter());
+		listenerContainerFactory.setContainerCustomizer(
+			container -> container.setQueueNames(property.getQueue().getFileCreateProgressQueue(serverName)));
+		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+		return listenerContainerFactory;
+	}
+
+	@Bean
+	RabbitTemplate fileCreateRequestRabbitTemplate() {
+		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+		rabbitTemplate.setMessageConverter(messageConverter());
+		rabbitTemplate.setExchange(property.getExchange().getDirectExchange());
+		rabbitTemplate.setRoutingKey(property.getRoutingKey().getFileCreateRequestRoutingKey());
 		rabbitTemplate.setMandatory(true);
 
+		// 임시 코드
 		rabbitTemplate.setReturnsCallback(returned -> {
 			log.info("[반환된 메시지] " + returned);
 		});
 
+		// 임시 코드
 		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
 			if (ack && Objects.requireNonNull(correlationData).getReturned() == null) {
 				log.info("[메시지 발행 성공]");
@@ -68,7 +118,9 @@ public class RabbitmqConfig {
 
 	@Bean
 	MessageConverter messageConverter() {
-		return new Jackson2JsonMessageConverter();
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		return new Jackson2JsonMessageConverter(objectMapper);
 	}
 
 }

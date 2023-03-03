@@ -1,25 +1,22 @@
 package com.gabia.weat.gcellapiserver.controller;
 
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameResponseDto;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
 
-import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
-import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
-import com.gabia.weat.gcellapiserver.dto.FileDto;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.service.ExcelInfoService;
 import com.gabia.weat.gcellapiserver.service.MinioService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@CrossOrigin("*") // 임시 코드
 @RequiredArgsConstructor
 @RequestMapping(value = "/excels")
 public class ExcelInfoController {
@@ -28,7 +25,7 @@ public class ExcelInfoController {
 	private final MinioService minioService;
 
 	@PostMapping(value = "")
-	public ResponseEntity<ApiResponseDto> createExcel(@RequestBody FileCreateRequestDto fileCreateRequestDto) {
+	public ResponseEntity<ApiResponseDto> createExcel(@RequestBody @Valid FileCreateRequestDto fileCreateRequestDto) {
 		Long createExcelInfoId = excelInfoService.createExcel(this.getConnectMemberEmail(), fileCreateRequestDto);
 		String downloadUrl = "/excels/" + createExcelInfoId;
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseDto.success(downloadUrl));
@@ -43,10 +40,24 @@ public class ExcelInfoController {
 
 	@PatchMapping(value = "/{id}")
 	public ResponseEntity<ApiResponseDto> updateExcelName(
-		@RequestBody FileUpdateNameRequestDto fileUpdateNameRequestDto, @PathVariable("id") Long excelInfoId) {
+		@RequestBody @Valid FileUpdateNameRequestDto fileUpdateNameRequestDto, @PathVariable("id") Long excelInfoId) {
 		FileUpdateNameResponseDto fileUpdateNameResponseDto = excelInfoService.updateExcelInfoName(
 			this.getConnectMemberEmail(), excelInfoId, fileUpdateNameRequestDto);
-		return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDto.success(fileUpdateNameResponseDto));
+		return ResponseEntity.ok(ApiResponseDto.success(fileUpdateNameResponseDto));
+	}
+
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<ApiResponseDto> deleteExcelInfo(@PathVariable("id") Long excelInfoId) {
+		excelInfoService.deleteExcelInfo(this.getConnectMemberEmail(), excelInfoId);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponseDto.success());
+	}
+
+	@GetMapping
+	public ResponseEntity<ApiResponseDto> getExcelInfoList(@ModelAttribute @Valid FileListRequestDto fileListRequestDto,
+		Pageable pageable) {
+		Page<FileListResponseDto> excelInfos = excelInfoService.getExcelInfo(getConnectMemberEmail(), pageable,
+			fileListRequestDto);
+		return ResponseEntity.ok(ApiResponseDto.success(excelInfos));
 	}
 
 	private String getConnectMemberEmail() {

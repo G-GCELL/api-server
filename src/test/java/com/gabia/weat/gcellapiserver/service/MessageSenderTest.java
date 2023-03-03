@@ -3,6 +3,8 @@ package com.gabia.weat.gcellapiserver.service;
 import static org.mockito.BDDMockito.*;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,14 +31,14 @@ import com.gabia.weat.gcellapiserver.repository.SseRepository;
 	MockitoExtension.class,
 	OutputCaptureExtension.class
 })
-public class MessageServiceTest {
+public class MessageSenderTest {
 
 	@Mock
 	private SseRepository sseRepository;
 	@Mock
 	private MemberRepository memberRepository;
 	@InjectMocks
-	private MessageService messageService;
+	private MessageSender messageSender;
 	private Member member;
 
 	@BeforeEach
@@ -58,7 +60,7 @@ public class MessageServiceTest {
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 
 		// when
-		Long memberId = messageService.connect(testEmail, testSseEmitter);
+		Long memberId = messageSender.connect(testEmail, testSseEmitter);
 
 		// then
 		assertThat(memberId).isEqualTo(member.getMemberId());
@@ -76,7 +78,7 @@ public class MessageServiceTest {
 		given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
 
 		// when & then
-		assertThrows(CustomException.class, () -> messageService.connect(testEmail, testSseEmitter));
+		assertThrows(CustomException.class, () -> messageSender.connect(testEmail, testSseEmitter));
 	}
 
 	@Test
@@ -90,7 +92,7 @@ public class MessageServiceTest {
 		doThrow(IOException.class).when(testSseEmitter).send(any());
 
 		//when
-		messageService.connect(testEmail, testSseEmitter);
+		messageSender.connect(testEmail, testSseEmitter);
 
 		// then
 		assertThat(capturedOutput.getOut().contains("SEND_MESSAGE_FAIL")).isTrue();
@@ -105,10 +107,10 @@ public class MessageServiceTest {
 		SseEmitter testSseEmitter = mock(SseEmitter.class);
 		String message = "testMessage";
 
-		given(sseRepository.findById(memberId)).willReturn(Optional.of(testSseEmitter));
+		given(sseRepository.findListById(memberId)).willReturn(Collections.singletonList(testSseEmitter));
 
 		// when
-		messageService.sendMessageToMemberId(memberId, messageType, message);
+		messageSender.sendMessageToMemberId(memberId, messageType, message);
 
 		// then
 		verify(testSseEmitter, times(1)).send(any());
@@ -123,13 +125,31 @@ public class MessageServiceTest {
 		SseEmitter testSseEmitter = mock(SseEmitter.class);
 		String message = "testMessage";
 
-		given(sseRepository.findById(memberId)).willReturn(Optional.empty());
+		given(sseRepository.findListById(memberId)).willReturn(Collections.EMPTY_LIST);
 
 		// when
-		messageService.sendMessageToMemberId(memberId, messageType, message);
+		messageSender.sendMessageToMemberId(memberId, messageType, message);
 
 		// then
 		verify(testSseEmitter, times(0)).send(any());
+	}
+
+	@Test
+	@DisplayName("SSE_메시지_전송_파일_id")
+	public void sendMessageToExcelInfoId_test() throws IOException {
+		// given
+		Long excelInfoId = 1L;
+		MessageType messageType = MessageType.FILE_CREATION_COMPLETE;
+		SseEmitter testSseEmitter = mock(SseEmitter.class);
+		String message = "testMessage";
+
+		given(sseRepository.findByExcelInfoId(any())).willReturn(Optional.ofNullable(testSseEmitter));
+
+		// when
+		messageSender.sendMessageToExcelInfoId(excelInfoId, messageType, message);
+
+		// then
+		verify(testSseEmitter, times(1)).send(any());
 	}
 
 }
