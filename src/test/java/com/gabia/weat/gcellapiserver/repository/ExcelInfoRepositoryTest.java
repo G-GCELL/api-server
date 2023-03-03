@@ -139,7 +139,7 @@ public class ExcelInfoRepositoryTest {
 		FileListRequestDto nameInCondition = FileListRequestDto.builder().nameCondition(NameCondition.LIKE)
 			.fileName("엔도").build();
 		FileListRequestDto createdAtGtCondition = FileListRequestDto.builder().minCreatedAt(now.minusMinutes(1)).build();
-		FileListRequestDto createdAtLtCondition = FileListRequestDto.builder().maxCreatedAt(now).build();
+		FileListRequestDto createdAtLtCondition = FileListRequestDto.builder().maxCreatedAt(now.minusMinutes(1)).build();
 		FileListRequestDto isDeleteCondition = FileListRequestDto.builder().isDelete(true).build();
 		FileListRequestDto nullCondition = FileListRequestDto.builder().build();
 
