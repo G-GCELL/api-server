@@ -45,7 +45,6 @@ public class LogFormatFactory {
 
 	public MessageBrokerLogFormatDtoBuilder getMessageBrokerLogFormatBuilder() {
 		return MessageBrokerLogFormatDto.builder()
-			.level(Level.INFO)
 			.serverName(serverName)
 			.traceId(this.traceInfoHolder.get());
 	}

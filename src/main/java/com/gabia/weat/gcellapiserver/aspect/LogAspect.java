@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.CodeSignature;
+import org.slf4j.event.Level;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,7 +84,6 @@ public class LogAspect {
 		try {
 			return joinPoint.proceed();
 		} catch (Exception e) {
-			this.printErrorLog(e);
 			exception = e;
 			throw e;
 		} finally {
@@ -180,6 +180,7 @@ public class LogAspect {
 	private void printMessageBrokerLog(TargetType type, String target, String input, Exception exception) {
 		String targetName = (String)expressionBeanParser.parse(target);
 		MessageBrokerLogFormatDtoBuilder logFormatDtoBuilder = logFormatFactory.getMessageBrokerLogFormatBuilder()
+			.level(exception == null? Level.INFO : Level.ERROR)
 			.type(type)
 			.exchangeName(type == TargetType.PRODUCER ? targetName : null)
 			.queueName(type == TargetType.CONSUMER ? targetName : null)

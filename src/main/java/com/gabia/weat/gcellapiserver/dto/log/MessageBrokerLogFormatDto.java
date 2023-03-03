@@ -55,8 +55,8 @@ public class MessageBrokerLogFormatDto extends LogFormatDto {
 		log.append(String.format("(%s) ", exchangeName));
 		if (exception != null) {
 			StackTraceElement stackTraceElement = exception.getStackTrace()[0];
-			log.append(String.format("cause: %s ", stackTraceElement.getClassName()));
-			log.append(String.format("message: %s ", stackTraceElement.getMethodName()));
+			log.append(String.format("cause: %s-%s ", stackTraceElement.getClassName(), stackTraceElement.getMethodName()));
+			log.append(String.format("message: %s ", exception.getMessage()));
 		}
 		log.append(String.format("input: %s", input));
 		return log.toString();

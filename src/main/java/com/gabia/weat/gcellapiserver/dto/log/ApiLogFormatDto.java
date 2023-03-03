@@ -34,7 +34,7 @@ public class ApiLogFormatDto extends LogFormatDto {
 
 	@Override
 	public String toString() {
-		return String.format("[%s] %s [%s] %s %s, %s[%d-%d], times-%dms, input: %s",
+		return String.format("[%s] %s [%s] %s %s, %s[HTTP STATUS:%d, CUSTOM STATUS:%d], times-%dms, input: %s",
 			this.serverName,
 			this.userIp,
 			this.traceId,
