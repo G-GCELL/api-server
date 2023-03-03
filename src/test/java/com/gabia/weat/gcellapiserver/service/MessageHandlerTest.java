@@ -14,9 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
-import com.gabia.weat.gcellapiserver.dto.MessageDto;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
-import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestErrorMsgDto;
+import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateErrorMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 
@@ -74,14 +73,14 @@ public class MessageHandlerTest {
 	@DisplayName("에러_메시지_전송_테스트")
 	public void sendErrorMsg_test(){
 		// given
-		FileCreateRequestErrorMsgDto fileCreateRequestErrorMsgDto = new FileCreateRequestErrorMsgDto(
+		FileCreateErrorMsgDto fileCreateErrorMsgDto = new FileCreateErrorMsgDto(
 			1L,
 			excelInfo.getExcelInfoId(),
 			404,
 			"test_message"
 		);
 
-		MessageWrapperDto messageWrapperDto = MessageWrapperDto.wrapMessageDto(fileCreateRequestErrorMsgDto, "");
+		MessageWrapperDto messageWrapperDto = MessageWrapperDto.wrapMessageDto(fileCreateErrorMsgDto, "");
 
 		given(excelInfoRepository.findById(any())).willReturn(Optional.of(excelInfo));
 
