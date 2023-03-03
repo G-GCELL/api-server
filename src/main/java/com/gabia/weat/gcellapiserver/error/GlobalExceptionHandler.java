@@ -1,12 +1,12 @@
 package com.gabia.weat.gcellapiserver.error;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;
+import com.gabia.weat.gcellapiserver.dto.ErrorDto;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 
 @RestControllerAdvice
@@ -20,9 +20,10 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ApiResponseDto> validationExceptionHandler(MethodArgumentNotValidException exception){
+	public ResponseEntity<ApiResponseDto> validationExceptionHandler(MethodArgumentNotValidException exception) {
 		return ResponseEntity.status(exception.getStatusCode())
-			.body(ApiResponseDto.fail(ErrorCode.UNKNOWN_ERROR));
+			.body(ApiResponseDto.fail(new ErrorDto(exception.getStatusCode().value(),
+				exception.getBindingResult().getAllErrors().get(0).getDefaultMessage())));
 	}
 
 }

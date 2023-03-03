@@ -4,10 +4,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.CodeSignature;
+import org.slf4j.event.Level;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -34,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LogAspect {
 
+	private final String X_FORWARDED_FOR_HEADER = "X-FORWARDED-FOR";
 	private final LogFormatFactory logFormatFactory;
 	private final LogPrinter logPrinter;
 	private final CustomExpressionParser expressionBeanParser;
@@ -66,17 +69,8 @@ public class LogAspect {
 	@Around("@annotation(consumerLog)")
 	public Object consumerLogAdvisor(ProceedingJoinPoint joinPoint, ConsumerLog consumerLog) throws Throwable {
 		this.setTraceId(joinPoint);
-		return this.messageLogAdviceLog(joinPoint, TargetType.CONSUMER, consumerLog.queue());
-	}
-
-	@Around("@annotation(producerLog)")
-	public Object producerLogAdvisor(ProceedingJoinPoint joinPoint, ProducerLog producerLog) throws Throwable {
-		return this.messageLogAdviceLog(joinPoint, TargetType.PRODUCER, producerLog.exchange());
-	}
-
-	private Object messageLogAdviceLog(ProceedingJoinPoint joinPoint, TargetType type, String target) throws Throwable {
 		try {
-			this.printMessageBrokerLog(type, target, this.getInput(joinPoint));
+			this.printMessageBrokerLog(TargetType.CONSUMER, consumerLog.queue(), this.getInput(joinPoint), null);
 			return joinPoint.proceed();
 		} catch (Exception e) {
 			this.printErrorLog(e);
@@ -84,10 +78,24 @@ public class LogAspect {
 		return null;
 	}
 
-	private void setTraceId(ProceedingJoinPoint joinPoint){
+	@Around("@annotation(producerLog)")
+	public Object producerLogAdvisor(ProceedingJoinPoint joinPoint, ProducerLog producerLog) throws Throwable {
+		Exception exception = null;
+		try {
+			return joinPoint.proceed();
+		} catch (Exception e) {
+			exception = e;
+			throw e;
+		} finally {
+			this.printMessageBrokerLog(TargetType.PRODUCER, producerLog.exchange(), this.getInput(joinPoint),
+				exception);
+		}
+	}
+
+	private void setTraceId(ProceedingJoinPoint joinPoint) {
 		Object[] args = joinPoint.getArgs();
-		for (Object arg : args){
-			if (arg instanceof MessageWrapperDto<?> dto){
+		for (Object arg : args) {
+			if (arg instanceof MessageWrapperDto<?> dto) {
 				logFormatFactory.startTrace(dto.getTraceId());
 				break;
 			}
@@ -102,7 +110,13 @@ public class LogAspect {
 		HttpServletRequest request = this.getRequestInfo();
 		return logFormatFactory.getApiLogFormatBuilder()
 			.httpMethod(HttpMethod.valueOf(request.getMethod()))
+			.userIp(this.getRemoteAddr(request))
 			.apiUri(request.getRequestURI());
+	}
+
+	protected String getRemoteAddr(HttpServletRequest request) {
+		String header = request.getHeader(X_FORWARDED_FOR_HEADER);
+		return (header != null) ? header : request.getRemoteAddr();
 	}
 
 	private void successStatus(ApiLogFormatDtoBuilder logFormatBuilder, Object result) {
@@ -112,7 +126,9 @@ public class LogAspect {
 	}
 
 	private void failStatus(ApiLogFormatDtoBuilder logFormatBuilder, ErrorCode errorCode) {
-		logFormatBuilder.success(false).status(errorCode.getCode().getStatus());
+		logFormatBuilder.success(false)
+			.status(errorCode.getStatus().value())
+			.detailStatus(errorCode.getCode().getStatus());
 	}
 
 	private String getInput(ProceedingJoinPoint joinPoint) {
@@ -161,12 +177,14 @@ public class LogAspect {
 			.build());
 	}
 
-	private void printMessageBrokerLog(TargetType type, String target, String input) {
+	private void printMessageBrokerLog(TargetType type, String target, String input, Exception exception) {
 		String targetName = (String)expressionBeanParser.parse(target);
 		MessageBrokerLogFormatDtoBuilder logFormatDtoBuilder = logFormatFactory.getMessageBrokerLogFormatBuilder()
+			.level(exception == null? Level.INFO : Level.ERROR)
 			.type(type)
 			.exchangeName(type == TargetType.PRODUCER ? targetName : null)
 			.queueName(type == TargetType.CONSUMER ? targetName : null)
+			.exception(exception)
 			.input(input);
 
 		logPrinter.print(logFormatDtoBuilder.build());
