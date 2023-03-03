@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
@@ -22,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
 import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
@@ -60,7 +60,7 @@ public class ExcelInfoServiceTest {
 			.excelInfoId(1L)
 			.name("testName")
 			.path("testUrl")
-			.isDeleted(false)
+			.status(ExcelStatusType.CREATED)
 			.member(member)
 			.build();
 	}
@@ -73,7 +73,7 @@ public class ExcelInfoServiceTest {
 		FileCreateRequestDto fileCreateRequestDTO = this.getFileCreateRequestDTO();
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
-		given(excelInfoRepository.findByMemberAndNameAndIsDeletedFalse(any(), any())).willReturn(Optional.empty());
+		given(excelInfoRepository.findByEmailAndName(any(), any())).willReturn(Optional.empty());
 		given(excelInfoUtil.getRandomRealFileName()).willReturn("testFileName.xlsx");
 		given(excelInfoRepository.save(any())).willReturn(excelInfo);
 
@@ -108,7 +108,7 @@ public class ExcelInfoServiceTest {
 
 		given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 		given(excelInfoUtil.getRandomRealFileName()).willReturn("testPath");
-		given(excelInfoRepository.findByMemberAndNameAndIsDeletedFalse(any(), any())).willReturn(Optional.of(excelInfo));
+		given(excelInfoRepository.findByEmailAndName(any(), any())).willReturn(Optional.of(excelInfo));
 
 		// when & then
 		assertThrows(CustomException.class, () -> excelInfoService.createExcel(testEmail, fileCreateRequestDTO));

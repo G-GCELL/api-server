@@ -2,6 +2,7 @@ package com.gabia.weat.gcellapiserver.service;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 
@@ -46,7 +47,7 @@ public class ExcelInfoClassicTest {
 			.excelInfoId(1L)
 			.name("testName")
 			.path("testUrl")
-			.isDeleted(false)
+			.status(ExcelStatusType.CREATED)
 			.member(member)
 			.build();
 
@@ -59,7 +60,7 @@ public class ExcelInfoClassicTest {
 		ExcelInfo deletedExcelInfo = excelInfoService.deleteExcelInfo(excelInfo.getMember().getEmail(), excelInfo.getExcelInfoId());
 
 		// then
-		assertThat(deletedExcelInfo.getIsDeleted()).isEqualTo(true);
+		assertThat(deletedExcelInfo.getStatus()).isEqualTo(ExcelStatusType.DELETED);
 	}
 
 

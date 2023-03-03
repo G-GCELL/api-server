@@ -44,7 +44,7 @@ public class FileDtoConverter {
 			.id(excelInfo.getExcelInfoId())
 			.createdAt(excelInfo.getCreatedAt())
 			.fileName(excelInfo.getName())
-			.isDelete(excelInfo.getIsDeleted())
+			.status(excelInfo.getStatus())
 			.build();
 	}
 

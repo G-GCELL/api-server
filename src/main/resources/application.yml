@@ -1,6 +1,8 @@
 server:
   port: ${API_SERVER_PORT}
   name: ${SERVER_NAME}
+  servlet:
+    context-path: ${CONTEXT_PATH}
 
 spring:
   datasource:

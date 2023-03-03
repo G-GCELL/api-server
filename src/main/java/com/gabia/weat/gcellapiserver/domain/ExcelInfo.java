@@ -1,5 +1,6 @@
 package com.gabia.weat.gcellapiserver.domain;
 
+import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 
@@ -16,10 +17,10 @@ import org.hibernate.annotations.SQLDelete;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "excel_info")
-@SQLDelete(sql = "update excel_info SET is_deleted = true WHERE excel_info_id = ?")
+@SQLDelete(sql = "update excel_info SET status = 'DELETED' WHERE excel_info_id = ?")
 @Table(
 	indexes = {
-		@Index(name = "member_name_is_deleted_index", columnList = "member_id, name, is_deleted")
+		@Index(name = "member_name_status_index", columnList = "member_id, name, status")
 	}
 )
 public class ExcelInfo extends BaseTimeEntity {
@@ -34,16 +35,26 @@ public class ExcelInfo extends BaseTimeEntity {
 	private String name;
 	@Column
 	private String path;
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
+	@Column
+	@Enumerated(EnumType.STRING)
+	private ExcelStatusType status;
+
+	@PrePersist
+	public void prePersist(){
+		this.status = this.status == null ? ExcelStatusType.CREATING : this.status;
+	}
 
 	public void updateName(String name) {
 		this.name = name;
 	}
 
+	public void created() {
+		this.status = ExcelStatusType.CREATED;
+	}
+
 	@PreRemove
 	public void deleteExcelInfo() {
-		this.isDeleted = true;
+		this.status = ExcelStatusType.DELETED;
 	}
 
 }

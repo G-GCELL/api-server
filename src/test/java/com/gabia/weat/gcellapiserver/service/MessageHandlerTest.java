@@ -4,6 +4,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
+import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateErrorMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 
@@ -26,6 +28,16 @@ public class MessageHandlerTest {
 	private ExcelInfoRepository excelInfoRepository;
 	@InjectMocks
 	private MessageHandler messageHandler;
+
+	private ExcelInfo excelInfo;
+
+	@BeforeEach
+	public void setUp(){
+		excelInfo = ExcelInfo.builder()
+			.excelInfoId(1L)
+			.name("test")
+			.build();
+	}
 
 	@Test
 	@DisplayName("엑셀_생성_진행률_메시지_전송_테스트")
@@ -47,16 +59,36 @@ public class MessageHandlerTest {
 		// given
 		FileCreateProgressMsgDto fileCreateProgressMsgDto = this.getFileCreateProgressMsgDto(MessageType.FILE_CREATION_COMPLETE);
 		MessageWrapperDto messageWrapperDto = MessageWrapperDto.wrapMessageDto(fileCreateProgressMsgDto, "");
-		ExcelInfo excelInfo = ExcelInfo.builder()
-			.excelInfoId(1L)
-			.name("test")
-			.build();
+
 		given(excelInfoRepository.findById(any())).willReturn(Optional.ofNullable(excelInfo));
 
 		// when
 		messageHandler.sendCreateExcelMsg(messageWrapperDto);
 
 		// then
+		verify(messageSender, times(1)).sendMessageToExcelInfoId(any(), any(), any());
+	}
+
+	@Test
+	@DisplayName("에러_메시지_전송_테스트")
+	public void sendErrorMsg_test(){
+		// given
+		FileCreateErrorMsgDto fileCreateErrorMsgDto = new FileCreateErrorMsgDto(
+			1L,
+			excelInfo.getExcelInfoId(),
+			404,
+			"test_message"
+		);
+
+		MessageWrapperDto messageWrapperDto = MessageWrapperDto.wrapMessageDto(fileCreateErrorMsgDto, "");
+
+		given(excelInfoRepository.findById(any())).willReturn(Optional.of(excelInfo));
+
+		// when
+		messageHandler.sendErrorMsg(messageWrapperDto);
+
+		// then
+		verify(excelInfoRepository, times(1)).delete(any());
 		verify(messageSender, times(1)).sendMessageToExcelInfoId(any(), any(), any());
 	}
 

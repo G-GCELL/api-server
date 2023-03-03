@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
 import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 
@@ -57,7 +58,7 @@ public class FileDto {
 	public record FileUpdateNameResponseDto(
 		Long id,
 		String fileName,
-		boolean isDelete,
+		ExcelStatusType status,
 		LocalDateTime createdAt
 	) {
 
@@ -73,7 +74,7 @@ public class FileDto {
 		LocalDateTime minCreatedAt,
 		@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 		LocalDateTime maxCreatedAt,
-		Boolean isDelete
+		ExcelStatusType status
 	) {
 
 	}
@@ -82,7 +83,7 @@ public class FileDto {
 		Long excelInfoId,
 		String fileName,
 		LocalDateTime createdAt,
-		Boolean isDelete
+		ExcelStatusType status
 	) {
 
 	}
