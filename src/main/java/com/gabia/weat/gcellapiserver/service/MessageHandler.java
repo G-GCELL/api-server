@@ -33,13 +33,13 @@ public class MessageHandler {
 	}
 
 	@Transactional
-	public void sendErrorMsg(MessageWrapperDto<FileCreateRequestErrorMsgDto> messageWrapperDto) {
-		FileCreateRequestErrorMsgDto fileCreateRequestErrorMsgDto = messageWrapperDto.getMessage();
-		ExcelInfo excelInfo = excelInfoRepository.findById(fileCreateRequestErrorMsgDto.excelInfoId())
+	public void sendErrorMsg(MessageWrapperDto<FileCreateErrorMsgDto> messageWrapperDto) {
+		FileCreateErrorMsgDto fileCreateErrorMsgDto = messageWrapperDto.getMessage();
+		ExcelInfo excelInfo = excelInfoRepository.findById(fileCreateErrorMsgDto.excelInfoId())
 			.orElseThrow(() -> new CustomException(ErrorCode.EXCEL_NOT_EXISTS));
 		excelInfoRepository.delete(excelInfo);
-		messageSender.sendMessageToExcelInfoId(fileCreateRequestErrorMsgDto.excelInfoId(), MessageType.ERROR,
-			fileCreateRequestErrorMsgDto);
+		messageSender.sendMessageToExcelInfoId(fileCreateErrorMsgDto.excelInfoId(), MessageType.ERROR,
+			fileCreateErrorMsgDto);
 	}
 
 	private void sendCreateCompleteMsg(FileCreateProgressMsgDto message) {
