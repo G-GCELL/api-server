@@ -37,7 +37,9 @@ rabbitmq:
   exchange:
     direct-exchange: exchange
     file-create-progress-exchange: exchange
+    file-create-error-exchange: exchange
   queue:
     file-create-progress-queue: queue
+    file-create-error-queue: queue
   routing-key:
     file-create-request-routing-key: key

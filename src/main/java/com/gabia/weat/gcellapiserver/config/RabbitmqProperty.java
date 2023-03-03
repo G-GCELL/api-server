@@ -23,15 +23,21 @@ public class RabbitmqProperty {
 	public static class ExchangeProperty {
 		private String directExchange;
 		private String fileCreateProgressExchange;
+		private String fileCreateErrorExchange;
 	}
 
 	@Getter
 	@AllArgsConstructor
 	public static class QueueProperty {
 		private String fileCreateProgressQueue;
+		private String fileCreateErrorQueue;
 
 		public String getFileCreateProgressQueue(String serverName) {
 			return fileCreateProgressQueue + "-" + serverName.substring(serverName.length() - 1);
+		}
+
+		public String getFileCreateErrorQueue(String serverName) {
+			return fileCreateErrorQueue + "-" + serverName.substring(serverName.length() - 1);
 		}
 	}
 
