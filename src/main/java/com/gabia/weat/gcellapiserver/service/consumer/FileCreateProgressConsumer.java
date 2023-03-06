@@ -10,9 +10,7 @@ import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.service.MessageHandler;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileCreateProgressConsumer implements Consumer<FileCreateProgressMsgDto> {
