@@ -15,13 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateErrorMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.service.MessageHandler;
-import com.rabbitmq.client.Channel;
 
 @ExtendWith(MockitoExtension.class)
 public class FileCreateErrorConsumerTest {
 
-	@Mock
-	Channel channel;
 	@Mock
 	MessageHandler messageHandler;
 	@InjectMocks
@@ -39,8 +36,7 @@ public class FileCreateErrorConsumerTest {
 
 		// when & then
 		assertThatCode(
-			() -> fileCreateErrorConsumer.receiveMessage(messageWrapperDto, channel, tag)).doesNotThrowAnyException();
-		verify(channel, times(1)).basicAck(eq(tag), anyBoolean());
+			() -> fileCreateErrorConsumer.receiveMessage(messageWrapperDto)).doesNotThrowAnyException();
 		verify(messageHandler, times(1)).sendErrorMsg(any());
 	}
 
