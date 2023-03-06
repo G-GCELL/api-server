@@ -12,7 +12,7 @@ public class CustomListenerErrorHandler implements RabbitListenerErrorHandler {
 
 	@Override
 	public Object handleError(Message amqpMessage, org.springframework.messaging.Message<?> message,
-		ListenerExecutionFailedException exception) throws Exception {
+		ListenerExecutionFailedException exception) throws CustomException {
 		Throwable t = exception.getCause();
 		ErrorCode errorCode = ErrorCode.UNKNOWN_ERROR;
 
