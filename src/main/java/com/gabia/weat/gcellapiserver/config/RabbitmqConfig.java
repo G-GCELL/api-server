@@ -5,8 +5,6 @@ import java.util.Objects;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Declarables;
-import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -25,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gabia.weat.gcellapiserver.error.CustomRejectingErrorHandler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +37,7 @@ public class RabbitmqConfig {
 	@Value("${server.name}")
 	private String serverName;
 	private final RabbitmqProperty property;
+	private final CustomRejectingErrorHandler errorHandler;
 
 	@Bean
 	ConnectionFactory connectionFactory() {
@@ -102,7 +102,9 @@ public class RabbitmqConfig {
 		listenerContainerFactory.setContainerCustomizer(
 			container -> container.setQueues(fileCreateProgressQueue())
 		);
-		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.AUTO);
+		listenerContainerFactory.setErrorHandler(errorHandler);
+		listenerContainerFactory.setDefaultRequeueRejected(false);
 		return listenerContainerFactory;
 	}
 
@@ -114,7 +116,9 @@ public class RabbitmqConfig {
 		listenerContainerFactory.setContainerCustomizer(
 			container -> container.setQueues(fileCreateErrorQueue())
 		);
-		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.AUTO);
+		listenerContainerFactory.setErrorHandler(errorHandler);
+		listenerContainerFactory.setDefaultRequeueRejected(false);
 		return listenerContainerFactory;
 	}
 
@@ -133,10 +137,8 @@ public class RabbitmqConfig {
 
 		// 임시 코드
 		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
-			if (ack && Objects.requireNonNull(correlationData).getReturned() == null) {
-				log.info("[메시지 발행 성공]");
-			} else {
-				log.info("[메시지 발행 실패] " + cause);
+			if (!ack || Objects.requireNonNull(correlationData).getReturned() != null) {
+				log.error("[메시지 발행 실패] " + cause);
 			}
 		});
 
