@@ -17,4 +17,6 @@ public interface SseRepository {
 
 	List<SseEmitter> findListById(Long id);
 
+	void deleteByExcelInfoId(Long excelInfoId);
+
 }

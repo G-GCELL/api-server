@@ -67,6 +67,7 @@ public class MessageHandlerTest {
 
 		// then
 		verify(messageSender, times(1)).sendMessageToExcelInfoId(any(), any(), any());
+		verify(messageSender, times(1)).disconnectByExcelInfoId(any());
 	}
 
 	@Test
@@ -90,6 +91,7 @@ public class MessageHandlerTest {
 		// then
 		verify(excelInfoRepository, times(1)).delete(any());
 		verify(messageSender, times(1)).sendMessageToExcelInfoId(any(), any(), any());
+		verify(messageSender, times(1)).disconnectByExcelInfoId(any());
 	}
 
 	private FileCreateProgressMsgDto getFileCreateProgressMsgDto(MessageType messageType){

@@ -40,6 +40,7 @@ public class MessageHandler {
 		excelInfoRepository.delete(excelInfo);
 		messageSender.sendMessageToExcelInfoId(fileCreateErrorMsgDto.excelInfoId(), MessageType.ERROR,
 			fileCreateErrorMsgDto);
+		messageSender.disconnectByExcelInfoId(excelInfo.getExcelInfoId());
 	}
 
 	private void sendCreateCompleteMsg(FileCreateProgressMsgDto message) {
@@ -51,6 +52,7 @@ public class MessageHandler {
 		FileCreateCompleteMsgDto fileCreateCompleteMsgDto = MessageDtoConverter.createProgressMsgToCreateCompleteMsg(
 			message, excelInfo.getName());
 		messageSender.sendMessageToExcelInfoId(message.excelInfoId(), message.messageType(), fileCreateCompleteMsgDto);
+		messageSender.disconnectByExcelInfoId(excelInfo.getExcelInfoId());
 	}
 
 }

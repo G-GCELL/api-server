@@ -45,6 +45,10 @@ public class MessageSender {
 		sseRepository.findByExcelInfoId(excelInfoId).ifPresent(sse -> this.sendMessage(message, messageType, sse));
 	}
 
+	public void disconnectByExcelInfoId(Long excelInfoId){
+		sseRepository.deleteByExcelInfoId(excelInfoId);
+	}
+
 	private void sendMessage(Object message, MessageType messageType, SseEmitter sseEmitter) {
 		try {
 			sseEmitter.send(SseEmitter.event()

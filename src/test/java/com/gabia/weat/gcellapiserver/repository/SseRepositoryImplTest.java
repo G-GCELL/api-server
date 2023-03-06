@@ -2,9 +2,11 @@ package com.gabia.weat.gcellapiserver.repository;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,6 +87,22 @@ public class SseRepositoryImplTest {
 
 		// then
 		assertThat(list).hasSize(1);
+
+	}
+
+	@Test
+	@DisplayName("SSE_정보_삭제")
+	public void deleteByExcelInfoId(){
+		// given
+		Long id = 1L;
+		SseEmitter testSse = mock(SseEmitter.class);
+		sseRepository.registryFileConnection(id, testSse);
+
+		// when
+		sseRepository.deleteByExcelInfoId(id);
+
+		// then
+		verify(testSse, times(1)).complete();
 
 	}
 
