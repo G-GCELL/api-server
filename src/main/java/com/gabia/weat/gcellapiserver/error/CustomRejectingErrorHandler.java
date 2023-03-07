@@ -3,13 +3,19 @@ package com.gabia.weat.gcellapiserver.error;
 import org.springframework.amqp.rabbit.listener.ConditionalRejectingErrorHandler;
 import org.springframework.stereotype.Component;
 
+import com.gabia.weat.gcellapiserver.service.log.LogPrinter;
+
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class CustomRejectingErrorHandler extends ConditionalRejectingErrorHandler {
+
+	private final LogPrinter logPrinter;
 
 	@Override
 	protected void log(Throwable t) {
-		// 임시 코드
-		// Consumer 로그 출력 역할에 대한 논의 필요.
+		logPrinter.printErrorLog((Exception) t.getCause());
 	}
 
 }
