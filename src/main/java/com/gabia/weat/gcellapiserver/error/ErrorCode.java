@@ -20,7 +20,7 @@ public enum ErrorCode {
 	CONNECTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, CustomStatus.CONNECTION_ERROR, "사용자 연결에 문제가 발생하였습니다.");
 
 	private final HttpStatus status;
-	private final CustomStatus code;
+	private final CustomStatus customStatus;
 	private final String message;
 
 }

@@ -17,6 +17,6 @@ public enum CustomStatus {
 	CONNECTION_ERROR(35000),
 	UNKNOWN_ERROR(95000);
 
-	private int status;
+	private final int code;
 
 }

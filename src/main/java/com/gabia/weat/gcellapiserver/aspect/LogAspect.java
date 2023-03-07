@@ -9,7 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -68,14 +67,14 @@ public class LogAspect {
 
 	@Around("@annotation(consumerLog)")
 	public Object consumerLogAdvisor(ProceedingJoinPoint joinPoint, ConsumerLog consumerLog) throws Throwable {
-		this.setTraceId(joinPoint);
 		try {
+			this.setTraceId(joinPoint);
 			this.printMessageBrokerLog(TargetType.CONSUMER, consumerLog.queue(), this.getInput(joinPoint), null);
 			return joinPoint.proceed();
 		} catch (Exception e) {
 			this.printErrorLog(e);
+			throw e;
 		}
-		return null;
 	}
 
 	@Around("@annotation(producerLog)")
@@ -128,7 +127,7 @@ public class LogAspect {
 	private void failStatus(ApiLogFormatDtoBuilder logFormatBuilder, ErrorCode errorCode) {
 		logFormatBuilder.success(false)
 			.status(errorCode.getStatus().value())
-			.detailStatus(errorCode.getCode().getStatus());
+			.detailStatus(errorCode.getCustomStatus().getCode());
 	}
 
 	private String getInput(ProceedingJoinPoint joinPoint) {

@@ -5,29 +5,12 @@ server:
     context-path: ${CONTEXT_PATH}
 
 spring:
+  application:
+    name: monitoring
   datasource:
     url: jdbc:${DB}://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
-    application:
-      name: monitoring
-
-management:
-  endpoint:
-    metrics:
-      enabled: true
-    prometheus:
-      enabled: true
-
-  endpoints:
-    web:
-      exposure:
-        include: health, info, metrics, prometheus
-
-  metrics:
-    tags:
-      application: test-name
-
   jpa:
     show-sql: true
     hibernate:
@@ -67,3 +50,17 @@ rabbitmq:
     file-create-error-queue: ${FILE_CREATE_ERROR_QUEUE}
   routing-key:
     file-create-request-routing-key: ${FILE_CREATE_REQUEST_ROUTING_KEY}
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  metrics:
+    tags:
+      application: test-name
