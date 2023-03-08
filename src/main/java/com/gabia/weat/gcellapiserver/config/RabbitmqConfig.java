@@ -145,12 +145,10 @@ public class RabbitmqConfig {
 		rabbitTemplate.setRoutingKey(routingKeyName);
 		rabbitTemplate.setMandatory(true);
 
-		// 임시 코드
 		rabbitTemplate.setReturnsCallback(returned -> {
 			log.info("[반환된 메시지] " + returned);
 		});
 
-		// 임시 코드
 		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
 			if (!ack || Objects.requireNonNull(correlationData).getReturned() != null) {
 				log.error("[메시지 발행 실패] " + cause);
