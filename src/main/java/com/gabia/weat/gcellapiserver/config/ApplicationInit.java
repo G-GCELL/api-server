@@ -22,11 +22,18 @@ public class ApplicationInit {
 
 	private final MinioClient minioClient;
 
-	@Value("${minio.bucket.name}")
-	private String bucketName;
+	@Value("${minio.bucket.excel}")
+	private String excelBucketName;
+	@Value("${minio.bucket.csv}")
+	private String csvBucketName;
 
 	@PostConstruct
 	public void initMinio(){
+		this.createBucket(excelBucketName);
+		this.createBucket(csvBucketName);
+	}
+
+	private void createBucket(String bucketName) {
 		try {
 			boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
 			if (!bucketExists){
@@ -40,4 +47,5 @@ public class ApplicationInit {
 			throw new CustomException(ErrorCode.MINIO_ERROR);
 		}
 	}
+
 }
