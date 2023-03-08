@@ -124,33 +124,25 @@ public class RabbitmqConfig {
 
 	@Bean
 	RabbitTemplate fileCreateRequestRabbitTemplate() {
-		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
-		rabbitTemplate.setMessageConverter(messageConverter());
-		rabbitTemplate.setExchange(property.getExchange().getDirectExchange());
-		rabbitTemplate.setRoutingKey(property.getRoutingKey().getFileCreateRequestRoutingKey());
-		rabbitTemplate.setMandatory(true);
-
-		// 임시 코드
-		rabbitTemplate.setReturnsCallback(returned -> {
-			log.info("[반환된 메시지] " + returned);
-		});
-
-		// 임시 코드
-		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
-			if (!ack || Objects.requireNonNull(correlationData).getReturned() != null) {
-				log.error("[메시지 발행 실패] " + cause);
-			}
-		});
-
-		return rabbitTemplate;
+		return this.getRabbitTemplate(
+			property.getExchange().getDirectExchange(),
+			property.getRoutingKey().getFileCreateRequestRoutingKey()
+		);
 	}
 
 	@Bean
 	RabbitTemplate csvUpdateRequestRabbitTemplate(){
+		return this.getRabbitTemplate(
+			property.getExchange().getDirectExchange(),
+			property.getRoutingKey().getCsvUpdateRequestRoutingKey()
+		);
+	}
+
+	private RabbitTemplate getRabbitTemplate(String exchangeName, String routingKeyName) {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
 		rabbitTemplate.setMessageConverter(messageConverter());
-		rabbitTemplate.setExchange(property.getExchange().getDirectExchange());
-		rabbitTemplate.setRoutingKey(property.getRoutingKey().getCsvUpdateRequestRoutingKey());
+		rabbitTemplate.setExchange(exchangeName);
+		rabbitTemplate.setRoutingKey(routingKeyName);
 		rabbitTemplate.setMandatory(true);
 
 		// 임시 코드
