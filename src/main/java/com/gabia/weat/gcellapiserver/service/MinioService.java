@@ -1,5 +1,8 @@
 package com.gabia.weat.gcellapiserver.service;
 
+import java.io.InputStream;
+
+import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,6 +19,7 @@ import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -25,8 +29,10 @@ public class MinioService {
 	private final MinioClient minioClient;
 	private final ExcelInfoRepository excelInfoRepository;
 
-	@Value("${minio.bucket.name}")
-	private String bucketName;
+	@Value("${minio.bucket.excel}")
+	private String excelBucketName;
+	@Value("${minio.bucket.csv}")
+	private String csvBucketName;
 
 	public byte[] downloadExcel(Long excelInfoId, String memberEmail) {
 
@@ -36,7 +42,7 @@ public class MinioService {
 		try {
 			byte[] bytes = minioClient.getObject(
 				GetObjectArgs.builder()
-					.bucket(bucketName).object(excelInfo.getPath())
+					.bucket(excelBucketName).object(excelInfo.getPath())
 					.build()
 			).readAllBytes();
 			return bytes;
@@ -50,7 +56,7 @@ public class MinioService {
 		try {
 			minioClient.removeObject(
 				RemoveObjectArgs.builder()
-					.bucket(bucketName)
+					.bucket(excelBucketName)
 					.object(excelInfo.getPath())
 					.build()
 			);
@@ -59,4 +65,18 @@ public class MinioService {
 			throw new CustomException(ErrorCode.MINIO_ERROR);
 		}
 	}
+
+	public void upload(MultipartFile multipartFile) {
+		try (InputStream inputStream = multipartFile.getInputStream()) {
+			minioClient.putObject(PutObjectArgs.builder()
+				.bucket(csvBucketName)
+				.object(multipartFile.getOriginalFilename())
+				.stream(inputStream, multipartFile.getSize(), -1)
+				.build()
+			);
+		} catch (Exception e) {
+			throw new CustomException(ErrorCode.MINIO_ERROR);
+		}
+	}
+
 }

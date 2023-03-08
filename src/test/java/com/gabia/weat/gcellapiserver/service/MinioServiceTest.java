@@ -3,16 +3,12 @@ package com.gabia.weat.gcellapiserver.service;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.errors.*;
-
-import io.minio.messages.ErrorResponse;
-import okhttp3.Response;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,12 +19,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -66,7 +61,7 @@ public class MinioServiceTest {
 		InputStream inputStream = new ByteArrayInputStream(bytes);
 		inputStream.close();
 		GetObjectResponse getObjectResponse = new GetObjectResponse(null, null, null, null, inputStream);
-		ReflectionTestUtils.setField(minioService, "bucketName", "test");
+		ReflectionTestUtils.setField(minioService, "excelBucketName", "test");
 
 		// mocking
 		given(excelInfoRepository.findByIdAndMemberEmail(any(), any())).willReturn(Optional.ofNullable(excelInfo));
@@ -85,7 +80,7 @@ public class MinioServiceTest {
 		// given
 		int testLength = 9;
 		String testEmail = "test@test.com";
-		ReflectionTestUtils.setField(minioService, "bucketName", "test");
+		ReflectionTestUtils.setField(minioService, "excelBucketName", "test");
 
 		// mocking
 		given(excelInfoRepository.findByIdAndMemberEmail(any(), any())).willReturn(Optional.ofNullable(excelInfo));
@@ -110,4 +105,26 @@ public class MinioServiceTest {
 		}
 
 	}
+
+	@Test
+	@DisplayName("파일_업로드_테스트")
+	public void upload_test() throws Exception {
+		// given
+		MultipartFile mockFile = mock(MultipartFile.class);
+		InputStream mockInputStream = mock(InputStream.class);
+
+		ReflectionTestUtils.setField(minioService, "csvBucketName", "test");
+
+		given(mockFile.getInputStream()).willReturn(mockInputStream);
+		given(mockFile.getOriginalFilename()).willReturn("testFileName");
+		given(mockFile.getSize()).willReturn(1L);
+
+		// when
+		minioService.upload(mockFile);
+
+		// then
+		verify(minioClient, times(1)).putObject(any());
+
+	}
+
 }
