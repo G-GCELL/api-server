@@ -1,9 +1,11 @@
 package com.gabia.weat.gcellapiserver.dto;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
 import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
@@ -12,7 +14,7 @@ import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+
 import lombok.Builder;
 
 public class FileDto {
@@ -84,6 +86,14 @@ public class FileDto {
 		String fileName,
 		LocalDateTime createdAt,
 		ExcelStatusType status
+	) {
+
+	}
+
+	public record CsvUpdateRequestDto(
+		@NotNull
+		MultipartFile file,
+		YearMonth deleteTarget
 	) {
 
 	}
