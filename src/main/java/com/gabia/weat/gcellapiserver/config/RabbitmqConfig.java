@@ -146,6 +146,29 @@ public class RabbitmqConfig {
 	}
 
 	@Bean
+	RabbitTemplate csvUpdateRequestRabbitTemplate(){
+		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+		rabbitTemplate.setMessageConverter(messageConverter());
+		rabbitTemplate.setExchange(property.getExchange().getDirectExchange());
+		rabbitTemplate.setRoutingKey(property.getRoutingKey().getCsvUpdateRequestRoutingKey());
+		rabbitTemplate.setMandatory(true);
+
+		// 임시 코드
+		rabbitTemplate.setReturnsCallback(returned -> {
+			log.info("[반환된 메시지] " + returned);
+		});
+
+		// 임시 코드
+		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
+			if (!ack || Objects.requireNonNull(correlationData).getReturned() != null) {
+				log.error("[메시지 발행 실패] " + cause);
+			}
+		});
+
+		return rabbitTemplate;
+	}
+
+	@Bean
 	MessageConverter messageConverter() {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());

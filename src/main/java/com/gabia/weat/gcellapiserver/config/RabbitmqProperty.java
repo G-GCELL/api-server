@@ -45,6 +45,7 @@ public class RabbitmqProperty {
 	@AllArgsConstructor
 	public static class RoutingKeyProperty {
 		private String fileCreateRequestRoutingKey;
+		private String CsvUpdateRequestRoutingKey;
 	}
 
 }
