@@ -33,11 +33,11 @@ public class RabbitmqProperty {
 		private String fileCreateErrorQueue;
 
 		public String getFileCreateProgressQueue(String serverName) {
-			return fileCreateProgressQueue + "-" + serverName.substring(serverName.length() - 1);
+			return fileCreateProgressQueue + "-" + serverName;
 		}
 
 		public String getFileCreateErrorQueue(String serverName) {
-			return fileCreateErrorQueue + "-" + serverName.substring(serverName.length() - 1);
+			return fileCreateErrorQueue + "-" + serverName;
 		}
 	}
 
