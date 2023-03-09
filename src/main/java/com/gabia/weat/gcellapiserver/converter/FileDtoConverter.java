@@ -1,15 +1,13 @@
 package com.gabia.weat.gcellapiserver.converter;
 
-import java.math.BigDecimal;
-
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameResponseDto;
+import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
 import static com.gabia.weat.gcellapiserver.dto.MessageDto.*;
 
+import java.math.BigDecimal;
+
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
-import com.gabia.weat.gcellapiserver.domain.type.JobType;
-import com.gabia.weat.gcellapiserver.dto.FileDto.CsvUpdateRequestDto;
-import com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
-import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
+import com.gabia.weat.gcellapiserver.dto.FileDto.*;
+import com.gabia.weat.gcellapiserver.dto.MessageDto.*;
 
 public class FileDtoConverter {
 
@@ -53,8 +51,7 @@ public class FileDtoConverter {
 	public static CsvUpdateRequestMsgDto updateReqDtoToUpdateReqMsgDto(CsvUpdateRequestDto csvUpdateRequestDto){
 		return new CsvUpdateRequestMsgDto(
 			csvUpdateRequestDto.file().getOriginalFilename(),
-			csvUpdateRequestDto.deleteTarget(),
-			JobType.MANUAL
+			csvUpdateRequestDto.deleteTarget()
 		);
 	}
 

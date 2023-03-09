@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 
-import com.gabia.weat.gcellapiserver.domain.type.JobType;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 
 import lombok.Builder;
@@ -61,8 +60,7 @@ public class MessageDto {
 
 	public record CsvUpdateRequestMsgDto(
 		String fileLocate,
-		YearMonth deleteTarget,
-		JobType jobType
+		YearMonth deleteTarget
 	) {
 
 	}

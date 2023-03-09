@@ -1,8 +1,7 @@
 package com.gabia.weat.gcellapiserver.service.producer;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.time.YearMonth;
@@ -16,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-import com.gabia.weat.gcellapiserver.domain.type.JobType;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.CsvUpdateRequestMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 
@@ -46,8 +44,7 @@ public class CsvUpdateRequestProducerTest {
 	private CsvUpdateRequestMsgDto getCsvUpdateRequestMsgDto() {
 		return new CsvUpdateRequestMsgDto(
 			"testLocate",
-			YearMonth.now(),
-			JobType.MANUAL
+			YearMonth.now()
 		);
 	}
 

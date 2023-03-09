@@ -1,14 +1,14 @@
 package com.gabia.weat.gcellapiserver.service;
 
-import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
-import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
-import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
 
-import io.minio.GetObjectResponse;
-import io.minio.MinioClient;
-import io.minio.errors.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,16 +21,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
+import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
+import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
+import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import io.minio.GetObjectResponse;
+import io.minio.MinioClient;
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 
 @ExtendWith(MockitoExtension.class)
 public class MinioServiceTest {
@@ -116,11 +120,10 @@ public class MinioServiceTest {
 		ReflectionTestUtils.setField(minioService, "csvBucketName", "test");
 
 		given(mockFile.getInputStream()).willReturn(mockInputStream);
-		given(mockFile.getOriginalFilename()).willReturn("testFileName");
 		given(mockFile.getSize()).willReturn(1L);
 
 		// when
-		minioService.upload(mockFile);
+		minioService.upload(mockFile, "mock");
 
 		// then
 		verify(minioClient, times(1)).putObject(any());
