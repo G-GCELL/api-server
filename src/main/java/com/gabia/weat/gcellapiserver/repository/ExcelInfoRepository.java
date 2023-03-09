@@ -3,11 +3,10 @@ package com.gabia.weat.gcellapiserver.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 
 public interface ExcelInfoRepository extends JpaRepository<ExcelInfo, Long>, ExcelInfoRepositoryCustom {
 

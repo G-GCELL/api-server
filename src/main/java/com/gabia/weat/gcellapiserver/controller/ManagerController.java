@@ -4,7 +4,6 @@ import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;

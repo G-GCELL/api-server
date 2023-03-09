@@ -1,7 +1,7 @@
 package com.gabia.weat.gcellapiserver.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

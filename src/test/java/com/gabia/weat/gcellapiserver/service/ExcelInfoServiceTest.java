@@ -1,5 +1,8 @@
 package com.gabia.weat.gcellapiserver.service;
 
+import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.List;
@@ -12,12 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileCreateRequestDto;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameRequestDto;
-import static com.gabia.weat.gcellapiserver.dto.FileDto.FileUpdateNameResponseDto;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;

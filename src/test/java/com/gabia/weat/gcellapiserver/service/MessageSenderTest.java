@@ -1,9 +1,10 @@
 package com.gabia.weat.gcellapiserver.service;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -17,9 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
