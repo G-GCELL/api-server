@@ -20,6 +20,7 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -38,6 +39,7 @@ public class RabbitmqConfig {
 	private String serverName;
 	private final RabbitmqProperty property;
 	private final CustomRejectingErrorHandler errorHandler;
+	private final Environment environment;
 
 	@Bean
 	ConnectionFactory connectionFactory() {
@@ -74,12 +76,14 @@ public class RabbitmqConfig {
 
 	@Bean
 	Queue fileCreateProgressQueue() {
-		return new Queue(property.getQueue().getFileCreateProgressQueue(serverName), true);
+		String hostname = environment.getProperty("HOSTNAME");
+		return new Queue(property.getQueue().getFileCreateProgressQueue(hostname), true);
 	}
 
 	@Bean
 	Queue fileCreateErrorQueue() {
-		return new Queue(property.getQueue().getFileCreateErrorQueue(serverName), true);
+		String hostname = environment.getProperty("HOSTNAME");
+		return new Queue(property.getQueue().getFileCreateErrorQueue(hostname), true);
 	}
 
 	@Bean
