@@ -20,6 +20,10 @@ spring:
         format_sql: true
         default_batch_fetch_size: ${FETCH_SIZE}
     open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 2GB
+      max-request-size: 2GB
 
 excel-info:
   file-base-url: ${FILE_BASE_URL}
@@ -27,7 +31,8 @@ excel-info:
 
 minio:
   bucket:
-    name: ${MINIO_BUCKET}
+    excel: ${MINIO_BUCKET_EXCEL}
+    csv: ${MINIO_BUCKET_CSV}
   access:
     key: ${MINIO_KEY}
     secret: ${MINIO_SECRET}
@@ -50,6 +55,7 @@ rabbitmq:
     file-create-error-queue: ${FILE_CREATE_ERROR_QUEUE}
   routing-key:
     file-create-request-routing-key: ${FILE_CREATE_REQUEST_ROUTING_KEY}
+    csv-update-request-routing-key: ${CSV_UPDATE_REQUEST_ROUTING_KEY}
 
 management:
   endpoint:

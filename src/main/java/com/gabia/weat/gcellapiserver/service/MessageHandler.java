@@ -48,7 +48,6 @@ public class MessageHandler {
 			throw new CustomException(ErrorCode.EXCEL_NOT_EXISTS);
 		});
 		excelInfo.created();
-		excelInfoRepository.flush();
 		FileCreateCompleteMsgDto fileCreateCompleteMsgDto = MessageDtoConverter.createProgressMsgToCreateCompleteMsg(
 			message, excelInfo.getName());
 		messageSender.sendMessageToExcelInfoId(message.excelInfoId(), message.messageType(), fileCreateCompleteMsgDto);

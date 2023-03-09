@@ -17,7 +17,8 @@ public enum ErrorCode {
 	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, CustomStatus.MEMBER_NOT_FOUND, "해당 사용자가 존재하지 않습니다."),
 	DUPLICATE_FILE_NAME(HttpStatus.CONFLICT, CustomStatus.DUPLICATE_FILE_NAME, "해당 파일 이름이 이미 존재합니다."),
 	CONNECTION_NOT_FOUND(HttpStatus.NOT_FOUND, CustomStatus.CONNECTION_NOT_FOUND, "해당 사용자의 연결을 찾을 수 없습니다."),
-	CONNECTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, CustomStatus.CONNECTION_ERROR, "사용자 연결에 문제가 발생하였습니다.");
+	CONNECTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, CustomStatus.CONNECTION_ERROR, "사용자 연결에 문제가 발생하였습니다."),
+	INVALID_FILE_EXTENSION(HttpStatus.BAD_REQUEST, CustomStatus.INVALID_FILE_EXTENSION, "파일 확장자가 올바르지 않습니다.");
 
 	private final HttpStatus status;
 	private final CustomStatus customStatus;

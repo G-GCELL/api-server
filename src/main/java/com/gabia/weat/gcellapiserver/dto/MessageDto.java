@@ -2,8 +2,10 @@ package com.gabia.weat.gcellapiserver.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
+import com.gabia.weat.gcellapiserver.domain.type.JobType;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 
 import lombok.Builder;
@@ -53,6 +55,14 @@ public class MessageDto {
 		Long excelInfoId,
 		int errorCode,
 		String errorMessage
+	) {
+
+	}
+
+	public record CsvUpdateRequestMsgDto(
+		String fileLocate,
+		YearMonth deleteTarget,
+		JobType jobType
 	) {
 
 	}

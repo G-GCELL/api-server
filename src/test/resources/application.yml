@@ -20,7 +20,8 @@ excel-info:
 
 minio:
   bucket:
-    name: name
+    excel: excel
+    csv: csv
   access:
     key: key
     secret: secret
@@ -43,3 +44,4 @@ rabbitmq:
     file-create-error-queue: queue
   routing-key:
     file-create-request-routing-key: key
+    csv-update-request-routing-key: key
