@@ -14,7 +14,6 @@ import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-
 import lombok.Builder;
 
 public class FileDto {

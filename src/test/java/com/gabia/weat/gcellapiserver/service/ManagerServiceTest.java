@@ -2,7 +2,6 @@ package com.gabia.weat.gcellapiserver.service;
 
 import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 import java.time.YearMonth;
 
@@ -14,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.gabia.weat.gcellapiserver.dto.FileDto;
 import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
 import com.gabia.weat.gcellapiserver.service.producer.CsvUpdateRequestProducer;
 
@@ -44,7 +42,7 @@ public class ManagerServiceTest {
 		managerService.updateCsvFile(csvUpdateRequestDto);
 
 		// then
-		verify(minioService, times(1)).upload(any());
+		verify(minioService, times(1)).upload(any(), any());
 		verify(csvUpdateRequestProducer, times(1)).sendMessage(any());
 		verify(logFormatFactory, times(1)).getTraceId();
 	}

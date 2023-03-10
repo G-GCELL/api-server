@@ -1,10 +1,13 @@
 package com.gabia.weat.gcellapiserver.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.gabia.weat.gcellapiserver.converter.FileDtoConverter;
 import com.gabia.weat.gcellapiserver.dto.FileDto.CsvUpdateRequestDto;
+import com.gabia.weat.gcellapiserver.dto.MessageDto.CsvUpdateRequestMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
@@ -24,11 +27,16 @@ public class ManagerService {
 
 	public void updateCsvFile(CsvUpdateRequestDto csvUpdateRequestDto) {
 		validFileExtension(csvUpdateRequestDto.file());
-		minioService.upload(csvUpdateRequestDto.file());
+		String fileName = addCurrentTimePrefix(csvUpdateRequestDto.file().getOriginalFilename());
+		minioService.upload(csvUpdateRequestDto.file(), fileName);
 		csvUpdateRequestProducer.sendMessage(MessageWrapperDto.wrapMessageDto(
-			FileDtoConverter.updateReqDtoToUpdateReqMsgDto(csvUpdateRequestDto),
+			new CsvUpdateRequestMsgDto(fileName, csvUpdateRequestDto.deleteTarget()),
 			logFormatFactory.getTraceId()
 		));
+	}
+
+	private String addCurrentTimePrefix(String content) {
+		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")) + "_" + content;
 	}
 
 	private void validFileExtension(MultipartFile file){

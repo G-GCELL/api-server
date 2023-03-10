@@ -2,7 +2,7 @@ package com.gabia.weat.gcellapiserver.service.log;
 
 import static com.gabia.weat.gcellapiserver.dto.log.ApiLogFormatDto.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
 import org.junit.jupiter.api.DisplayName;

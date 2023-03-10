@@ -9,9 +9,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -2,8 +2,6 @@ package com.gabia.weat.gcellapiserver.service.log;
 
 import org.slf4j.event.Level;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.gabia.weat.gcellapiserver.domain.type.TargetType;
 import com.gabia.weat.gcellapiserver.dto.log.ApiLogFormatDto;

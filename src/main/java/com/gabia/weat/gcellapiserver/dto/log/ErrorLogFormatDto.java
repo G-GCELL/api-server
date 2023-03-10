@@ -1,7 +1,5 @@
 package com.gabia.weat.gcellapiserver.dto.log;
 
-import java.time.LocalDateTime;
-
 import org.slf4j.event.Level;
 
 import lombok.Builder;

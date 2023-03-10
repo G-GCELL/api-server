@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ApplicationInit {
 
 	private final MinioClient minioClient;
-
 	@Value("${minio.bucket.excel}")
 	private String excelBucketName;
 	@Value("${minio.bucket.csv}")

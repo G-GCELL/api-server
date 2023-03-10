@@ -2,12 +2,9 @@ package com.gabia.weat.gcellapiserver.service;
 
 import java.io.InputStream;
 
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
@@ -16,10 +13,10 @@ import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -66,11 +63,11 @@ public class MinioService {
 		}
 	}
 
-	public void upload(MultipartFile multipartFile) {
+	public void upload(MultipartFile multipartFile, String fileName) {
 		try (InputStream inputStream = multipartFile.getInputStream()) {
 			minioClient.putObject(PutObjectArgs.builder()
 				.bucket(csvBucketName)
-				.object(multipartFile.getOriginalFilename())
+				.object(fileName)
 				.stream(inputStream, multipartFile.getSize(), -1)
 				.build()
 			);

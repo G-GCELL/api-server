@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.minio.BucketExistsArgs;
 import io.minio.MinioClient;
-import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class MinioConfig {
