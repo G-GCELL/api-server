@@ -26,7 +26,7 @@ public class ManagerServiceTest {
 	@Mock
 	private LogFormatFactory logFormatFactory;
 	@InjectMocks
-	private ManagerService managerService;
+	private AdminService adminService;
 
 	@Test
 	@DisplayName("CSV_데이터셋_수정_요청_테스트")
@@ -39,7 +39,7 @@ public class ManagerServiceTest {
 		given(logFormatFactory.getTraceId()).willReturn("testTraceId");
 
 		// when
-		managerService.updateCsvFile(csvUpdateRequestDto);
+		adminService.updateCsvFile(csvUpdateRequestDto);
 
 		// then
 		verify(minioService, times(1)).upload(any(), any());

@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,7 +26,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@CrossOrigin("*") // 임시 코드
 @RequiredArgsConstructor
 @RequestMapping(value = "/excels")
 public class ExcelInfoController {
@@ -71,7 +70,7 @@ public class ExcelInfoController {
 	}
 
 	private String getConnectMemberEmail() {
-		return "mock_email";
+		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 
 }

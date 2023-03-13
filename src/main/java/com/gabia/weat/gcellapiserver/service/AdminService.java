@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ManagerService {
+public class AdminService {
 
 	private final String CSV_FILE_EXTENSION = ".csv";
 	private final MinioService minioService;
