@@ -24,6 +24,20 @@ spring:
     multipart:
       max-file-size: 2GB
       max-request-size: 2GB
+  security:
+    oauth2:
+      client:
+        registration:
+          hiworks:
+            client-id: ${HIWORKS_CLIENT_ID}
+            client-secret: ${HIWORKS_CLIENT_SECRET}
+            redirect-uri: ${BASE_URL}/api/login/oauth2/code/hiworks
+            authorization-grant-type: authorization_code
+        provider:
+          hiworks:
+            authorization-uri: https://api.hiworks.com/open/auth/authform?client_id=${HIWORKS_CLIENT_ID}&access_type=online
+            token-uri: https://api.hiworks.com/open/auth/accesstoken
+            user-info-uri: https://api.hiworks.com/user/v2/me
 
 excel-info:
   file-base-url: ${FILE_BASE_URL}
@@ -70,3 +84,7 @@ management:
   metrics:
     tags:
       application: test-name
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-expiration: ${ACCESS_TOKEN_EXPIRATION}
