@@ -2,6 +2,7 @@ package com.gabia.weat.gcellapiserver.config;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gabia.weat.gcellapiserver.error.CustomRejectingErrorHandler;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +42,14 @@ public class RabbitmqConfig {
 	private final RabbitmqProperty property;
 	private final CustomRejectingErrorHandler errorHandler;
 	private final Environment environment;
+	private final String QUEUE_NAME_POSTFIX_ENV_NAME = "HOSTNAME";
+	private String queueNamePostfix;
+
+	@PostConstruct
+	public void setQueueNamePostfix(){
+		String queueNamePostFix = environment.getProperty(QUEUE_NAME_POSTFIX_ENV_NAME);
+		this.queueNamePostfix = queueNamePostFix == null? RandomStringUtils.random(12, true, true) : queueNamePostFix;
+	}
 
 	@Bean
 	ConnectionFactory connectionFactory() {
@@ -76,14 +86,12 @@ public class RabbitmqConfig {
 
 	@Bean
 	Queue fileCreateProgressQueue() {
-		String hostname = environment.getProperty("HOSTNAME");
-		return new Queue(property.getQueue().getFileCreateProgressQueue(hostname), true);
+		return new Queue(property.getQueue().getFileCreateProgressQueue(queueNamePostfix), true, false, true);
 	}
 
 	@Bean
 	Queue fileCreateErrorQueue() {
-		String hostname = environment.getProperty("HOSTNAME");
-		return new Queue(property.getQueue().getFileCreateErrorQueue(hostname), true);
+		return new Queue(property.getQueue().getFileCreateErrorQueue(queueNamePostfix), true, false, true);
 	}
 
 	@Bean
