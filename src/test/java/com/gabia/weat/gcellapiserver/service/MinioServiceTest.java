@@ -49,8 +49,7 @@ public class MinioServiceTest {
 
 	@BeforeEach
 	public void setUp() {
-		member = Member.builder().memberId(1L).name("안태욱").email("test@test.com")
-			.password("password").build();
+		member = Member.builder().memberId(1L).name("안태욱").email("test@test.com").build();
 		excelInfo = ExcelInfo.builder().excelInfoId(1L).path("미니오에 저장될 파일 이름")
 			.name("데이터베이스에 저장될 파일 이름").status(ExcelStatusType.CREATED).member(member)
 			.build();

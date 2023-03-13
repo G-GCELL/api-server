@@ -41,7 +41,6 @@ public class ExcelInfoRepositoryTest {
 		member = Member.builder()
 			.name("test")
 			.email("test@gabia.com")
-			.password("testPassword")
 			.build();
 
 		member = memberRepository.save(member);
