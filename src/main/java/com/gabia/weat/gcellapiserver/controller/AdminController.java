@@ -7,19 +7,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;
-import com.gabia.weat.gcellapiserver.service.ManagerService;
+import com.gabia.weat.gcellapiserver.service.AdminService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class ManagerController {
+public class AdminController {
 
-	private final ManagerService managerService;
+	private final AdminService adminService;
 
 	@PostMapping("/dataset")
 	public ResponseEntity<ApiResponseDto> uploadDataSet(CsvUpdateRequestDto csvUpdateRequestDto){
-		managerService.updateCsvFile(csvUpdateRequestDto);
+		adminService.updateCsvFile(csvUpdateRequestDto);
 		return ResponseEntity.ok(ApiResponseDto.success());
 	}
 
