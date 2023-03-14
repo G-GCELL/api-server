@@ -84,12 +84,12 @@ public class RabbitmqConfig {
 
 	@Bean
 	Queue fileCreateProgressQueue() {
-		return new Queue(property.getQueue().getFileCreateProgressQueue(queueNamePostfix), true, false, true);
+		return new Queue(property.getQueue().getFileCreateProgressQueue(queueNamePostfix), true, true, false);
 	}
 
 	@Bean
 	Queue fileCreateErrorQueue() {
-		return new Queue(property.getQueue().getFileCreateErrorQueue(queueNamePostfix), true, false, true);
+		return new Queue(property.getQueue().getFileCreateErrorQueue(queueNamePostfix), true, true, false);
 	}
 
 	@Bean
