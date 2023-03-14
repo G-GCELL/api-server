@@ -44,13 +44,11 @@ public class AuthController {
 	}
 
 	private HttpHeaders setTokenCookieHeader(OauthLoginResponseDto oauthLoginResponseDto) throws URISyntaxException {
-		System.out.println(oauthLoginResponseDto.accessToken());
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(new URI(redirectPageUrl));
 		ResponseCookie cookie = ResponseCookie.from("token", oauthLoginResponseDto.accessToken())
 			.maxAge(jwtProperty.getAccessTokenExpiration())
 			.path("/")
-			.httpOnly(true)
 			.build();
 		headers.set(HttpHeaders.SET_COOKIE, cookie.toString());
 		return headers;
