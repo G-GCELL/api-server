@@ -18,7 +18,12 @@ public enum ErrorCode {
 	DUPLICATE_FILE_NAME(HttpStatus.CONFLICT, CustomStatus.DUPLICATE_FILE_NAME, "해당 파일 이름이 이미 존재합니다."),
 	CONNECTION_NOT_FOUND(HttpStatus.NOT_FOUND, CustomStatus.CONNECTION_NOT_FOUND, "해당 사용자의 연결을 찾을 수 없습니다."),
 	CONNECTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, CustomStatus.CONNECTION_ERROR, "사용자 연결에 문제가 발생하였습니다."),
-	INVALID_FILE_EXTENSION(HttpStatus.BAD_REQUEST, CustomStatus.INVALID_FILE_EXTENSION, "파일 확장자가 올바르지 않습니다.");
+	INVALID_FILE_EXTENSION(HttpStatus.BAD_REQUEST, CustomStatus.INVALID_FILE_EXTENSION, "파일 확장자가 올바르지 않습니다."),
+	URI_SYNTAX_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, CustomStatus.URI_SYNTAX_ERROR, "Hiworks Authorization URI가 올바르지 않습니다."),
+	HIWORKS_ACCESS_TOKEN_REQUEST_ERROR(HttpStatus.BAD_REQUEST, CustomStatus.HIWORKS_ACCESS_TOKEN_REQUEST_ERROR, "Hiworks API 액세스 토큰 요청이 올바르지 않습니다."),
+	UNAUTHORIZED_REQUEST(HttpStatus.UNAUTHORIZED, CustomStatus.UNAUTHORIZED_REQUEST, "해당 리소스에 접근하기 위해 인증이 필요합니다."),
+	ACCESS_FORBIDDEN(HttpStatus.FORBIDDEN, CustomStatus.ACCESS_FORBIDDEN, "해당 리소스에 접근할 수 있는 권한이 없습니다."),
+	INVALID_TOKEN(HttpStatus.BAD_REQUEST, CustomStatus.INVALID_TOKEN, "유효하지 않은 액세스 토큰입니다.");
 
 	private final HttpStatus status;
 	private final CustomStatus customStatus;
