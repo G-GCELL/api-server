@@ -62,3 +62,5 @@ rabbitmq:
 jwt:
   secret: secret
   access-token-expiration: 0
+
+redirect-page-url : url
