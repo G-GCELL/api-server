@@ -27,7 +27,6 @@ public class JwtAuthenticationFilter extends GenericFilter {
 		IOException,
 		ServletException {
 		String token = resolveToken((HttpServletRequest)request);
-		log.info("---------------- " + token);
 		if (token != null && jwtTokenProvider.isTokenValid(token)) {
 			Authentication authentication = jwtTokenProvider.getAuthentication(token);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -37,7 +36,6 @@ public class JwtAuthenticationFilter extends GenericFilter {
 
 	private String resolveToken(HttpServletRequest request) {
 		String authHeader = request.getHeader(AUTHORIZATION_HEADER);
-		log.info("---------------- " + authHeader);
 		if (!StringUtils.hasText(authHeader) || !authHeader.startsWith("Bearer ")) {
 			return null;
 		}
