@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import com.gabia.weat.gcellapiserver.dto.MessageDto.CsvUpdateRequestMsgDto;
@@ -37,8 +36,7 @@ public class CsvUpdateRequestProducerTest {
 
 		// when & then
 		assertThatCode(() -> csvUpdateRequestProducer.sendMessage(messageWrapperDto)).doesNotThrowAnyException();
-		verify(csvUpdateRequestRabbitTemplate, times(1)).correlationConvertAndSend(eq(messageWrapperDto),
-			any(CorrelationData.class));
+		verify(csvUpdateRequestRabbitTemplate, times(1)).convertAndSend(eq(messageWrapperDto));
 	}
 
 	private CsvUpdateRequestMsgDto getCsvUpdateRequestMsgDto() {
