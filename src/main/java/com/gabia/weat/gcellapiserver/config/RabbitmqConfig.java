@@ -58,8 +58,6 @@ public class RabbitmqConfig {
 		connectionFactory.setPort(property.getPort());
 		connectionFactory.setUsername(property.getUsername());
 		connectionFactory.setPassword(property.getPassword());
-		connectionFactory.setPublisherReturns(true);
-		connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
 		connectionFactory.setConnectionNameStrategy(connectionNameStrategy());
 		return connectionFactory;
 	}
@@ -155,18 +153,6 @@ public class RabbitmqConfig {
 		rabbitTemplate.setMessageConverter(messageConverter());
 		rabbitTemplate.setExchange(exchangeName);
 		rabbitTemplate.setRoutingKey(routingKeyName);
-		rabbitTemplate.setMandatory(true);
-
-		rabbitTemplate.setReturnsCallback(returned -> {
-			log.info("[반환된 메시지] " + returned);
-		});
-
-		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
-			if (!ack || Objects.requireNonNull(correlationData).getReturned() != null) {
-				log.error("[메시지 발행 실패] " + cause);
-			}
-		});
-
 		return rabbitTemplate;
 	}
 
