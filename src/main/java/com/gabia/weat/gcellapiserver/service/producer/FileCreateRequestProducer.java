@@ -1,12 +1,14 @@
 package com.gabia.weat.gcellapiserver.service.producer;
 
-import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.gabia.weat.gcellapiserver.annotation.ProducerLog;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
+import com.gabia.weat.gcellapiserver.error.ErrorCode;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,8 +21,11 @@ public class FileCreateRequestProducer implements Producer<FileCreateRequestMsgD
 	@Override
 	@ProducerLog(exchange = "${rabbitmq.exchange.direct-exchange}")
 	public void sendMessage(MessageWrapperDto<FileCreateRequestMsgDto> message) {
-		CorrelationData correlationData = new CorrelationData();
-		fileCreateRequestRabbitTemplate.correlationConvertAndSend(message, correlationData);
+		try {
+			fileCreateRequestRabbitTemplate.convertAndSend(message);
+		} catch (AmqpException e) {
+			throw new CustomException(ErrorCode.MESSAGE_BROKER_CONNECTION_ERROR);
+		}
 	}
 
 }

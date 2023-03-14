@@ -42,10 +42,12 @@ public class LogAspect {
 			Object result = joinPoint.proceed();
 			return result;
 		} catch (CustomException e) {
+			success = false;
 			status = e.getErrorCode().getStatus().value();
 			detailStatus = e.getErrorCode().getCustomStatus().getCode();
 			throw e;
 		} catch (Exception e) {
+			success = false;
 			ErrorCode errorCode = ErrorCode.UNKNOWN_ERROR;
 			status = errorCode.getStatus().value();
 			detailStatus = errorCode.getCustomStatus().getCode();
