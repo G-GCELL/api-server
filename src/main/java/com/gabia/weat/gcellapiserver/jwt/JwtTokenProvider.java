@@ -14,8 +14,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.service.CustomUserDetailsService;
 
 import io.jsonwebtoken.Claims;
@@ -62,7 +60,7 @@ public class JwtTokenProvider {
 			Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
 			return true;
 		} catch (Exception e) {
-			throw new CustomException(ErrorCode.INVALID_TOKEN);
+			return false;
 		}
 	}
 

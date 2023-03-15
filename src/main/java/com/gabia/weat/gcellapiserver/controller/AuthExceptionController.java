@@ -1,9 +1,10 @@
-package com.gabia.weat.gcellapiserver.error;
+package com.gabia.weat.gcellapiserver.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 
 @RestController
