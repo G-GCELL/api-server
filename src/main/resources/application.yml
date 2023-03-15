@@ -72,6 +72,8 @@ rabbitmq:
     csv-update-request-routing-key: ${CSV_UPDATE_REQUEST_ROUTING_KEY}
 
 management:
+  server:
+    port: ${ACTUATOR_PORT}
   endpoint:
     metrics:
       enabled: true

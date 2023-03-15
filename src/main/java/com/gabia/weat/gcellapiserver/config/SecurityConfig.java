@@ -39,6 +39,7 @@ public class SecurityConfig {
 			.requestMatchers("/oauth2/authorization/hiworks").permitAll()
 			.requestMatchers("/login/oauth2/code/hiworks").permitAll()
 			.requestMatchers("/auth/exception/**").permitAll()
+			.requestMatchers("/actuator/**").permitAll()
 			.requestMatchers(HttpMethod.GET,
 				"/excels",
 				"/excels/{id}",
