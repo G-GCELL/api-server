@@ -47,7 +47,7 @@ public class AuthController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(new URI(redirectPageUrl));
 		ResponseCookie cookie = ResponseCookie.from("token", oauthLoginResponseDto.accessToken())
-			.maxAge(jwtProperty.getAccessTokenExpiration())
+			.maxAge(jwtProperty.getAccessTokenExpiration() / 1000)
 			.path("/")
 			.build();
 		headers.set(HttpHeaders.SET_COOKIE, cookie.toString());
