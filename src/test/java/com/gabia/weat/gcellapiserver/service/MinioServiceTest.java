@@ -1,17 +1,14 @@
 package com.gabia.weat.gcellapiserver.service;
 
-import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
-import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
-import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
 
-import io.minio.GetObjectResponse;
-import io.minio.MinioClient;
-import io.minio.errors.*;
-
-import io.minio.messages.ErrorResponse;
-import okhttp3.Response;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,19 +19,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
+import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
+import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
+import com.gabia.weat.gcellapiserver.error.exception.CustomException;
+import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import io.minio.GetObjectResponse;
+import io.minio.MinioClient;
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 
 @ExtendWith(MockitoExtension.class)
 public class MinioServiceTest {
@@ -49,10 +49,9 @@ public class MinioServiceTest {
 
 	@BeforeEach
 	public void setUp() {
-		member = Member.builder().memberId(1L).name("안태욱").email("test@test.com")
-			.password("password").build();
+		member = Member.builder().memberId(1L).name("안태욱").email("test@test.com").build();
 		excelInfo = ExcelInfo.builder().excelInfoId(1L).path("미니오에 저장될 파일 이름")
-			.name("데이터베이스에 저장될 파일 이름").isDeleted(false).member(member)
+			.name("데이터베이스에 저장될 파일 이름").status(ExcelStatusType.CREATED).member(member)
 			.build();
 	}
 
@@ -65,7 +64,7 @@ public class MinioServiceTest {
 		InputStream inputStream = new ByteArrayInputStream(bytes);
 		inputStream.close();
 		GetObjectResponse getObjectResponse = new GetObjectResponse(null, null, null, null, inputStream);
-		ReflectionTestUtils.setField(minioService, "bucketName", "test");
+		ReflectionTestUtils.setField(minioService, "excelBucketName", "test");
 
 		// mocking
 		given(excelInfoRepository.findByIdAndMemberEmail(any(), any())).willReturn(Optional.ofNullable(excelInfo));
@@ -84,7 +83,7 @@ public class MinioServiceTest {
 		// given
 		int testLength = 9;
 		String testEmail = "test@test.com";
-		ReflectionTestUtils.setField(minioService, "bucketName", "test");
+		ReflectionTestUtils.setField(minioService, "excelBucketName", "test");
 
 		// mocking
 		given(excelInfoRepository.findByIdAndMemberEmail(any(), any())).willReturn(Optional.ofNullable(excelInfo));
@@ -109,4 +108,25 @@ public class MinioServiceTest {
 		}
 
 	}
+
+	@Test
+	@DisplayName("파일_업로드_테스트")
+	public void upload_test() throws Exception {
+		// given
+		MultipartFile mockFile = mock(MultipartFile.class);
+		InputStream mockInputStream = mock(InputStream.class);
+
+		ReflectionTestUtils.setField(minioService, "csvBucketName", "test");
+
+		given(mockFile.getInputStream()).willReturn(mockInputStream);
+		given(mockFile.getSize()).willReturn(1L);
+
+		// when
+		minioService.upload(mockFile, "mock");
+
+		// then
+		verify(minioClient, times(1)).putObject(any());
+
+	}
+
 }

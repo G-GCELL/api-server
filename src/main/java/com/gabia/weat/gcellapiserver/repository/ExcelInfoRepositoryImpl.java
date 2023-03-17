@@ -11,8 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
 import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
 import com.querydsl.core.types.Order;
@@ -34,14 +34,14 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom {
 	public Page<FileListResponseDto> findByMemberPaging(Member member, Pageable pageable,
 		FileListRequestDto fileListRequestDto) {
 		List<FileListResponseDto> excelInfoList = queryFactory.select(Projections.constructor(FileListResponseDto.class,
-				excelInfo.excelInfoId, excelInfo.name, excelInfo.createdAt, excelInfo.isDeleted
+				excelInfo.excelInfoId, excelInfo.name, excelInfo.createdAt, excelInfo.status
 			))
 			.from(excelInfo)
 			.where(excelInfo.member.eq(member),
 				conditionExcelInfoId(fileListRequestDto.excelInfoIdList(), fileListRequestDto.idCondition()),
 				conditionExcelInfoName(fileListRequestDto.fileName(), fileListRequestDto.nameCondition()),
 				conditionCreatedAt(fileListRequestDto.minCreatedAt(), fileListRequestDto.maxCreatedAt()),
-				conditionIsDelete(fileListRequestDto.isDelete())
+				conditionStatus(fileListRequestDto.status())
 			)
 			.orderBy(excelInfoSort(pageable))
 			.offset(pageable.getOffset())
@@ -86,11 +86,11 @@ public class ExcelInfoRepositoryImpl implements ExcelInfoRepositoryCustom {
 		return excelInfo.createdAt.between(minCreatedAt, maxCreatedAt);
 	}
 
-	private BooleanExpression conditionIsDelete(Boolean isDelete) {
-		if (isDelete == null) {
+	private BooleanExpression conditionStatus(ExcelStatusType status) {
+		if (status == null) {
 			return null;
 		}
-		return excelInfo.isDeleted.eq(isDelete);
+		return excelInfo.status.eq(status);
 	}
 
 	private OrderSpecifier<?> excelInfoSort(Pageable pageable) {

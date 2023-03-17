@@ -1,9 +1,7 @@
 package com.gabia.weat.gcellapiserver.service;
 
-import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
-import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
-import com.gabia.weat.gcellapiserver.repository.MemberRepository;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doNothing;
+import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
+import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
+import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
+import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 
 @SpringBootTest
 public class ExcelInfoClassicTest {
@@ -46,7 +47,7 @@ public class ExcelInfoClassicTest {
 			.excelInfoId(1L)
 			.name("testName")
 			.path("testUrl")
-			.isDeleted(false)
+			.status(ExcelStatusType.CREATED)
 			.member(member)
 			.build();
 
@@ -59,7 +60,7 @@ public class ExcelInfoClassicTest {
 		ExcelInfo deletedExcelInfo = excelInfoService.deleteExcelInfo(excelInfo.getMember().getEmail(), excelInfo.getExcelInfoId());
 
 		// then
-		assertThat(deletedExcelInfo.getIsDeleted()).isEqualTo(true);
+		assertThat(deletedExcelInfo.getStatus()).isEqualTo(ExcelStatusType.DELETED);
 	}
 
 

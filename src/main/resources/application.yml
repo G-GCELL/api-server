@@ -1,13 +1,16 @@
 server:
   port: ${API_SERVER_PORT}
   name: ${SERVER_NAME}
+  servlet:
+    context-path: ${CONTEXT_PATH}
 
 spring:
+  application:
+    name: monitoring
   datasource:
     url: jdbc:${DB}://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
-
   jpa:
     show-sql: true
     hibernate:
@@ -17,6 +20,24 @@ spring:
         format_sql: true
         default_batch_fetch_size: ${FETCH_SIZE}
     open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 2GB
+      max-request-size: 2GB
+  security:
+    oauth2:
+      client:
+        registration:
+          hiworks:
+            client-id: ${HIWORKS_CLIENT_ID}
+            client-secret: ${HIWORKS_CLIENT_SECRET}
+            redirect-uri: ${BASE_URL}/api/login/oauth2/code/hiworks
+            authorization-grant-type: authorization_code
+        provider:
+          hiworks:
+            authorization-uri: https://api.hiworks.com/open/auth/authform?client_id=${HIWORKS_CLIENT_ID}&access_type=online
+            token-uri: https://api.hiworks.com/open/auth/accesstoken
+            user-info-uri: https://api.hiworks.com/user/v2/me
 
 excel-info:
   file-base-url: ${FILE_BASE_URL}
@@ -24,7 +45,8 @@ excel-info:
 
 minio:
   bucket:
-    name: ${MINIO_BUCKET}
+    excel: ${MINIO_BUCKET_EXCEL}
+    csv: ${MINIO_BUCKET_CSV}
   access:
     key: ${MINIO_KEY}
     secret: ${MINIO_SECRET}
@@ -40,8 +62,33 @@ rabbitmq:
   password: ${RABBITMQ_PASSWORD}
   exchange:
     direct-exchange: ${DIRECT_EXCHANGE}
+    file-create-progress-exchange: ${FILE_CREATE_PROGRESS_EXCHANGE}
+    file-create-error-exchange: ${FILE_CREATE_ERROR_EXCHANGE}
   queue:
-    file-create-request-queue: ${FILE_CREATE_REQUEST_QUEUE}
     file-create-progress-queue: ${FILE_CREATE_PROGRESS_QUEUE}
+    file-create-error-queue: ${FILE_CREATE_ERROR_QUEUE}
   routing-key:
     file-create-request-routing-key: ${FILE_CREATE_REQUEST_ROUTING_KEY}
+    csv-update-request-routing-key: ${CSV_UPDATE_REQUEST_ROUTING_KEY}
+
+management:
+  server:
+    port: ${ACTUATOR_PORT}
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  metrics:
+    tags:
+      application: test-name
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-expiration: ${ACCESS_TOKEN_EXPIRATION}
+
+redirect-page-url: ${REDIRECT_PAGE_URL}

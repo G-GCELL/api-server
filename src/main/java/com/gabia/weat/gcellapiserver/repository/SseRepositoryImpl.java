@@ -1,5 +1,6 @@
 package com.gabia.weat.gcellapiserver.repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -7,9 +8,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,7 +37,7 @@ public class SseRepositoryImpl implements SseRepository {
 
 	@Override
 	public Optional<SseEmitter> findById(Long id) {
-		List<SseEmitter> sseEmitters = sseMap.get(id);
+		List<SseEmitter> sseEmitters = this.findListById(id);
 		int size = sseEmitters.size();
 		return Optional.ofNullable(size == 0 ? null : sseEmitters.get(size - 1));
 	}
@@ -59,7 +57,12 @@ public class SseRepositoryImpl implements SseRepository {
 
 	@Override
 	public List<SseEmitter> findListById(Long id) {
-		return sseMap.get(id);
+		return sseMap.getOrDefault(id, Collections.EMPTY_LIST);
+	}
+
+	@Override
+	public void deleteByExcelInfoId(Long excelInfoId) {
+		this.findByExcelInfoId(excelInfoId).ifPresent(sse -> sse.complete());
 	}
 
 }

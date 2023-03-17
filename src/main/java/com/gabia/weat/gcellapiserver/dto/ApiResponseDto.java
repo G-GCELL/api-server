@@ -22,7 +22,11 @@ public class ApiResponseDto<T> {
 	}
 
 	public static ApiResponseDto fail(ErrorCode errorCode) {
-		return new ApiResponseDto(false, null, new ErrorDto(errorCode.getCode().getStatus(), errorCode.getMessage()));
+		return new ApiResponseDto(false, null, new ErrorDto(errorCode.getCustomStatus().getCode(), errorCode.getMessage()));
+	}
+
+	public static ApiResponseDto fail(ErrorDto errorDto) {
+		return new ApiResponseDto(false, null, errorDto);
 	}
 
 }

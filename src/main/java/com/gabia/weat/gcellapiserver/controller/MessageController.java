@@ -3,7 +3,7 @@ package com.gabia.weat.gcellapiserver.controller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +14,6 @@ import com.gabia.weat.gcellapiserver.service.MessageSender;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@CrossOrigin("*") // 임시 코드
 @RequiredArgsConstructor
 public class MessageController {
 
@@ -38,7 +37,7 @@ public class MessageController {
 	}
 
 	private String getConnectMemberEmail() {
-		return "mock_email";
+		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 
 }

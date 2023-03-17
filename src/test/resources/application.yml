@@ -2,6 +2,8 @@ server:
   name: name
 
 spring:
+  application:
+    name: name
   jpa:
     show-sql: true
     hibernate:
@@ -10,9 +12,20 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
-
-  application:
-    name: name
+  security:
+    oauth2:
+      client:
+        registration:
+          hiworks:
+            client-id: client-id
+            client-secret: client-secret
+            redirect-uri: redirect-uri
+            authorization-grant-type: authorization_code
+        provider:
+          hiworks:
+            authorization-uri: authorization-uri
+            token-uri: token-uri
+            user-info-uri: user-info-uri
 
 excel-info:
   file-base-url: url
@@ -20,7 +33,8 @@ excel-info:
 
 minio:
   bucket:
-    name: name
+    excel: excel
+    csv: csv
   access:
     key: key
     secret: secret
@@ -37,8 +51,16 @@ rabbitmq:
   exchange:
     direct-exchange: exchange
     file-create-progress-exchange: exchange
+    file-create-error-exchange: exchange
   queue:
-    file-create-request-queue: queue
     file-create-progress-queue: queue
+    file-create-error-queue: queue
   routing-key:
     file-create-request-routing-key: key
+    csv-update-request-routing-key: key
+
+jwt:
+  secret: secret
+  access-token-expiration: 0
+
+redirect-page-url : url

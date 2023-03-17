@@ -16,13 +16,10 @@ import com.gabia.weat.gcellapiserver.domain.type.MessageType;
 import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
 import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.service.MessageHandler;
-import com.rabbitmq.client.Channel;
 
 @ExtendWith(MockitoExtension.class)
 public class FileCreateProgressConsumerTest {
 
-	@Mock
-	private Channel channel;
 	@Mock
 	private MessageHandler messageHandler;
 	@InjectMocks
@@ -40,10 +37,8 @@ public class FileCreateProgressConsumerTest {
 
 		// when & then
 		assertThatCode(
-			() -> fileCreateProgressConsumer.receiveMessage(messageWrapperDto, channel,
-				tag)).doesNotThrowAnyException();
+			() -> fileCreateProgressConsumer.receiveMessage(messageWrapperDto)).doesNotThrowAnyException();
 		verify(messageHandler, times(1)).sendCreateExcelMsg(any());
-		verify(channel, times(1)).basicAck(eq(tag), anyBoolean());
 	}
 
 	private FileCreateProgressMsgDto getCreateProgressMsgDto() {

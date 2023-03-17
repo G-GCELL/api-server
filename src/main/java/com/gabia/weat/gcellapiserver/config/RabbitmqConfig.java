@@ -2,10 +2,10 @@ package com.gabia.weat.gcellapiserver.config;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Declarables;
-import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -21,10 +21,13 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gabia.weat.gcellapiserver.error.CustomRejectingErrorHandler;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,6 +40,16 @@ public class RabbitmqConfig {
 	@Value("${server.name}")
 	private String serverName;
 	private final RabbitmqProperty property;
+	private final CustomRejectingErrorHandler errorHandler;
+	private final Environment environment;
+	private final String QUEUE_NAME_POSTFIX_ENV_NAME = "HOSTNAME";
+	private String queueNamePostfix;
+
+	@PostConstruct
+	public void setQueueNamePostfix(){
+		String queueNamePostFix = environment.getProperty(QUEUE_NAME_POSTFIX_ENV_NAME);
+		this.queueNamePostfix = queueNamePostFix == null? RandomStringUtils.random(12, true, true) : queueNamePostFix;
+	}
 
 	@Bean
 	ConnectionFactory connectionFactory() {
@@ -45,8 +58,6 @@ public class RabbitmqConfig {
 		connectionFactory.setPort(property.getPort());
 		connectionFactory.setUsername(property.getUsername());
 		connectionFactory.setPassword(property.getPassword());
-		connectionFactory.setPublisherReturns(true);
-		connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
 		connectionFactory.setConnectionNameStrategy(connectionNameStrategy());
 		return connectionFactory;
 	}
@@ -62,22 +73,35 @@ public class RabbitmqConfig {
 	}
 
 	@Bean
-	Queue fileCreateRequestQueue() {
-		return new Queue(property.getQueue().getFileCreateRequestQueue(), true);
+	FanoutExchange fileCreateProgressExchange() {
+		return new FanoutExchange(property.getExchange().getFileCreateProgressExchange(), true, false);
 	}
 
 	@Bean
-	DirectExchange directExchange() {
-		return new DirectExchange(property.getExchange().getDirectExchange(), true, false);
+	FanoutExchange fileCreateErrorExchange() {
+		return new FanoutExchange(property.getExchange().getFileCreateErrorExchange(), true, false);
 	}
 
 	@Bean
-	Declarables fileCreateRequestBindings() {
-		return new Declarables(
-			BindingBuilder.bind(fileCreateRequestQueue())
-				.to(directExchange())
-				.with(property.getRoutingKey().getFileCreateRequestRoutingKey())
-		);
+	Queue fileCreateProgressQueue() {
+		return new Queue(property.getQueue().getFileCreateProgressQueue(queueNamePostfix), true, true, false);
+	}
+
+	@Bean
+	Queue fileCreateErrorQueue() {
+		return new Queue(property.getQueue().getFileCreateErrorQueue(queueNamePostfix), true, true, false);
+	}
+
+	@Bean
+	Binding fileCreateProgressBinding() {
+		return BindingBuilder.bind(fileCreateProgressQueue())
+			.to(fileCreateProgressExchange());
+	}
+
+	@Bean
+	Binding fileCreateErrorBinding() {
+		return BindingBuilder.bind(fileCreateErrorQueue())
+			.to(fileCreateErrorExchange());
 	}
 
 	@Bean
@@ -86,33 +110,49 @@ public class RabbitmqConfig {
 		listenerContainerFactory.setConnectionFactory(connectionFactory());
 		listenerContainerFactory.setMessageConverter(messageConverter());
 		listenerContainerFactory.setContainerCustomizer(
-			container -> container.setQueueNames(property.getQueue().getFileCreateProgressQueue(serverName)));
-		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+			container -> container.setQueues(fileCreateProgressQueue())
+		);
+		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.AUTO);
+		listenerContainerFactory.setErrorHandler(errorHandler);
+		listenerContainerFactory.setDefaultRequeueRejected(false);
+		return listenerContainerFactory;
+	}
+
+	@Bean
+	SimpleRabbitListenerContainerFactory fileCreateErrorListenerFactory() {
+		SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+		listenerContainerFactory.setConnectionFactory(connectionFactory());
+		listenerContainerFactory.setMessageConverter(messageConverter());
+		listenerContainerFactory.setContainerCustomizer(
+			container -> container.setQueues(fileCreateErrorQueue())
+		);
+		listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.AUTO);
+		listenerContainerFactory.setErrorHandler(errorHandler);
+		listenerContainerFactory.setDefaultRequeueRejected(false);
 		return listenerContainerFactory;
 	}
 
 	@Bean
 	RabbitTemplate fileCreateRequestRabbitTemplate() {
+		return this.getRabbitTemplate(
+			property.getExchange().getDirectExchange(),
+			property.getRoutingKey().getFileCreateRequestRoutingKey()
+		);
+	}
+
+	@Bean
+	RabbitTemplate csvUpdateRequestRabbitTemplate(){
+		return this.getRabbitTemplate(
+			property.getExchange().getDirectExchange(),
+			property.getRoutingKey().getCsvUpdateRequestRoutingKey()
+		);
+	}
+
+	private RabbitTemplate getRabbitTemplate(String exchangeName, String routingKeyName) {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
 		rabbitTemplate.setMessageConverter(messageConverter());
-		rabbitTemplate.setExchange(property.getExchange().getDirectExchange());
-		rabbitTemplate.setRoutingKey(property.getRoutingKey().getFileCreateRequestRoutingKey());
-		rabbitTemplate.setMandatory(true);
-
-		// 임시 코드
-		rabbitTemplate.setReturnsCallback(returned -> {
-			log.info("[반환된 메시지] " + returned);
-		});
-
-		// 임시 코드
-		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
-			if (ack && Objects.requireNonNull(correlationData).getReturned() == null) {
-				log.info("[메시지 발행 성공]");
-			} else {
-				log.info("[메시지 발행 실패] " + cause);
-			}
-		});
-
+		rabbitTemplate.setExchange(exchangeName);
+		rabbitTemplate.setRoutingKey(routingKeyName);
 		return rabbitTemplate;
 	}
 

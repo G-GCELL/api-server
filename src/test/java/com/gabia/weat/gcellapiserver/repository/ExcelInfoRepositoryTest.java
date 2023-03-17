@@ -1,7 +1,7 @@
 package com.gabia.weat.gcellapiserver.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import com.gabia.weat.gcellapiserver.config.QueryDslTestConfig;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
+import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
 import com.gabia.weat.gcellapiserver.dto.FileDto;
 import com.gabia.weat.gcellapiserver.repository.enums.IdCondition;
 import com.gabia.weat.gcellapiserver.repository.enums.NameCondition;
@@ -40,7 +41,6 @@ public class ExcelInfoRepositoryTest {
 		member = Member.builder()
 			.name("test")
 			.email("test@gabia.com")
-			.password("testPassword")
 			.build();
 
 		member = memberRepository.save(member);
@@ -54,14 +54,14 @@ public class ExcelInfoRepositoryTest {
 			.member(member)
 			.name("testName")
 			.path("testPath")
-			.isDeleted(false)
+			.status(ExcelStatusType.CREATED)
 			.build();
 
 		ExcelInfo saveExcelInfo = excelInfoRepository.save(excelInfo);
 		String fileName = saveExcelInfo.getName();
 
 		// when
-		Optional<ExcelInfo> findExcelInfoOptional = excelInfoRepository.findByMemberAndNameAndIsDeletedFalse(member,
+		Optional<ExcelInfo> findExcelInfoOptional = excelInfoRepository.findByEmailAndName(member.getEmail(),
 			fileName);
 
 		// then
@@ -76,14 +76,14 @@ public class ExcelInfoRepositoryTest {
 			.member(member)
 			.name("testName")
 			.path("testPath")
-			.isDeleted(true)
+			.status(ExcelStatusType.DELETED)
 			.build();
 
 		ExcelInfo saveExcelInfo = excelInfoRepository.save(excelInfo);
 		String fileName = saveExcelInfo.getName();
 
 		// when
-		Optional<ExcelInfo> findExcelInfoOptional = excelInfoRepository.findByMemberAndNameAndIsDeletedFalse(member,
+		Optional<ExcelInfo> findExcelInfoOptional = excelInfoRepository.findByEmailAndName(member.getEmail(),
 			fileName);
 
 		// then
@@ -124,9 +124,9 @@ public class ExcelInfoRepositoryTest {
 		PageRequest pageRequest = PageRequest.of(0,testSize);
 
 		for (int i = 0; i < testSize; i++) {
-			boolean isDelete = i%2 == 1;
+			ExcelStatusType status = i % 2 == 1? ExcelStatusType.DELETED : ExcelStatusType.CREATED;
 			excelInfoRepository.save(ExcelInfo.builder().member(member).name("엔도" + Integer.toString(i))
-				.isDeleted(isDelete).build());
+				.status(status).build());
 		}
 
 		FileListRequestDto idInCondition = FileListRequestDto.builder().idCondition(IdCondition.NOT_IN)
@@ -139,8 +139,8 @@ public class ExcelInfoRepositoryTest {
 		FileListRequestDto nameInCondition = FileListRequestDto.builder().nameCondition(NameCondition.LIKE)
 			.fileName("엔도").build();
 		FileListRequestDto createdAtGtCondition = FileListRequestDto.builder().minCreatedAt(now.minusMinutes(1)).build();
-		FileListRequestDto createdAtLtCondition = FileListRequestDto.builder().maxCreatedAt(now).build();
-		FileListRequestDto isDeleteCondition = FileListRequestDto.builder().isDelete(true).build();
+		FileListRequestDto createdAtLtCondition = FileListRequestDto.builder().maxCreatedAt(now.minusMinutes(1)).build();
+		FileListRequestDto isDeleteCondition = FileListRequestDto.builder().status(ExcelStatusType.DELETED).build();
 		FileListRequestDto nullCondition = FileListRequestDto.builder().build();
 
 		// when
@@ -175,9 +175,9 @@ public class ExcelInfoRepositoryTest {
 			.fileName("엔도").build();
 
 		for (int i = 0; i < testSize; i++) {
-			boolean isDelete = i%2 == 1;
+			ExcelStatusType status = i % 2 == 1? ExcelStatusType.DELETED : ExcelStatusType.CREATED;
 			excelInfoRepository.save(ExcelInfo.builder().member(member).name("엔도" + Integer.toString(i))
-				.isDeleted(isDelete).build());
+				.status(status).build());
 		}
 
 		// when

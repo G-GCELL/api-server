@@ -7,7 +7,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.MessageType;
-import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.error.ErrorCode;
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
@@ -43,6 +42,10 @@ public class MessageSender {
 
 	public void sendMessageToExcelInfoId(Long excelInfoId, MessageType messageType, Object message){
 		sseRepository.findByExcelInfoId(excelInfoId).ifPresent(sse -> this.sendMessage(message, messageType, sse));
+	}
+
+	public void disconnectByExcelInfoId(Long excelInfoId){
+		sseRepository.deleteByExcelInfoId(excelInfoId);
 	}
 
 	private void sendMessage(Object message, MessageType messageType, SseEmitter sseEmitter) {

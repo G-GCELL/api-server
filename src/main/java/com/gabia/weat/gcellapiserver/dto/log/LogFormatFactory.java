@@ -18,9 +18,7 @@ public class LogFormatFactory {
 	private ThreadLocal<String> traceInfoHolder = new ThreadLocal<>();
 
 	public void startTrace() {
-		if (traceInfoHolder.get() == null) {
-			traceInfoHolder.set(RandomStringUtils.random(TRACE_ID_LENGTH, true, true));
-		}
+		traceInfoHolder.set(RandomStringUtils.random(TRACE_ID_LENGTH, true, true));
 	}
 
 	public void startTrace(String traceId) {
@@ -47,7 +45,6 @@ public class LogFormatFactory {
 
 	public MessageBrokerLogFormatDtoBuilder getMessageBrokerLogFormatBuilder() {
 		return MessageBrokerLogFormatDto.builder()
-			.level(Level.INFO)
 			.serverName(serverName)
 			.traceId(this.traceInfoHolder.get());
 	}
