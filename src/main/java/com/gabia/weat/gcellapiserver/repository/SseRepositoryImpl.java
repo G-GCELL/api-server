@@ -37,7 +37,7 @@ public class SseRepositoryImpl implements SseRepository {
 
 	@Override
 	public Optional<SseEmitter> findById(Long id) {
-		List<SseEmitter> sseEmitters = sseMap.get(id);
+		List<SseEmitter> sseEmitters = this.findListById(id);
 		int size = sseEmitters.size();
 		return Optional.ofNullable(size == 0 ? null : sseEmitters.get(size - 1));
 	}

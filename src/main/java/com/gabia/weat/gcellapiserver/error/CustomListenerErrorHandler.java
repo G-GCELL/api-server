@@ -6,14 +6,21 @@ import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.stereotype.Component;
 
 import com.gabia.weat.gcellapiserver.error.exception.CustomException;
+import com.gabia.weat.gcellapiserver.service.log.LogPrinter;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class CustomListenerErrorHandler implements RabbitListenerErrorHandler {
+
+	private final LogPrinter logPrinter;
 
 	@Override
 	public Object handleError(Message amqpMessage, org.springframework.messaging.Message<?> message,
 		ListenerExecutionFailedException exception) throws CustomException {
 		Throwable t = exception.getCause();
+		logPrinter.printErrorLog((Exception) t);
 		ErrorCode errorCode = ErrorCode.UNKNOWN_ERROR;
 
 		if (t instanceof CustomException ce) {
