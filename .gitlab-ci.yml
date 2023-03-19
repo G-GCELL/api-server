@@ -63,7 +63,7 @@ package:
     - docker build -t $CI_REGISTRY/mentee/mentee_2023.01/team/weat/gcell-api-server .
     - docker push $CI_REGISTRY/mentee/mentee_2023.01/team/weat/gcell-api-server
   only:
-    - dev
+    - main
 
 deploy:
   stage: deploy
@@ -81,5 +81,5 @@ deploy:
   after_script:
     - docker logout
   only:
-    - dev
+    - main
 

@@ -53,8 +53,9 @@ public class MessageSender {
 			sseEmitter.send(SseEmitter.event()
 				.name(messageType.name())
 				.data(message));
-		} catch (IOException e) {
-			log.info("SEND_MESSAGE_FAIL : {}", e.getMessage());
+		} catch (IOException | IllegalStateException e) {
+			log.debug("SEND_MESSAGE_FAIL : {}", e.getMessage());
+			sseEmitter.complete();
 		}
 	}
 
