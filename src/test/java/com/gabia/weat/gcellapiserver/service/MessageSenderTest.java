@@ -93,7 +93,8 @@ public class MessageSenderTest {
 		messageSender.connect(testEmail, testSseEmitter);
 
 		// then
-		assertThat(capturedOutput.getOut().contains("SEND_MESSAGE_FAIL")).isTrue();
+		// assertThat(capturedOutput.getOut().contains("SEND_MESSAGE_FAIL")).isTrue();
+		verify(testSseEmitter, times(1)).complete();
 	}
 
 	@Test
