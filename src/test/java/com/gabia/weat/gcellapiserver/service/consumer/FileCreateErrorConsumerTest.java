@@ -12,9 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateErrorMsgDto;
-import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.service.MessageHandler;
+import com.gabia.weat.gcellcommonmodule.dto.MessageDto.FileCreateErrorMsgDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageWrapperDto;
 
 @ExtendWith(MockitoExtension.class)
 public class FileCreateErrorConsumerTest {

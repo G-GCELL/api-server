@@ -13,12 +13,16 @@ build:
   before_script:
     - microdnf install findutils
     - echo "$APPLICATION_INFO" > "src/main/resources/application.yml"
+    - microdnf install git
+    - git submodule update --remote gcell-common-module
   script:
     - ./gradlew clean bootJar
   artifacts:
     paths:
       - build/libs/*.jar
     expire_in: 60 min
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
 
 test:
   stage: test
@@ -82,4 +86,3 @@ deploy:
     - docker logout
   only:
     - main
-

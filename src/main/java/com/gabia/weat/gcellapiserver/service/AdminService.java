@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gabia.weat.gcellapiserver.dto.FileDto.CsvUpdateRequestDto;
-import com.gabia.weat.gcellapiserver.dto.MessageDto.CsvUpdateRequestMsgDto;
-import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
-import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.service.producer.CsvUpdateRequestProducer;
+import com.gabia.weat.gcellcommonmodule.dto.MessageDto.CsvUpdateRequestMsgDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageWrapperDto;
+import com.gabia.weat.gcellcommonmodule.dto.format.LogFormatFactory;
+import com.gabia.weat.gcellcommonmodule.error.ErrorCode;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,12 +25,12 @@ public class AdminService {
 	private final CsvUpdateRequestProducer csvUpdateRequestProducer;
 	private final LogFormatFactory logFormatFactory;
 
-	public void updateCsvFile(CsvUpdateRequestDto csvUpdateRequestDto) {
+	public void updateCsvFile(String email, CsvUpdateRequestDto csvUpdateRequestDto) {
 		validFileExtension(csvUpdateRequestDto.file());
 		String fileName = addCurrentTimePrefix(csvUpdateRequestDto.file().getOriginalFilename());
 		minioService.upload(csvUpdateRequestDto.file(), fileName);
 		csvUpdateRequestProducer.sendMessage(MessageWrapperDto.wrapMessageDto(
-			new CsvUpdateRequestMsgDto(fileName, csvUpdateRequestDto.deleteTarget()),
+			new CsvUpdateRequestMsgDto(fileName, email, csvUpdateRequestDto.deleteTarget()),
 			logFormatFactory.getTraceId()
 		));
 	}

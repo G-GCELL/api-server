@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.gabia.weat.gcellapiserver.service.MessageSender;
+import com.gabia.weat.gcellcommonmodule.annotation.ControllerLog;
 
 import lombok.RequiredArgsConstructor;
 
+@ControllerLog
 @RestController
 @RequiredArgsConstructor
 public class MessageController {

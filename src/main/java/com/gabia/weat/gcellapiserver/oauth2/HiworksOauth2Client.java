@@ -14,8 +14,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.gabia.weat.gcellapiserver.dto.OauthDto.HiworksUserInfoResponseDto;
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
+import com.gabia.weat.gcellcommonmodule.error.ErrorCode;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 

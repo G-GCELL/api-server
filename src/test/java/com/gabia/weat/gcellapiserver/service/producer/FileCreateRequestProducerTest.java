@@ -1,5 +1,6 @@
 package com.gabia.weat.gcellapiserver.service.producer;
 
+import static com.gabia.weat.gcellcommonmodule.dto.MessageDto.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -13,8 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
-import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageWrapperDto;
 
 @ExtendWith(MockitoExtension.class)
 public class FileCreateRequestProducerTest {

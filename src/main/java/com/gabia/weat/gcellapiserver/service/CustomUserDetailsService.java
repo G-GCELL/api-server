@@ -4,9 +4,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
+import com.gabia.weat.gcellcommonmodule.error.ErrorCode;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 

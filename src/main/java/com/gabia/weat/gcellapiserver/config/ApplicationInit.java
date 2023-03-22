@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
+import com.gabia.weat.gcellcommonmodule.error.ErrorCode;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
 
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;

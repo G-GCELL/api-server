@@ -19,12 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
-import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 import com.gabia.weat.gcellapiserver.service.producer.FileCreateRequestProducer;
 import com.gabia.weat.gcellapiserver.util.ExcelInfoUtil;
+import com.gabia.weat.gcellcommonmodule.dto.format.LogFormatFactory;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
 
 @ExtendWith(MockitoExtension.class)
 public class ExcelInfoServiceTest {

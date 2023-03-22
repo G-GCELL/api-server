@@ -1,17 +1,18 @@
 package com.gabia.weat.gcellapiserver.service;
 
-import static com.gabia.weat.gcellapiserver.dto.MessageDto.*;
+
+import static com.gabia.weat.gcellcommonmodule.dto.MessageDto.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gabia.weat.gcellapiserver.converter.MessageDtoConverter;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
-import com.gabia.weat.gcellapiserver.domain.type.MessageType;
-import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
+import com.gabia.weat.gcellcommonmodule.dto.MessageWrapperDto;
+import com.gabia.weat.gcellcommonmodule.error.ErrorCode;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
+import com.gabia.weat.gcellcommonmodule.type.MessageType;
 
 import lombok.RequiredArgsConstructor;
 

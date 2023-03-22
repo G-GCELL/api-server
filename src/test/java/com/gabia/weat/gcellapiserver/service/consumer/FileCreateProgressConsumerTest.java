@@ -12,10 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gabia.weat.gcellapiserver.domain.type.MessageType;
-import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
-import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.service.MessageHandler;
+import com.gabia.weat.gcellcommonmodule.dto.MessageDto.FileCreateProgressMsgDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageWrapperDto;
+import com.gabia.weat.gcellcommonmodule.type.MessageType;
 
 @ExtendWith(MockitoExtension.class)
 public class FileCreateProgressConsumerTest {

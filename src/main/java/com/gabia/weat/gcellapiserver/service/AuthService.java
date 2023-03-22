@@ -9,11 +9,11 @@ import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.RoleType;
 import com.gabia.weat.gcellapiserver.dto.OauthDto.HiworksUserInfoResponseDto;
 import com.gabia.weat.gcellapiserver.dto.OauthDto.OauthLoginResponseDto;
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.jwt.JwtTokenProvider;
 import com.gabia.weat.gcellapiserver.oauth2.HiworksOauth2Client;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
+import com.gabia.weat.gcellcommonmodule.error.ErrorCode;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 

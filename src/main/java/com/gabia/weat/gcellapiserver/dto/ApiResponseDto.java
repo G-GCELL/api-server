@@ -1,6 +1,6 @@
 package com.gabia.weat.gcellapiserver.dto;
 
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
+import com.gabia.weat.gcellcommonmodule.error.ErrorCode;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

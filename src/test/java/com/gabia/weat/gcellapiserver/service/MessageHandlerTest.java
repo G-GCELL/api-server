@@ -1,5 +1,6 @@
 package com.gabia.weat.gcellapiserver.service;
 
+import static com.gabia.weat.gcellcommonmodule.dto.MessageDto.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
@@ -13,11 +14,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
-import com.gabia.weat.gcellapiserver.domain.type.MessageType;
-import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateErrorMsgDto;
-import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
-import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
+import com.gabia.weat.gcellcommonmodule.dto.MessageDto.FileCreateErrorMsgDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageWrapperDto;
+import com.gabia.weat.gcellcommonmodule.type.MessageType;
 
 @ExtendWith(MockitoExtension.class)
 public class MessageHandlerTest {
