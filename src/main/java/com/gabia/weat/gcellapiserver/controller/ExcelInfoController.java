@@ -21,10 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;
 import com.gabia.weat.gcellapiserver.service.ExcelInfoService;
 import com.gabia.weat.gcellapiserver.service.MinioService;
+import com.gabia.weat.gcellcommonmodule.annotation.ControllerLog;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@ControllerLog
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/excels")

@@ -20,10 +20,10 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.gabia.weat.gcellapiserver.domain.Member;
-import com.gabia.weat.gcellapiserver.domain.type.MessageType;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.MemberRepository;
 import com.gabia.weat.gcellapiserver.repository.SseRepository;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
+import com.gabia.weat.gcellcommonmodule.type.MessageType;
 
 @ExtendWith({
 	MockitoExtension.class,

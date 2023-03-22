@@ -13,8 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.gabia.weat.gcellapiserver.dto.log.LogFormatFactory;
 import com.gabia.weat.gcellapiserver.service.producer.CsvUpdateRequestProducer;
+import com.gabia.weat.gcellcommonmodule.dto.format.LogFormatFactory;
 
 @ExtendWith(MockitoExtension.class)
 public class ManagerServiceTest {
@@ -33,13 +33,14 @@ public class ManagerServiceTest {
 	public void updateCsvFile_test() {
 		// given
 		MultipartFile mockFile = mock(MultipartFile.class);
+		String testEmail = "test@gabia.com";
 		CsvUpdateRequestDto csvUpdateRequestDto = this.getCsvUpdateRequestDto(mockFile);
 
 		given(mockFile.getOriginalFilename()).willReturn("test.csv");
 		given(logFormatFactory.getTraceId()).willReturn("testTraceId");
 
 		// when
-		adminService.updateCsvFile(csvUpdateRequestDto);
+		adminService.updateCsvFile(testEmail, csvUpdateRequestDto);
 
 		// then
 		verify(minioService, times(1)).upload(any(), any());
@@ -53,7 +54,5 @@ public class ManagerServiceTest {
 			YearMonth.now()
 		);
 	}
-
-
 
 }

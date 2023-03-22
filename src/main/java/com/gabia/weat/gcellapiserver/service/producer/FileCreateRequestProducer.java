@@ -4,11 +4,11 @@ import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import com.gabia.weat.gcellapiserver.annotation.ProducerLog;
-import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateRequestMsgDto;
-import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
-import com.gabia.weat.gcellapiserver.error.ErrorCode;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
+import com.gabia.weat.gcellcommonmodule.annotation.ProducerLog;
+import com.gabia.weat.gcellcommonmodule.dto.MessageDto.FileCreateRequestMsgDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageWrapperDto;
+import com.gabia.weat.gcellcommonmodule.error.ErrorCode;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 

@@ -16,9 +16,11 @@ import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;
 import com.gabia.weat.gcellapiserver.dto.OauthDto.OauthLoginResponseDto;
 import com.gabia.weat.gcellapiserver.jwt.JwtProperty;
 import com.gabia.weat.gcellapiserver.service.AuthService;
+import com.gabia.weat.gcellcommonmodule.annotation.ControllerLog;
 
 import lombok.RequiredArgsConstructor;
 
+@ControllerLog
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
