@@ -34,13 +34,14 @@ public class AuthService {
 		}
 	}
 
-	public OauthLoginResponseDto oauthLogin(String authCode) {
+	public OauthLoginResponseDto getAccessToken(String authCode) {
 		HiworksUserInfoResponseDto hiworksUserInfoResponseDto = hiworksOauth2Client.getUserInfo(authCode);
 		Member member = getMember(hiworksUserInfoResponseDto);
 		String accessToken = jwtTokenProvider.generateAccessToken(member.getEmail(), member.getAuthorities());
 
 		return OauthLoginResponseDto.builder()
 			.accessToken(accessToken)
+			.name(member.getName())
 			.build();
 	}
 

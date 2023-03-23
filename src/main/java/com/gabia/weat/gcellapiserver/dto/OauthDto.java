@@ -14,7 +14,8 @@ public class OauthDto {
 
 	@Builder
 	public record OauthLoginResponseDto(
-		String accessToken
+		String accessToken,
+		String name
 	) {
 
 	}
