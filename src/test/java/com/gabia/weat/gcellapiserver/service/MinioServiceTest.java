@@ -24,8 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
 import com.gabia.weat.gcellapiserver.domain.Member;
 import com.gabia.weat.gcellapiserver.domain.type.ExcelStatusType;
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
 import com.gabia.weat.gcellapiserver.repository.ExcelInfoRepository;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
 
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;

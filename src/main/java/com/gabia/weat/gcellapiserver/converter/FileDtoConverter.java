@@ -1,13 +1,12 @@
 package com.gabia.weat.gcellapiserver.converter;
 
 import static com.gabia.weat.gcellapiserver.dto.FileDto.*;
-import static com.gabia.weat.gcellapiserver.dto.MessageDto.*;
+import static com.gabia.weat.gcellcommonmodule.dto.MessageDto.*;
 
 import java.math.BigDecimal;
 
 import com.gabia.weat.gcellapiserver.domain.ExcelInfo;
-import com.gabia.weat.gcellapiserver.dto.FileDto.*;
-import com.gabia.weat.gcellapiserver.dto.MessageDto.*;
+import com.gabia.weat.gcellcommonmodule.dto.MessageDto.FileCreateRequestMsgDto;
 
 public class FileDtoConverter {
 
@@ -46,13 +45,6 @@ public class FileDtoConverter {
 			.fileName(excelInfo.getName())
 			.status(excelInfo.getStatus())
 			.build();
-	}
-
-	public static CsvUpdateRequestMsgDto updateReqDtoToUpdateReqMsgDto(CsvUpdateRequestDto csvUpdateRequestDto){
-		return new CsvUpdateRequestMsgDto(
-			csvUpdateRequestDto.file().getOriginalFilename(),
-			csvUpdateRequestDto.deleteTarget()
-		);
 	}
 
 }

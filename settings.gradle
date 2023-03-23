@@ -1,1 +1,3 @@
 rootProject.name = 'gcell-api-server'
+
+include(':gcell-common-module')

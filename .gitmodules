@@ -1,0 +1,3 @@
+[submodule "gcell-common-module"]
+	path = gcell-common-module
+	url = http://mentoring-gitlab.gabia.com/mentee/mentee_2023.01/team/weat/gcell-common-module.git

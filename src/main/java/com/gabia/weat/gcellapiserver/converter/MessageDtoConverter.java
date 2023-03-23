@@ -1,7 +1,7 @@
 package com.gabia.weat.gcellapiserver.converter;
 
-import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateCompleteMsgDto;
-import com.gabia.weat.gcellapiserver.dto.MessageDto.FileCreateProgressMsgDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageDto.FileCreateCompleteMsgDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageDto.FileCreateProgressMsgDto;
 
 public class MessageDtoConverter {
 

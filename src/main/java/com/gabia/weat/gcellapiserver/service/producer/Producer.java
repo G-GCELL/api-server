@@ -1,6 +1,6 @@
 package com.gabia.weat.gcellapiserver.service.producer;
 
-import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageWrapperDto;
 
 public interface Producer<T> {
 

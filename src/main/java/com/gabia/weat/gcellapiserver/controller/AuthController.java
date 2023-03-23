@@ -16,9 +16,11 @@ import com.gabia.weat.gcellapiserver.dto.ApiResponseDto;
 import com.gabia.weat.gcellapiserver.dto.OauthDto.OauthLoginResponseDto;
 import com.gabia.weat.gcellapiserver.jwt.JwtProperty;
 import com.gabia.weat.gcellapiserver.service.AuthService;
+import com.gabia.weat.gcellcommonmodule.annotation.ControllerLog;
 
 import lombok.RequiredArgsConstructor;
 
+@ControllerLog
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
@@ -39,18 +41,25 @@ public class AuthController {
 	@GetMapping(value = "/login/oauth2/code/hiworks")
 	public ResponseEntity<ApiResponseDto> oauthLogin(@RequestParam("auth_code") String authCode) throws
 		URISyntaxException {
-		OauthLoginResponseDto oauthLoginResponseDto = authService.oauthLogin(authCode);
+		OauthLoginResponseDto oauthLoginResponseDto = authService.getAccessToken(authCode);
 		return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).headers(setTokenCookieHeader(oauthLoginResponseDto)).build();
 	}
 
 	private HttpHeaders setTokenCookieHeader(OauthLoginResponseDto oauthLoginResponseDto) throws URISyntaxException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(new URI(redirectPageUrl));
-		ResponseCookie cookie = ResponseCookie.from("token", oauthLoginResponseDto.accessToken())
+		ResponseCookie tokenCookie = ResponseCookie.from("token", oauthLoginResponseDto.accessToken())
 			.maxAge(jwtProperty.getAccessTokenExpiration() / 1000)
 			.path("/")
 			.build();
-		headers.set(HttpHeaders.SET_COOKIE, cookie.toString());
+
+		ResponseCookie nameCookie = ResponseCookie.from("name", oauthLoginResponseDto.name())
+			.maxAge(jwtProperty.getAccessTokenExpiration() / 1000)
+			.path("/")
+			.build();
+
+		headers.set(HttpHeaders.SET_COOKIE, tokenCookie.toString());
+		headers.set(HttpHeaders.SET_COOKIE, nameCookie.toString());
 		return headers;
 	}
 

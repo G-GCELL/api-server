@@ -5,8 +5,9 @@ import org.springframework.amqp.rabbit.listener.api.RabbitListenerErrorHandler;
 import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.stereotype.Component;
 
-import com.gabia.weat.gcellapiserver.error.exception.CustomException;
-import com.gabia.weat.gcellapiserver.service.log.LogPrinter;
+import com.gabia.weat.gcellcommonmodule.error.ErrorCode;
+import com.gabia.weat.gcellcommonmodule.error.exception.CustomException;
+import com.gabia.weat.gcellcommonmodule.printer.LogPrinter;
 
 import lombok.RequiredArgsConstructor;
 

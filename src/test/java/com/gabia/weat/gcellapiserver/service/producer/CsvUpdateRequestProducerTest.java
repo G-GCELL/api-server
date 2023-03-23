@@ -14,8 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-import com.gabia.weat.gcellapiserver.dto.MessageDto.CsvUpdateRequestMsgDto;
-import com.gabia.weat.gcellapiserver.dto.MessageWrapperDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageDto.CsvUpdateRequestMsgDto;
+import com.gabia.weat.gcellcommonmodule.dto.MessageWrapperDto;
 
 @ExtendWith(MockitoExtension.class)
 public class CsvUpdateRequestProducerTest {
@@ -42,6 +42,7 @@ public class CsvUpdateRequestProducerTest {
 	private CsvUpdateRequestMsgDto getCsvUpdateRequestMsgDto() {
 		return new CsvUpdateRequestMsgDto(
 			"testLocate",
+			"test@gabia.com",
 			YearMonth.now()
 		);
 	}
