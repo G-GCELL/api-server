@@ -61,8 +61,8 @@ public class AuthController {
 			.path("/")
 			.build();
 
-		headers.set(HttpHeaders.SET_COOKIE, tokenCookie.toString());
-		headers.set(HttpHeaders.SET_COOKIE, nameCookie.toString());
+		headers.add(HttpHeaders.SET_COOKIE, tokenCookie.toString());
+		headers.add(HttpHeaders.SET_COOKIE, nameCookie.toString());
 		return headers;
 	}
 
