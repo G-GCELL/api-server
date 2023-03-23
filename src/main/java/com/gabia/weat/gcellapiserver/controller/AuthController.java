@@ -2,6 +2,8 @@ package com.gabia.weat.gcellapiserver.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -53,7 +55,8 @@ public class AuthController {
 			.path("/")
 			.build();
 
-		ResponseCookie nameCookie = ResponseCookie.from("name", oauthLoginResponseDto.name())
+		ResponseCookie nameCookie = ResponseCookie.from("name", URLEncoder.encode(oauthLoginResponseDto.name(),
+				StandardCharsets.UTF_8))
 			.maxAge(jwtProperty.getAccessTokenExpiration() / 1000)
 			.path("/")
 			.build();
